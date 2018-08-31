@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup
+    android:id="@+id/inc_order_list_tab_rg"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <RadioButton
+        android:id="@+id/inc_order_list_tab_rg_claim"
+        android:text="等待取货"
+        style="@style/inc_order_list_tab_radio_bottom_style"
+        />
+    <RadioButton
+        android:id="@+id/inc_order_list_tab_rg_transfer"
+        android:text="正在途中"
+        style="@style/inc_order_list_tab_radio_bottom_style"
+        />
+    <RadioButton
+        android:id="@+id/inc_order_list_tab_rg_complete"
+        android:text="签收完成"
+        style="@style/inc_order_list_tab_radio_bottom_style"
+        />
+</RadioGroup>

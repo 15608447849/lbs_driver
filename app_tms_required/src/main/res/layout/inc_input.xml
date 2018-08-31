@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp0"
+    android:layout_weight="3">
+    <!--手机号-->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/inc_input_phone"
+        android:layout_width="@dimen/dp350"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp5"
+        app:counterEnabled="true"
+        app:counterMaxLength="11"
+        app:errorTextAppearance="@style/inc_input_error_style"
+        app:errorEnabled="true"
+        android:layout_centerHorizontal="true"
+        >
+        <android.support.v7.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_input_phone"
+            android:drawablePadding="@dimen/dp15"
+            android:hint="@string/input_phone"
+            android:inputType="phone"
+            android:maxLines="1" />
+    </android.support.design.widget.TextInputLayout>
+    <!--密码-->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/inc_input_password"
+        android:layout_width="@dimen/dp350"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp5"
+        app:passwordToggleEnabled="true"
+        android:layout_centerHorizontal="true"
+        app:errorTextAppearance="@style/inc_input_error_style"
+        app:errorEnabled="true"
+        android:layout_below="@id/inc_input_phone"
+        >
+        <android.support.v7.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_input_password"
+            android:drawablePadding="@dimen/dp15"
+            android:hint="@string/input_password"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            />
+    </android.support.design.widget.TextInputLayout>
+    <!--确定按钮-->
+    <Button
+        android:id="@+id/inc_input_btn_sure"
+        android:layout_width="@dimen/dp350"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/inc_input_password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp15"
+        android:layout_marginBottom="@dimen/dp15"
+        android:textSize="16sp"
+        android:background="@android:drawable/btn_default_small"
+        android:textStyle="bold"
+        android:text="@string/input_btn_sure" />
+</RelativeLayout>

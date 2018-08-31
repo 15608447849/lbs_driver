@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--输入框 错误样式-->
+    <style name="inc_input_error_style">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!--菜单栏-->
+    <style name="frg_bottom_menu_rb_item_style" parent="zero_wrap_1">
+        <item name="android:layout_margin">@dimen/dp5</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:button">@null</item>
+        <item name="android:textColor">@drawable/ic_base_text_tab_color_selector</item>
+    </style>
+    <!--标题栏 文字属性-->
+    <style name="inc_head_title_text" parent="style_tv_marquee">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:padding">@dimen/dp10</item>
+    </style>
+
+    <!--头部 按钮元素 样式 <item name="android:visibility">invisible</item>-->
+    <style name="frg_head_button_style" parent="wrap_wrap">
+        <item name="android:padding">@dimen/dp10</item>
+        <item name="android:layout_margin">@dimen/dp2</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@drawable/ic_head_ibtn_selector</item>
+        <!--<item name="android:background">@null</item>-->
+    </style>
+
+
+
+    <style name="frg_change_password_layout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_marginLeft">@dimen/dp30</item>
+        <item name="android:layout_marginRight">@dimen/dp30</item>
+    </style>
+
+    <style name="frg_change_password_layout_tv">
+        <item name="android:layout_width">@dimen/dp0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center|right</item>
+    </style>
+    <style name="frg_change_password_layout_et">
+        <item name="android:layout_width">@dimen/dp0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">4</item>
+        <item name="android:paddingLeft">@dimen/dp5</item>
+        <item name="android:inputType">textPassword</item>
+    </style>
+
+    <!--图片显示activity 窗口样式-->
+    <style name="act_dialog" parent="Base.Theme.AppCompat.Dialog">
+    <!--<style name="act_dialog"  parent="@android:style/Theme.Translucent">-->
+        <!-- Dialog的windowFrame框为无 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- 是否浮现在activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 设置动画，在这里使用让它继承系统的Animation.Dialog-->
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <!-- 背景是否模糊显示 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 无title -->
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>

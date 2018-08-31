@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--公司信息-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <!--  -->
+        <com.leezp.lib.cusview.vc.RoundImageView
+            android:id="@+id/frg_order_detail_iv"
+            android:layout_width="@dimen/dp35"
+            android:layout_height="@dimen/dp35"
+            android:layout_margin="@dimen/dp5"
+            android:src="@mipmap/ic_launcher"
+            />
+        <TextView
+            android:id="@+id/frg_order_detail_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="公司名"
+            android:layout_gravity="center_vertical"
+            style="@style/rec_item_person_text_style1"
+            />
+    </LinearLayout>
+    <include layout="@layout/rec_item_order_detail_line" />
+    <!--订单信息-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0"
+        android:layout_weight="1"
+        android:background="#f5f5f5">
+        <include layout="@layout/inc_layout_recycle"/>
+    </FrameLayout>
+    <!--底部状态相关 按钮-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include
+            layout="@layout/inc_frg_order_detail_button" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,27 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            postprocessing {
+                removeUnusedCode false
+                removeUnusedResources false
+                obfuscate false
+                optimizeCode false
+                proguardFile 'proguard-rules.pro'
+            }
+        }
+    }
+}
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation project(":lib_log")
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/app_tms_base" />
+            <option value="$PROJECT_DIR$/app_tms_mapop" />
+            <option value="$PROJECT_DIR$/app_tms_orders" />
+            <option value="$PROJECT_DIR$/app_tms_required" />
+            <option value="$PROJECT_DIR$/app_tms_scanqr" />
+            <option value="$PROJECT_DIR$/lib_cusview" />
+            <option value="$PROJECT_DIR$/lib_gdmap" />
+            <option value="$PROJECT_DIR$/lib_log" />
+            <option value="$PROJECT_DIR$/lib_recycleviews" />
+            <option value="$PROJECT_DIR$/lib_singlepageapplication" />
+            <option value="$PROJECT_DIR$/lib_storage" />
+            <option value="$PROJECT_DIR$/lib_update" />
+            <option value="$PROJECT_DIR$/lib_util" />
+            <option value="$PROJECT_DIR$/lib_viewholder" />
+            <option value="$PROJECT_DIR$/lib_zerocice" />
+          </set>
+        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

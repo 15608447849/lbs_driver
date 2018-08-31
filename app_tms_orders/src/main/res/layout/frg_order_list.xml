@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--协调布局-->
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/match_match">
+    <!--appbar-->
+    <include layout="@layout/inc_frg_order_appbar" />
+    <!--scroll list-->
+    <include layout="@layout/inc_layout_refresh_recycle" />
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.leezp.lib.cusview.nicespanner.NiceSpinner
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/inc_base_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/rec_item_person_text_style3"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:singleLine="true"
+    />

@@ -1,0 +1,44 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+//        resourcePrefix "tms_base_"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    //android system
+    api 'com.android.support:appcompat-v7:26.1.0'
+    api 'com.android.support:percent:26.1.0'
+    //卡片布局
+    api 'com.android.support:cardview-v7:26.1.0'
+
+    //self util
+    api project (':lib_singlepageapplication')
+    api project (':lib_viewholder')
+    api project (':lib_util')
+    api project (':lib_zerocice')
+    api project (':lib_storage')
+    api project (':lib_cusview')
+    api project (':lib_recycleviews')
+    //地图
+    api project (':lib_gdmap')
+    //升级
+    api project(":lib_update")
+    //日志
+    api project(":lib_log")
+
+}

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!--匹配父容器-->
+    <style name="match_match">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <!--包括内容-->
+    <style name="wrap_wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="match_wrap">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="wrap_match">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="match_zero_1">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dp0</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="zero_wrap_1">
+        <item name="android:layout_width">@dimen/dp0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="zero_match_1">
+        <item name="android:layout_width">@dimen/dp0</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="zero_wrap_2">
+        <item name="android:layout_width">@dimen/dp0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">2</item>
+    </style>
+    <style name="zero_match_2">
+        <item name="android:layout_width">@dimen/dp0</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">2</item>
+    </style>
+    <style name="zero_wrap_3">
+        <item name="android:layout_width">@dimen/dp0</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">3</item>
+    </style>
+
+    <!-- tv 走马灯 请使用   tv.setSelected(true); 开启滚动-->
+    <style name="style_tv_marquee">
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+    </style>
+
+</resources>

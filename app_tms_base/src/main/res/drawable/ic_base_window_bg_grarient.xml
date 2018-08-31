@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!--#ED2F26-->
+    <gradient
+        android:startColor="#318FF4"
+        android:endColor="#00ADFF"
+        android:angle="45">
+        <!--
+        270 从上到下 渐变
+         0 is left to right,
+         90 is bottom to top
+         -->
+    </gradient>
+
+</shape>

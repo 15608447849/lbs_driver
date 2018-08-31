@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="inc_order_list_tab_radio_bottom_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">@dimen/dp45</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/ic_base_text_tab_radio_selector</item>
+        <item name="android:textColor">@drawable/ic_base_text_tab_color_selector</item>
+        <item name="android:layout_margin">@dimen/dp2</item>
+    </style>
+
+    <!--订单详情页按钮  -->
+    <style name="inc_frg_order_detail_btn_style">
+        <item name="android:layout_width">@dimen/dp0</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/dp2</item>
+        <item name="android:background">@android:drawable/btn_default_small</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="mypopwindow_anim_style">
+        <item name="android:windowEnterAnimation">@anim/pop_show_anim</item>
+        <!-- 指定显示的动画xml -->
+        <item name="android:windowExitAnimation">@anim/pop_hide_anim</item>
+        <!-- 指定消失的动画xml -->
+    </style>
+
+    <!-- 拍照界面 image view-->
+    <style name="frg_take_picture_iv">
+        <item name="android:layout_width">@dimen/dp0</item>
+        <item name="android:layout_height">@dimen/dp0</item>
+        <item name="android:layout_margin">@dimen/dp5</item>
+
+    </style>
+</resources>

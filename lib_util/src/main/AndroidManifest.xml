@@ -1,0 +1,35 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.leezp.lib.util" >
+    <!-- 震动 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!--可以直接弹出一个系统对话框让用户直接添加app到白名单-->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!--电源管理-->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!--允许程序获取网络状态-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--允许程序访问WiFi网络信息-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--允许在服务中弹出窗口-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!--允许写入外部设备-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!--允许读取外部设备-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--相机-->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application >
+        <!--适配android 7.0-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>

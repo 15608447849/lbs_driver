@@ -1,0 +1,27 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.leezp.lib_gdmap" >
+    <!--用于访问GPS定位-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!--用于申请调用A-GPS模块-->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <!--用于读取手机当前的状态-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!--用于进行网络定位,允许程序访问CellID或WiFi热点来获取粗略的位置-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--用于获取wifi的获取权限，wifi信息会用来进行网络定位-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <!--读取文件-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <application>
+
+        <!-- 高德地图定位服务
+        <service android:name="com.amap.api.location.APSService"
+            android:process=":gd_loc_service"/>
+            -->
+        <!-- 高德地图导航
+        <activity android:name="com.amap.api.navi.AmapRouteActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+            -->
+    </application>
+</manifest>

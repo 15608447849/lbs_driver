@@ -1,0 +1,1 @@
+include ':app', ':lib_singlepageapplication', ':app_tms_required', ':lib_viewholder', ':app_tms_base', ':lib_storage', ':app_tms_orders', ':app_tms_mapop', ':app_tms_scanqr', ':lib_recycleviews', ':lib_cusview', ':lib_util', ':lib_zerocice', ':lib_gdmap', ':lib_update', ':lib_log'

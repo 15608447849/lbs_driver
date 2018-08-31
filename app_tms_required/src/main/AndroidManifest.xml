@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="tms.space.lbs_driver.tms_required" >
+
+    <application>
+        <!--大图显示-->
+        <activity
+            android:name=".picture_show.ImageActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/act_dialog"
+            android:process=":image_display"
+            />
+    </application>
+</manifest>

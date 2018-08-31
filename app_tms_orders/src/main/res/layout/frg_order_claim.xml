@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/match_wrap">
+    <com.leezp.lib.cusview.vc.VerificationCodeView
+
+        android:id="@+id/frg_order_claim_verificationcodeview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/dp30"
+        android:gravity="center"
+        app:vcv_et_bg="@drawable/et_bg"
+        app:vcv_et_cursor="@drawable/et_cursor"
+        app:vcv_et_inputType="number"
+        app:vcv_et_number="4"
+        app:vcv_et_text_color="@android:color/black"
+        app:vcv_et_text_size="6sp" />
+</FrameLayout>
+
+

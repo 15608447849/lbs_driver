@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    style="@style/match_match">
+    <include layout="@layout/inc_layout_horizontal_progress_bar"/>
+    <!--logo version-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp0"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:orientation="vertical">
+        <!-- logo image -->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_login_logo"
+            android:layout_marginBottom="@dimen/dp15"/>
+        <!-- logo text -->
+        <TextView
+            android:id="@+id/tms_login_frg_login_title_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="司机端 v1"
+            />
+    </LinearLayout>
+    <!--登陆模块输入框-->
+    <include layout="@layout/inc_input" />
+</LinearLayout>

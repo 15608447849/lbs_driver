@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--文本,输入框 字体默认颜色-->
+    <color name="text_default">#000000</color>
+    <!--编辑框 复选单选等 获取焦点 颜色-->
+    <color name="text_focus">#333333</color>
+    <!--tag 文字选中颜色-->
+    <color name="inc_bottom_tag_text_checked">#000000</color>
+    <!--tag 文字未选中颜色-->
+    <color name="inc_bottom_tag_text_unchecked">#595757</color>
+    <!--分割线颜色-->
+    <color name="segment_line">#e0e0e0</color>
+
+    <color name="rec_item_tv_color">#333333</color>
+</resources>

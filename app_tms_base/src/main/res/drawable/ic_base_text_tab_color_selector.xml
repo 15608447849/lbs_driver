@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:enterFadeDuration="200"
+    android:exitFadeDuration="200">
+    <!--文字选中-->
+<item android:state_checked="true"
+    android:color="@color/inc_bottom_tag_text_checked"/>
+    <!--文字未选中-->
+      />
+
+<item android:state_checked="false"
+    android:color="@color/inc_bottom_tag_text_unchecked"
+    />
+</selector>
+

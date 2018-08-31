@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/match_wrap">
+    <!--主体-->
+    <RelativeLayout
+        android:id="@+id/inc_head_line"
+        style="@style/match_wrap"
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/dp2"
+        android:layout_marginRight="@dimen/dp2">
+        <!-- 左边 回退-->
+        <ImageButton
+            android:id="@+id/inc_head_ibtn_back"
+            style="@style/frg_head_button_style"
+            android:src="@drawable/ic_head_back"
+            android:layout_alignParentStart="true"
+            />
+        <!-- 中间 标题文本 居中 -->
+        <TextView
+            android:id="@+id/inc_head_tv_title"
+            style="@style/inc_head_title_text"
+            android:text="早上好,李世平"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/white"
+            />
+        <!--右边-->
+        <!-- 扫码 -->
+        <ImageButton
+            android:id="@+id/inc_head_ibtn_scan"
+            style="@style/frg_head_button_style"
+            android:src="@drawable/ic_head_scanqr"
+            android:layout_alignParentEnd="true"
+            />
+        <!-- 查询 -->
+        <ImageButton
+            android:id="@+id/inc_head_ibtn_query"
+            style="@style/frg_head_button_style"
+            android:src="@drawable/ic_head_query"
+            android:layout_toLeftOf="@id/inc_head_ibtn_scan"
+            />
+    </RelativeLayout>
+    <!--输出弹窗消息-->
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/inc_head_coordinator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+    <!--进度条-->
+    <include layout="@layout/inc_layout_horizontal_progress_bar"/>
+</FrameLayout>
+
+
+
+
+
+

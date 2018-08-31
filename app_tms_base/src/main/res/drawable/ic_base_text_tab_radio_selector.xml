@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!--选中时底色-->
+    <item android:state_checked="true">
+        <layer-list>
+
+            <item android:top="@dimen/dp40">
+                <shape android:shape="rectangle" >
+                    <solid android:color="@color/inc_bottom_tag_text_checked" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+    <!--未选中时透明-->
+    <item android:drawable="@android:color/transparent"/>
+
+</selector>

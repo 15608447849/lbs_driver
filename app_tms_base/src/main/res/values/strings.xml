@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">OneK</string>
+
+    <!-- 登陆 -->
+    <string name="input_phone">请输入手机号</string>
+    <string name="input_password">请输入密码</string>
+    <string name="input_btn_sure">登   录</string>
+
+</resources>

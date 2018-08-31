@@ -1,0 +1,76 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <!--statusBarColor  状态栏 默认使用 colorPrimaryDark-->
+    <!--colorPrimary 应用的主要色调 actionBar默认使用该颜色，Toolbar导航栏的底色-->
+    <!--colorPrimaryDark 应用的主要暗色调 statusBarColor默认使用该颜色-->
+    <!--windowBackground 窗口背景颜色-->
+    <!--navigationBarColor 底部栏颜色-->
+    <!--colorForeground 应用的前景色，ListView的分割线，switch滑动区默认使用该颜色-->
+    <!--colorBackground 应用的背景色，popMenu的背景默认使用该颜色-->
+    <!--colorAccent CheckBox，RadioButton，SwitchCompat等一般控件的选中效果默认采用该颜色-->
+    <!--colorControlNormal CheckBox，RadioButton，SwitchCompat等默认状态的颜色-->
+    <!--colorControlHighlight 控件按压时的色调-->
+    <!--colorControlActivated 控件选中时的颜色，默认使用colorAccent-->
+    <!--colorButtonNormal 默认按钮的背景颜色-->
+    <!--editTextColor：默认EditView输入框字体的颜色-->
+    <!--textColor Button，textView的文字颜色-->
+    <!--textColorPrimaryDisableOnly RadioButton checkbox等控件的文字-->
+    <!--textColorPrimary 应用的主要文字颜色，actionBar的标题文字默认使用该颜色-->
+    <!--colorSwitchThumbNormal: switch thumbs 默认状态的颜色. (switch off)-->
+    <!-- parent="Base.Theme.AppCompat.Light" -->
+
+    <style name="AppTheme" parent="Base.Theme.AppCompat.Light">
+        <item name="colorAccent">@color/text_focus</item>
+
+        <item name="android:textColor">@color/text_default</item>
+        <item name="android:editTextColor">@color/text_default</item>
+
+        <!--<item name="android:statusBarColor">@color/frame</item>-->
+        <!--<item name="android:navigationBarColor">@color/frame</item>-->
+
+        <!--<item name="android:windowBackground">@color/frame2</item>-->
+        <!--<item name="android:windowBackground">@null</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowBackground">@drawable/ic_base_window_bg_grarient</item>
+
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+    </style>
+
+    <!-- recycle card view style -->
+    <style name="rec_item_card_view_style" parent="Base.CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/dp2</item>
+    </style>
+
+    <!-- recycle item 字体样式 黑色#333 加粗 巨大大号字体-->
+    <style name="rec_item_person_text_style0">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/rec_item_tv_color</item>
+    </style>
+
+    <!-- recycle item 字体样式 黑色#333 加粗 超大号字体-->
+    <style name="rec_item_person_text_style1" parent="rec_item_person_text_style0">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <!-- recycle item 字体样式 黑色#333 加粗 中等号字体-->
+    <style name="rec_item_person_text_style2" parent="rec_item_person_text_style0">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- recycle item 字体样式 黑色#333 加粗 小号字体-->
+    <style name="rec_item_person_text_style3" parent="rec_item_person_text_style0">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- recycle item 字体样式 黑色#333 加粗 超小号字体-->
+    <style name="rec_item_person_text_style4" parent="rec_item_person_text_style0">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+</resources>

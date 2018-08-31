@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/rec_item_card_view_style"
+    >
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <Button
+            android:id="@+id/pop_take_picture_btn_take"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_default_small"
+            android:text="拍照" />
+
+        <Button
+            android:id="@+id/pop_take_picture_btn_album"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_default_small"
+            android:text="从相册获取" />
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

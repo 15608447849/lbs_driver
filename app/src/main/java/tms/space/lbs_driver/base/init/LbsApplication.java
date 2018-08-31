@@ -1,0 +1,155 @@
+package tms.space.lbs_driver.base.init;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.Bundle;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.leezp.lib.update.ApkUpdateConfig;
+import com.leezp.lib.util.AppUtil;
+import com.leezp.lib.util.CrashHandler;
+import com.leezp.lib.util.ErrorUtil;
+import com.leezp.lib.util.GlideUtil;
+import com.leezp.lib.util.ImageUtil;
+import com.leezp.lib.util.LeeApplicationAbs;
+import com.leezp.lib.zerocice.IceIo;
+import com.leezp.lib_gdmap.GdMapUtils;
+import com.leezp.lib_log.LLog;
+
+import tms.space.lbs_driver.tms_base.storage.DbStore;
+import tms.space.lbs_driver.tms_mapop.server.TrackTransferService;
+
+
+/**
+ * Created by Leeping on 2018/6/27.
+ * email: 793065165@qq.com
+ */
+public class LbsApplication extends LeeApplicationAbs {
+    //打包使用 是否debug模式 - false:正式环境 true:测试环境
+    private static boolean isDebug = false;
+
+    /**
+     * 所有进程需要的初始化操作
+     */
+    @Override
+    protected void onCreateByAllProgress(String processName) {
+        super.onCreateByAllProgress(processName);
+        //异常捕获
+        catCrash();
+        //初始化服务器参数信息
+        initServiceParams();
+        //k-v SqlLite3
+        DbStore.get().init(getApplicationContext());
+    }
+
+    //异常捕获
+    private void catCrash() {
+        CrashHandler.getInstance().init(getApplicationContext(), new CrashHandler.Callback() {
+            @Override
+            public void crash(String crashFilePath, Throwable ex) {
+                LLog.print(ErrorUtil.printExceptInfo(ex),"\n",crashFilePath);
+                //发送日志到服务器 pass
+                Toast.makeText(getApplicationContext(),"捕获到未处理的异常信息",Toast.LENGTH_SHORT).show();
+                if (!isDebug) System.exit(-1);
+            }
+        });
+    }
+
+    //服务器信息
+    private void initServiceParams() {
+        String host;
+        int port;
+        String fileServerUpload;
+        String fileServerDownload;
+
+        if (isDebug) {
+            host = "192.168.1.241";
+            port = 7061;
+            fileServerUpload = "http://192.168.1.241:8090/fileUploadApp";
+            fileServerDownload = "http://192.168.1.241:8080/wlq";
+        } else {
+            host = "39.108.85.159";
+            port = 4061;
+            fileServerUpload = "http://39.108.85.159:8090/fileUploadApp";
+            fileServerDownload = "http://39.108.85.159:80/wlq";
+        }
+
+        IceIo.get().init("WLQ", host, port);
+        IceIo.get().addParams("fileServerUpload", fileServerUpload);
+        IceIo.get().addParams("fileServerDownload", fileServerDownload);
+        //添加网络状态过滤器
+        IceIo.get().addFilter(new IceIo.IFilter() {
+            @Override
+            public void filter() throws Exception {
+                if (!AppUtil.isNetworkAvailable(getApplicationContext()))
+                    throw new IllegalStateException("网络无效.");
+            }
+        });
+    }
+
+    /**
+     * 主包名进程 初始化创建
+     */
+    @Override
+    protected void onCreateByApplicationMainProgress(String processName) {
+        initUI();
+        startTraceServer();
+        initAppUpdate();
+    }
+
+    //UI主进程使用
+    private void initUI() {
+        //碎片页面注册
+        FragmentReg.init();
+        //高德地图工具库
+        GdMapUtils.get().init(getApplicationContext());
+        //图片工具
+        ImageUtil.initAppContext(getApplicationContext());
+        //glide加载
+        GlideUtil.initAppContext(getApplicationContext());
+    }
+    //APP 自动升级
+    private void initAppUpdate() {
+        if (isDebug) {
+            ApkUpdateConfig.init(getApplicationContext(), "19b2b95628");//测试
+        } else {
+            ApkUpdateConfig.init(getApplicationContext(), "e7895e9bd9");//正式
+        }
+    }
+    //打开轨迹服务
+    private void startTraceServer() {
+        startService(new Intent(getApplicationContext(), TrackTransferService.class));
+    }
+
+    /**
+     * 其他包名进程 初始化创建
+     */
+    @Override
+    protected void onCreateByApplicationOtherProgress(String processName) {
+
+    }
+
+    /**
+     * activity 启动设置
+     */
+    @Override
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        super.onActivityCreated(activity, savedInstanceState);
+        //竖屏锁定
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //标题栏隐藏
+//        activity.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //全屏
+//        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //应用运行时，保持屏幕高亮,不锁屏
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //设定软键盘的输入法模式 覆盖在图层上 不会改变布局
+        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        //设定软键盘的输入法模式: 确保当前输入焦点是可见的 - https://blog.csdn.net/achellies/article/details/7034756
+//        activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+    }
+
+
+}

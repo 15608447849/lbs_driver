@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!--android:enterFadeDuration="1000" android:exitFadeDuration="1000"-->
+<item android:drawable="@drawable/ic_picture_add" android:state_checked="false" />
+<item android:drawable="@drawable/ic_picture_remove" android:state_checked="true" />
+
+<!--<item android:drawable="@drawable/ic_picture_remove" android:state_pressed="true" />-->
+</selector>

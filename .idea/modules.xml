@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app_tms_base/app_tms_base.iml" filepath="$PROJECT_DIR$/app_tms_base/app_tms_base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app_tms_required/app_tms_head_bottom_login_person.iml" filepath="$PROJECT_DIR$/app_tms_required/app_tms_head_bottom_login_person.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app_tms_mapop/app_tms_mapop.iml" filepath="$PROJECT_DIR$/app_tms_mapop/app_tms_mapop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app_tms_orders/app_tms_orders.iml" filepath="$PROJECT_DIR$/app_tms_orders/app_tms_orders.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app_tms_required/app_tms_required.iml" filepath="$PROJECT_DIR$/app_tms_required/app_tms_required.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app_tms_scanqr/app_tms_scan_qr_code.iml" filepath="$PROJECT_DIR$/app_tms_scanqr/app_tms_scan_qr_code.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app_tms_scanqr/app_tms_scanqr.iml" filepath="$PROJECT_DIR$/app_tms_scanqr/app_tms_scanqr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lbs_driver.iml" filepath="$PROJECT_DIR$/lbs_driver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/lbs_driver.iml" filepath="$PROJECT_DIR$/.idea/lbs_driver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_cusview/lib_cusview.iml" filepath="$PROJECT_DIR$/lib_cusview/lib_cusview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_gdmap/lib_gdmap.iml" filepath="$PROJECT_DIR$/lib_gdmap/lib_gdmap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_log/lib_log.iml" filepath="$PROJECT_DIR$/lib_log/lib_log.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_recycleviews/lib_recycleviews.iml" filepath="$PROJECT_DIR$/lib_recycleviews/lib_recycleviews.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_singlepageapplication/lib_singlepageapplication.iml" filepath="$PROJECT_DIR$/lib_singlepageapplication/lib_singlepageapplication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_storage/lib_storage.iml" filepath="$PROJECT_DIR$/lib_storage/lib_storage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_update/lib_update.iml" filepath="$PROJECT_DIR$/lib_update/lib_update.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_util/lib_util.iml" filepath="$PROJECT_DIR$/lib_util/lib_util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_viewholder/lib_viewholder.iml" filepath="$PROJECT_DIR$/lib_viewholder/lib_viewholder.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lib_zerocice/lib_zerocice.iml" filepath="$PROJECT_DIR$/lib_zerocice/lib_zerocice.iml" />
+    </modules>
+  </component>
+</project>

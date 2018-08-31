@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "tms.space.lbs_driver"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 6
+        versionName "v1.0.6"
+        resConfigs "zh" //只支持中文
+//        vectorDrawables.useSupportLibrary = true
+        //如果我们没有设置 vectorDrawables.useSupportLibrary = true 的话，则在build项目的时候，gradle会为vcetor创建不同分辨率下的png序列，即预栅格化我们的vector为真正的png图片并会被加入到apk中，无形中增加了apk的大小
+    }
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildToolsVersion '28.0.2'
+}
+
+dependencies {
+    //    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //    implementation 'com.android.support:appcompat-v7:26.1.0'
+    //基础模块
+    implementation project(':app_tms_base')
+    //登陆菜单个人中心模块
+    implementation project(':app_tms_required')
+    //订单模块
+    implementation project(':app_tms_orders')
+    //扫码模块
+    implementation project(':app_tms_scanqr')
+    //数据采集
+    implementation project(':app_tms_mapop')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
+}

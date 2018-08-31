@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    style="@style/match_match"
+    android:fitsSystemWindows="true">
+    <!-- 头部 -->
+    <FrameLayout
+        android:id="@+id/act_container_head"
+        style="@style/match_wrap" />
+    <!--内容-->
+    <FrameLayout
+        android:id="@+id/act_container_content"
+        style="@style/match_zero_1"
+        android:background="@android:color/white" />
+    <!-- 底部 -->
+    <FrameLayout android:id="@+id/act_container_bottom"
+        style="@style/match_wrap" />
+</LinearLayout>
+

@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="tms.space.lbs_driver.business_orders" >
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application>
+        <!--导航-->
+        <activity android:name="com.amap.api.navi.AmapRouteActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:process=":gd_navi_activity"
+            />
+    </application>
+</manifest>

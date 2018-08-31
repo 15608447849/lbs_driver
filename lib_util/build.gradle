@@ -1,0 +1,62 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        resourcePrefix "ul_"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+
+    //日志
+    implementation project(":lib_log")
+
+    api 'com.android.support:design:26.1.0'
+
+    //json
+    api 'com.google.code.gson:gson:2.8.1'
+
+//    api 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+    //图片或者大图加载 https://github.com/davemorrissey/subsampling-scale-image-view
+    api 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
+
+    implementation( 'com.github.bumptech.glide:glide:4.7.1'){
+        exclude group: "com.android.support"
+    }
+    //glide
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+
+    //图片压缩
+    implementation 'top.zibin:Luban:1.1.8'
+
+    //日期选择
+    implementation('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:latest.release') {
+        exclude group: 'com.android.support'
+    }
+
+    implementation('com.github.gzu-liyujiang.AndroidPicker:FilePicker:latest.release') {
+        exclude group: 'com.android.support'
+    }
+
+    implementation('com.github.gzu-liyujiang.AndroidPicker:ColorPicker:latest.release') {
+        exclude group: 'com.android.support'
+    }
+}

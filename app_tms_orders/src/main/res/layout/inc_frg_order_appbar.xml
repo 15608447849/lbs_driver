@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stateListAnimator="@null"
+    android:orientation="vertical">
+    <!--可折叠层-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+        >
+        <Button
+            android:id="@+id/inc_order_list_year_select"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            style="@style/rec_item_person_text_style3"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="2018年"
+            android:background="@drawable/ic_base_btn_universal_selector"
+            />
+        <FrameLayout
+            android:layout_width="@dimen/dp0"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <!--下拉框-->
+            <include layout="@layout/inc_layout_spinner" />
+        </FrameLayout>
+
+        <ImageButton
+            android:id="@+id/inc_order_list_span_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_refresh"
+            android:background="@drawable/ic_order_list_refresh_ibtn_selector"
+            android:padding="@dimen/dp10"
+            android:layout_margin="@dimen/dp2"
+            />
+
+    </LinearLayout>
+    <!--tab-->
+    <include layout="@layout/inc_frg_order_tab"/>
+
+</android.support.design.widget.AppBarLayout>

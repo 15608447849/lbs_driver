@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/match_wrap"
+    android:background="@android:color/white">
+    <!--分割线-->
+    <View
+        android:id="@+id/frg_bottom_menu_seline"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp1"
+        android:background="@color/segment_line"
+        android:layout_alignParentTop="true"
+        />
+    <RadioGroup
+        android:id="@+id/frg_bottom_menu_rb"
+        android:orientation="horizontal"
+        style="@style/match_wrap"
+        android:layout_below="@id/frg_bottom_menu_seline"
+        >
+        <RadioButton
+            android:id="@+id/frg_bottom_menu_rb_order"
+            style="@style/frg_bottom_menu_rb_item_style"
+            android:text="订单"
+            android:drawableTop="@drawable/ic_tab_order_selector"
+            />
+
+        <RadioButton
+            android:id="@+id/frg_bottom_menu_rb_personal"
+            style="@style/frg_bottom_menu_rb_item_style"
+            android:text="我的"
+            android:drawableTop="@drawable/ic_tab_personal_selector"
+            />
+    </RadioGroup>
+</RelativeLayout>
+
+
