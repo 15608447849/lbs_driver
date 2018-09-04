@@ -28,7 +28,7 @@ import tms.space.lbs_driver.tms_mapop.server.TrackTransferService;
  */
 public class LbsApplication extends LeeApplicationAbs {
     //打包使用 是否debug模式 - false:正式环境 true:测试环境
-    private static boolean isDebug = false;
+    private static boolean isDebug = true;
 
     /**
      * 所有进程需要的初始化操作
@@ -67,13 +67,13 @@ public class LbsApplication extends LeeApplicationAbs {
         if (isDebug) {
             host = "192.168.1.241";
             port = 7061;
-            fileServerUpload = "http://192.168.1.241:8090/fileUploadApp";
-            fileServerDownload = "http://192.168.1.241:8080/wlq";
+            fileServerUpload = "http://"+host+":8090/fileUploadApp";
+            fileServerDownload = "http://"+host+":8080/wlq";
         } else {
             host = "39.108.85.159";
             port = 4061;
-            fileServerUpload = "http://39.108.85.159:8090/fileUploadApp";
-            fileServerDownload = "http://39.108.85.159:80/wlq";
+            fileServerUpload = "http://"+host+":8090/fileUploadApp";
+            fileServerDownload = "http://"+host+":80/wlq";
         }
 
         IceIo.get().init("WLQ", host, port);

@@ -10,18 +10,14 @@ android {
     }
     buildTypes {
         release {
-            postprocessing {
-                removeUnusedCode false
-                removeUnusedResources false
-                obfuscate false
-                optimizeCode false
-                proguardFile 'proguard-rules.pro'
-            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '28.0.2'
 }
 dependencies {
-    api fileTree(dir: 'libs', include: ['*.jar'])
+    api fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation project(":lib_log")
+    implementation project(':lib_log')
 }

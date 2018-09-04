@@ -9,18 +9,23 @@ android {
         versionCode 6
         versionName "v1.0.6"
         resConfigs "zh" //只支持中文
-//        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.useSupportLibrary = true
         //如果我们没有设置 vectorDrawables.useSupportLibrary = true 的话，则在build项目的时候，gradle会为vcetor创建不同分辨率下的png序列，即预栅格化我们的vector为真正的png图片并会被加入到apk中，无形中增加了apk的大小
     }
     buildTypes {
         release {
+            //是否混淆
             minifyEnabled = false
+            //内存对齐
+            zipAlignEnabled true
+            //混淆文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
         }
+
     }
     buildToolsVersion '28.0.2'
 }
-
 dependencies {
     //    implementation fileTree(dir: 'libs', include: ['*.jar'])
     //    implementation 'com.android.support:appcompat-v7:26.1.0'

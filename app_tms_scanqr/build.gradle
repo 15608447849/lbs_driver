@@ -2,32 +2,23 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 26
-
-
-
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
-
     buildTypes {
         release {
-            postprocessing {
-                removeUnusedCode false
-                removeUnusedResources false
-                obfuscate false
-                optimizeCode false
-                proguardFile 'proguard-rules.pro'
-            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
+    buildToolsVersion '28.0.2'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation  project (':app_tms_base')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':app_tms_base')
     implementation 'cn.bingoogolapple:bga-qrcode-zbar:1.2.3'
 }

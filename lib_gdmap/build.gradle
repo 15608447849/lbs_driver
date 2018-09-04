@@ -10,15 +10,11 @@ android {
     }
     buildTypes {
         release {
-            postprocessing {
-                removeUnusedCode false
-                removeUnusedResources false
-                obfuscate false
-                optimizeCode false
-                proguardFile 'proguard-rules.pro'
-            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '28.0.2'
 }
 
 android {
@@ -31,10 +27,10 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     //3D地图
-//    api 'com.amap.api:3dmap:latest.integration'
+    //    api 'com.amap.api:3dmap:latest.integration'
     //定位
     api 'com.amap.api:location:latest.integration'
     //搜索

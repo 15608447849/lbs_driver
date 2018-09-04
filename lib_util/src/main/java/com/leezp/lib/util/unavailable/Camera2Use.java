@@ -270,10 +270,7 @@ private static final int STATE_PREVIEW = 0;
             e.printStackTrace();
         }
     }
-    /**
-     * Capture a still picture. This method should be called when we get a response in
-     * {@link #mCaptureCallback} from both {@link #lockFocus()}.
-     */
+
     private void captureStillPicture() {
         try {
 

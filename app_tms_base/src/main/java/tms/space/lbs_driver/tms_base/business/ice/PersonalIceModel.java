@@ -4,6 +4,7 @@ import com.hsf.framework.api.driver.DriverBase;
 import com.hsf.framework.api.driver.DriverServicePrx;
 import com.leezp.lib.zerocice.IceServerAbs;
 
+import IceInternal.BasicStream;
 import tms.space.lbs_driver.tms_base.business.contracts.LoginContract;
 
 /**
@@ -22,7 +23,6 @@ public class PersonalIceModel extends IceServerAbs<DriverServicePrx> implements 
         try {
             printParam(phone,password);
             DriverBase driverBase = getProxy().driverLogin(phone,password);
-
             if (driverBase.code==0){
                 callback.onSuccess(driverBase);
             }else{

@@ -7,7 +7,6 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-//        resourcePrefix "tms_login_"
     }
 
     buildTypes {
@@ -16,9 +15,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '28.0.2'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation  project (':app_tms_base')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':app_tms_base')
 }
