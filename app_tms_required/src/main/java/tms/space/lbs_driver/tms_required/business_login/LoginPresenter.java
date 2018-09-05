@@ -27,8 +27,8 @@ public class LoginPresenter extends BasePresenter<LoginContract.View> implements
     @Override
     public void onFailed(String cause) {
         isAccess = false;
-        view.hindProgress();
-        view.toast(cause);
+        if (view!=null) view.hindProgress();
+        if (view!=null) view.toast(cause);
     }
 
     @Override
@@ -40,30 +40,30 @@ public class LoginPresenter extends BasePresenter<LoginContract.View> implements
         user.setPhone(driverBase.uphone+"");
         user.setName(driverBase.urealname);
         user.save(); //存入数据库
-        view.hindProgress();
-        view.toast("登陆成功");
+        if (view!=null) view.hindProgress();
+        if (view!=null) view.toast("登陆成功");
         tryLogin();
     }
    //登陆成功 尝试登陆
     public void tryLogin(){
-       if (user!=null && view!=null){
-              view.entry();
+       if (user!=null){
+              if (view!=null) view.entry();
        }
     }
     //登陆验证
     @Override
     public void validateAccount(String phone, String password) {
-        if (isAccess) view.toast("登录中,请稍等片刻");
+        if (isAccess) if (view!=null) view.toast("登录中,请稍等片刻");
         if (user == null) {
             if (!BusinessUtil.validatePhone(phone)) {
-                view.showPhoneError("手机号码不正确");
+                if (view!=null) view.showPhoneError("手机号码不正确");
                 return;
             }
             if (!BusinessUtil.validatePassword(password)) {
-                view.showPasswordError("密码不符合要求");
+                if (view!=null) view.showPasswordError("密码不符合要求");
                 return;
             }
-            view.showProgress();
+            if (view!=null) view.showProgress();
             isAccess = true;
             model.loginServer(phone, MD5Util.encryption(password), this);
         }

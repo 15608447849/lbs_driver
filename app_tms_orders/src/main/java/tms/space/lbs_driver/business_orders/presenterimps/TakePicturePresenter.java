@@ -32,13 +32,13 @@ public class TakePicturePresenter extends OrderOptionPresenterImp<OrderDetailCon
     private final HttpUtil.CallbackAbs onImageUploadResult = new HttpUtil.CallbackAbs(){
         @Override
         public void onResult(HttpUtil.Response response) {
-            view.hindProgress(); //关闭进度条
+            if (view!=null) view.hindProgress(); //关闭进度条
             isExecute = false;
             if (response.isSuccess()){
                 LLog.print("图片上传信息:" + response.getMessage());
-                view.imageUpdateSuccess();
+                if (view!=null) view.imageUpdateSuccess();
             }else{
-                view.toast("上传失败,请重试");
+                if (view!=null) view.toast("上传失败,请重试");
             }
         }
     };
@@ -47,18 +47,18 @@ public class TakePicturePresenter extends OrderOptionPresenterImp<OrderDetailCon
     @Override
     public void uploadImage(SpaBaseHandle handle,List<File> fileList) {
         if (isExecute) {
-            view.toast("上传中,请等待");
+            if (view!=null) view.toast("上传中,请等待");
             return;
         }
         isExecute = true;
-        view.showProgress(); //打开进度条
-        view.toast("正在进行图片处理,请稍后");
+        if (view!=null) view.showProgress(); //打开进度条
+        if (view!=null) view.toast("正在进行图片处理,请稍后");
         for (File file : fileList){
            detectionFile(file);
         }
         //图片压缩处理
         fileList = ImageUtil.imageCompression(fileList,1024);
-        view.toast("开始上传图片");
+        if (view!=null) view.toast("开始上传图片");
         model.uploadImage(
                 getOrderInfo().getUser().getUserCode(),
                 getOrderInfo().getComp().compid,
@@ -85,13 +85,13 @@ public class TakePicturePresenter extends OrderOptionPresenterImp<OrderDetailCon
                 addTrackRecode(handle);
                 if ( getOrderInfo().getInfo().complex.isOnline){
                     //线上支付 - 进入费用确认
-                    view.confirmationFee();
+                    if (view!=null) view.confirmationFee();
                 }else{
-                    view.orderPickupSuccess();
+                    if (view!=null)  view.orderPickupSuccess();
                 }
 
             }else{
-                view.toast("订单操作异常");
+                if (view!=null) view.toast("订单操作异常");
             }
         }
         else if ( getOrderInfo().getInfo().state == sCLAIM.value){
@@ -99,9 +99,9 @@ public class TakePicturePresenter extends OrderOptionPresenterImp<OrderDetailCon
             if ( getOrderInfo().getInfo().state == sSIGN.value){
                 //签收成功,关闭轨迹
                 removeTrackRecode(handle);
-                view.orderSignSuccess();
+                if (view!=null) view.orderSignSuccess();
             }else{
-                view.toast("订单操作异常");
+                if (view!=null) view.toast("订单操作异常");
             }
         }
     }

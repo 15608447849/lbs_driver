@@ -93,7 +93,7 @@ public class OrderListFragment extends RelevanceHeadFragment<OrderListVh,OrderLi
         toIo(new Runnable() {
             @Override
             public void run() {
-                if (flag) presenter.queryOrderList();
+                if (flag)  presenter.queryOrderList();
                 else  presenter.queryOrderListHistory();
             }
         });

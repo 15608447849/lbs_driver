@@ -112,12 +112,6 @@ public class ImageActivity extends BaseActivityAbs implements ImagePresenter.Vie
         });
     }
 
-
-    @Override
-    public void setProgressPercent(int percent) {
-
-    }
-
     @Override
     public void openImageFile(final File image) {
         $ui(new Runnable() {

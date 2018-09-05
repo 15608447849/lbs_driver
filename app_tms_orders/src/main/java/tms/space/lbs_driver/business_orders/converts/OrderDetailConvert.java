@@ -187,8 +187,6 @@ public class OrderDetailConvert {
             view.setListItemData(_createSpannable(2,-1,sizeStyle),null);
         }
 
-//        append(colon("取货码")).append(complex.claimCode);
-//        view.setListItemData(_createSpannable(2,-1,sizeStyle),null);
         //间隔线
         view.setListItemData(2);
         //间隔线
@@ -207,8 +205,7 @@ public class OrderDetailConvert {
 
 
     public void convert(Context context,OrderDetailContract.OrderDetailView view, OrderInfo info, OrderComplex complex,String imagePath){
-        //添加分割线
-//        view.setListItemData(1);
+
         //订单号
         append(colon("订单号")).append(info.orderNo);
         view.setListItemData(createSpannable(fontStyle,contentSize),backColor);

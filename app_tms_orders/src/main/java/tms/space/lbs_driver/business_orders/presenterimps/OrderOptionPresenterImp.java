@@ -44,7 +44,7 @@ public class OrderOptionPresenterImp<V extends OrderDetailContract.View> extends
     @Override
     public void queryOrderInfo() {
         if (orderInfo == null || isExecute) return;
-        view.showProgress();
+        if (view!=null) view.showProgress();
         isExecute = true;
         OrderComplex complex = model.queryOrderInfo(
                 orderInfo.getComp().compid,
@@ -52,9 +52,9 @@ public class OrderOptionPresenterImp<V extends OrderDetailContract.View> extends
         if (complex!=null){
             orderInfo.getInfo().complex = complex;
         }else{
-            view.toast("无法获取订单信息");
+            if (view!=null) view.toast("无法获取订单信息");
         }
-        view.hindProgress();
+        if (view!=null) view.hindProgress();
         isExecute = false;
     }
 
@@ -62,7 +62,7 @@ public class OrderOptionPresenterImp<V extends OrderDetailContract.View> extends
     @Override
     public void changeOrderState(int state) {
         if (isExecute) return;
-        view.showProgress();
+        if (view!=null) view.showProgress();
         isExecute = true;
 
         boolean flag =model.changeOrderState(
@@ -82,7 +82,7 @@ public class OrderOptionPresenterImp<V extends OrderDetailContract.View> extends
                         orderInfo.getInfo().state
                        );
         }
-        view.hindProgress();
+        if (view!=null) view.hindProgress();
         isExecute = false;
     }
 

@@ -23,8 +23,7 @@ class ImagePresenter extends BasePresenter<ImagePresenter.View> {
 
 
     public interface View extends IBaseView<ImagePresenter>{
-        //设置需要展示image View 文件
-        void setProgressPercent(int percent);
+
         void openImageFile(File image);
         void closeImageFile();
         void imageError();
@@ -35,16 +34,8 @@ class ImagePresenter extends BasePresenter<ImagePresenter.View> {
     //图片下载回调
     private final HttpUtil.CallbackAbs fileDownloadCallback = new HttpUtil.CallbackAbs(){
         @Override
-        public void onProgress(File file, long progress, long total) {
-
-            NumberFormat nt = NumberFormat.getPercentInstance();
-            String str = StrUtil.stringFormat("当前进度: $s",nt.format((float)progress/total));
-//            view.setProgressPercent();
-        }
-
-        @Override
         public void onResult(HttpUtil.Response response) {
-            view.hindProgress();
+            if (view!=null) view.hindProgress();
             if (response.isSuccess()){
                 loadImageFile((File)response.getData());
             }else{
@@ -53,13 +44,13 @@ class ImagePresenter extends BasePresenter<ImagePresenter.View> {
                 }else{
                     LLog.print(response.getMessage());
                 }
-                view.imageError();
+                if (view!=null) view.imageError();
             }
         }
     };
 
     public void loadImageUrl(String imageUrl) {
-        view.showProgress();
+        if (view!=null) view.showProgress();
         LLog.print("图片URL :"+imageUrl);
         File imageFile = new File(Environment.getExternalStorageDirectory(), MD5Util.encryption(imageUrl));
         HttpUtil.Request request = new HttpUtil.Request(imageUrl,fileDownloadCallback);
@@ -70,12 +61,12 @@ class ImagePresenter extends BasePresenter<ImagePresenter.View> {
 
     public void loadImageFile(File imageFile) {
         LLog.print("加载图片文件 :"+ imageFile);
-        view.openImageFile(imageFile);
+        if (view!=null) view.openImageFile(imageFile);
     }
 
     @Override
     public void unbindView() {
-        view.closeImageFile();
+        if (view!=null) view.closeImageFile();
         super.unbindView();
     }
 }

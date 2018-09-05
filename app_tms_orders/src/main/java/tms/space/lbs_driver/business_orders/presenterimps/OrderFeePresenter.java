@@ -18,25 +18,25 @@ public class OrderFeePresenter extends OrderOptionPresenterImp<OrderDetailContra
     @Override
     public void updateOrderFee(double fee) {
         if (isExecute) {
-            view.toast("确认费用中,请等候");
+            if (view!=null) view.toast("确认费用中,请等候");
             return;
         };
         if ( getOrderInfo().getInfo().complex.fee != fee) {
             isExecute = true;
-            view.showProgress();
+            if (view!=null) view.showProgress();
             //修改费用
             boolean flag = model.updateOrderFee(
                     getOrderInfo().getComp().compid,
                     getOrderInfo().getInfo().orderNo,
                     fee);
 
-            view.hindProgress();
+            if (view!=null) view.hindProgress();
             isExecute= false;
             if (!flag){
                 view.toast("修改失败");
                 return;
             }
         };
-        view.callback();
+        if (view!=null) view.callback();
     }
 }

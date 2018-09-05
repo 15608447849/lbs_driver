@@ -31,20 +31,20 @@ public class ScanQrPresenter extends BasePresenter<ScanQrContract.View> implemen
     @Override
     public void handleOr(SpaBaseHandle handle,String code) {
         if (isHandle) return;
-        view.showProgress();
+        if (view!=null) view.showProgress();
         isHandle = true;
         boolean flag = model.identificationCode(info,code);
-        view.hindProgress();
+        if (view!=null) view.hindProgress();
         isHandle = false;
         if (flag) { //代表可以处理的二维码
             OrderInfo o = info.getInfo();
             if (o.state == sGRAB.value){
                 //其他公司司机扫码 - 转发布 - 跳转到拍照界面
-                view.toClaim(info);
+                if (view!=null) view.toClaim(info);
                 return;
             }
             if (o.state == sUnload.value){
-                view.showProgress();
+                if (view!=null) view.showProgress();
                 isHandle = true;
                 //同公司另外一个司机扫码 - 直接取货
                 flag = model.changeOrderState(
@@ -52,10 +52,10 @@ public class ScanQrPresenter extends BasePresenter<ScanQrContract.View> implemen
                         info.getComp().compid,
                         info.getInfo().orderNo,
                         sCLAIM.value);
-                view.hindProgress();
+                if (view!=null) view.hindProgress();
                 isHandle = false;
                 if (flag){
-                    view.showProgress();
+                    if (view!=null) view.showProgress();
                     isHandle = true;
                     info.getInfo().state = sCLAIM.value;
                     //添加走货信息
@@ -68,14 +68,14 @@ public class ScanQrPresenter extends BasePresenter<ScanQrContract.View> implemen
                             info.getInfo().state);
                     //添加轨迹记录
                     addTrackRecode(handle);
-                    view.hindProgress();
+                    if (view!=null) view.hindProgress();
                     isHandle = false;
                     view.toCarriage(info);
                     return;
                 }
             }
         }
-        view.popErrDialog(code);
+        if (view!=null) view.popErrDialog(code);
     }
 
     /**

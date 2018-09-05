@@ -58,11 +58,11 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
     @Override
     public void queryComps() {
         if (isQuerying) return;
-//        LLog.print("请求企业列表");
-        view.showProgress();
+
+        if (view!=null) view.showProgress();
         isQuerying = true;
         driverComps =  model.queryComp(user.getUserCode());
-        view.hindProgress();
+        if (view!=null) view.hindProgress();
         isQuerying = false;
         List<String> list = new ArrayList<>();
         boolean flag = false;
@@ -82,7 +82,8 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
         }
         int pos = compPos;
         if (pos == -1) pos = 0;
-        view.setPullDownData(list,flag,pos);
+        if (view!=null) view.setPullDownData(list,flag,pos);
+
     }
 
     /**
@@ -90,7 +91,6 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
      */
     @Override
     public void queryOrderList() {
-//        com.orhanobut.logger.LLog.print("请求最新订单");
         if (isQuerying){
             return;
         }
@@ -104,11 +104,12 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
         if (state == -1) return;
 
         orderList.clear();
-        view.clearListData(); //清理列表
-        view.updateList(); //更新列表
         index = 1; //清理分页下标
 
-        view.showProgress(); //开启进度条
+        if (view!=null) view.clearListData(); //清理列表
+        if (view!=null) view.updateList(); //更新列表
+        if (view!=null) view.showProgress(); //开启进度条
+
         isQuerying = true;
 
         //请求后台
@@ -128,7 +129,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
                 }
                 orderList.add(new DriverOrderInfo(user,driverCompInfo,info));
                 //设置列表子项数据
-                view.setListDataItem(
+                if (view!=null) view.setListDataItem(
                         info.brief.adds,
                         info.brief.time,
                         info.brief.cargo,
@@ -136,11 +137,15 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
             }
 
         }
-        if (orderList.size() == 0) view.setListDataItemBlank();
-
-        view.updateList(); //更新列表
-        view.hindProgress();
+        if (orderList.size() == 0) {
+            if (view!=null) view.setListDataItemBlank();
+        }
+        //隐藏进度条
+        if (view!=null) view.hindProgress();
         isQuerying = false;
+
+        if (view!=null) view.updateList(); //更新列表
+
     }
 
     /**
@@ -160,7 +165,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
         }
         if (state == -1) return;
 
-        view.showProgress(); //开启进度条
+        if (view!=null) view.showProgress(); //开启进度条
         isQuerying = true;
 
         //请求后台
@@ -178,7 +183,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
                 }
                 orderList.add(new DriverOrderInfo(user,driverCompInfo,info));
                 //设置列表子项数据
-                view.setListDataItem(
+                if (view!=null) view.setListDataItem(
                         info.brief.adds,
                         info.brief.time,
                         info.brief.cargo,
@@ -186,11 +191,10 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
             }
             index++;//分页下标+1
         }
-
-        view.updateList(); //更新列表
-        view.hindProgress();
+        if (view!=null) view.hindProgress();
         isQuerying = false;
 
+        if (view!=null) view.updateList(); //更新列表
     }
 
     /**

@@ -6,6 +6,7 @@ package tms.space.lbs_driver.tms_base.beans;
  */
 
 public class BasePresenter<V extends IBaseView>  implements IBasePresenter<V>{
+
     protected V view;
 
     //view绑定

@@ -50,12 +50,13 @@ public class OrderDetailPresenter extends OrderOptionPresenterImp<OrderDetailCon
     @Override
     public void updateOrder(SpaBaseActivity context) {
         if (AppUtil.checkUIThread()) throw new IllegalStateException("无法在主线程更新订单");
+
         if (!getOrderInfo().checkValid()){
             queryOrderInfo();//向后台查询最新订单详情
             if (!getOrderInfo().checkValid()){
-                view.clearList();
-                view.setListDataItemBlank();
-                view.updateList();
+                if (view!=null) view.clearList();
+                if (view!=null) view.setListDataItemBlank();
+                if (view!=null) view.updateList();
                 return;
             }
         }
@@ -73,12 +74,12 @@ public class OrderDetailPresenter extends OrderOptionPresenterImp<OrderDetailCon
         OrderDetailConvert convert = getConvert(info.state);
         if (convert!=null) {
             //清理列表
-            view.clearList();
-            convert.convert(context,view,info,info.complex,imagePath);
-            view.updateList();
+            if (view!=null) view.clearList();
+            if (view!=null) convert.convert(context,view,info,info.complex,imagePath);
+            if (view!=null) view.updateList();
         }
         //更新按钮状态
-        view.updateState(info.state);
+        if (view!=null) view.updateState(info.state);
 
     }
 
@@ -88,16 +89,16 @@ public class OrderDetailPresenter extends OrderOptionPresenterImp<OrderDetailCon
 
         if (getOrderInfo().getInfo().complex.isOnline){
             if (getOrderInfo().getInfo().complex.isPay){ //客户支付成功
-                view.allowSign();
+                if (view!=null) view.allowSign();
             }else{
                 //获取最新订单信息
                 queryOrderInfo();
                 if (!getOrderInfo().getInfo().complex.isPay){
-                    view.toast("客户未支付费用,无法签收,请与货主确认后再次尝试");
+                    if (view!=null) view.toast("客户未支付费用,无法签收,请与货主确认后再次尝试");
                 }
             }
         }else{
-            view.allowSign();
+            if (view!=null) view.allowSign();
         }
     }
 
@@ -108,9 +109,9 @@ public class OrderDetailPresenter extends OrderOptionPresenterImp<OrderDetailCon
         if (getOrderInfo().getInfo().state == sUnload.value){
             //停止轨迹
             removeTrackRecode(spaHandle);
-            view.allowUnload();
+            if (view!=null) view.allowUnload();
         }else{
-            view.toast("无法进行卸载操作");
+            if (view!=null) view.toast("无法进行卸载操作");
         }
     }
 
