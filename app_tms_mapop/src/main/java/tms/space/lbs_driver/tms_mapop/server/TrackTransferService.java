@@ -12,6 +12,7 @@ import com.leezp.lib.util.FrontNotification;
 import com.leezp.lib.util.HearServer;
 import com.leezp.lib_log.LLog;
 
+import java.util.Iterator;
 import java.util.List;
 
 import tms.space.lbs_driver.tms_base.beans.DriverUser;
@@ -176,11 +177,19 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         DriverUser user = new DriverUser().fetch();
         //获取数据库存在的数据
         List<TrackDbBean> list = db.queryAll();
-
-        if (user != null && list.size() > 0){
-            checkGps();//检查GPS
-            launchClient();//启动定位服务
-            locDataCorrection(user,list);//数据纠偏
+        int validCount = list.size();
+        Iterator<TrackDbBean> iterator = list.iterator();
+        while (iterator.hasNext()){
+            if (iterator.next().getState() > 0) validCount--;
+        }
+        if (user != null ){
+            if (validCount > 0){
+                checkGps();//检查GPS
+                launchClient();//启动定位服务
+                locDataCorrection(user,list);//数据纠偏
+            }else{
+                stopClient();//停止定位服务
+            }
             iceTransfer(user,list);//数据传输
         }else{
             stopClient();//停止定位服务

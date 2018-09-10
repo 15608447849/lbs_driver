@@ -194,10 +194,10 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
     }
 
     public void networkLocationOnce(boolean flag){
-        if (flag && t2!=null) {
-            t2.locOnce();
-        }else{
+        if (flag) {
             addLocationToQueue(GdMapUtils.get().getCurrentLocation(),0);
+        }else{
+            if (t2!=null) t2.locOnce();
         }
     }
 }

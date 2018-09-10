@@ -96,7 +96,9 @@ public class TrackCorrectResult implements TraceListener {
     }
 
     private void dataUpdate(boolean flag) {
-        if (flag) bean.setcCode(bean.getcCode() + 1);//已纠偏次数
+        int count = bean.getcCode() + 1;
+        if (count > bean.gettCode()) count = bean.gettCode();
+        if (flag) bean.setcCode(count);//已纠偏次数
         db.updateCorrect(bean);
     }
 
