@@ -10,7 +10,6 @@ import com.amap.api.location.AMapLocation;
 import com.leezp.lib.util.AppUtil;
 import com.leezp.lib.util.FrontNotification;
 import com.leezp.lib.util.HearServer;
-import com.leezp.lib.util.TimeUtil;
 import com.leezp.lib_log.LLog;
 
 import java.util.List;
@@ -26,7 +25,6 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IFilterError;
 import tms.space.lbs_driver.tms_mapop.gdMap.manage.CorManage;
 import tms.space.lbs_driver.tms_mapop.gdMap.manage.LocManage;
 import tms.space.lbs_driver.tms_mapop.gdMap.strategys.GpsStrategy;
-import tms.space.lbs_driver.tms_mapop.gdMap.strategys.NetStrategy;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -79,27 +77,21 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
 
     @Override
     protected void initCreate() {
-
-        setInterval(10); //10s
         db = new TrackDb(getApplicationContext());
         gpsNotify = createGpsNotify();
-        corManage = new CorManage(getApplicationContext());
+        corManage = new CorManage(getApplicationContext(),db);//轨迹纠偏
         locManage = new LocManage();
         locManage.create(new GpsStrategy(getApplicationContext()));
 //        locManage.create(new NetStrategy(getApplicationContext()));
         locManage.addLocationListener(new LocGather(db));//坐标点采集实现
         locManage.setFilterError(this);
-        locManage.startLoc();
     }
-
-
-
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-        corManage.stop();
+        corManage.destroy();
         locManage.destroy();
+        super.onDestroy();
     }
 
     //创建GPS 通知栏
@@ -131,6 +123,7 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
                 getNotificationIcon(),
                 Notification.DEFAULT_LIGHTS);
     }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -181,13 +174,16 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
     protected void executeTask() {
 
         DriverUser user = new DriverUser().fetch();
-        if (user != null){
+        //获取数据库存在的数据
+        List<TrackDbBean> list = db.queryAll();
+
+        if (user != null && list.size() > 0){
             checkGps();//检查GPS
             launchClient();//启动定位服务
-            locDataCorrection(user);//数据纠偏
-            iceTransfer(user);//数据传输
+            locDataCorrection(user,list);//数据纠偏
+            iceTransfer(user,list);//数据传输
         }else{
-            stopClient();//用户已退出
+            stopClient();//停止定位服务
         }
     }
 
@@ -216,51 +212,64 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
     }
 
     /**定位数据坐标点纠偏*/
-    private void locDataCorrection(DriverUser user) {
+    private void locDataCorrection(DriverUser user,List<TrackDbBean> list) {
         //判断网络是否有效
         if (AppUtil.isNetworkAvailable(getApplicationContext())){
-            //获取数据库存在的数据
-            List<TrackDbBean> list = db.queryAll();
-            corManage.correct(user,list,db);
+
+            corManage.correct(user,list);
         }
     }
 
     /**ice 传输*/
-    private void iceTransfer(DriverUser user) {
+    private void iceTransfer(DriverUser user,List<TrackDbBean> list) {
         //获取数据库存在的数据
-        List<TrackDbBean> list = db.queryAll();
-
         for (TrackDbBean b : list){
             if (b.getUserId() != user.getUserCode()) continue; //判断当前登陆用户
-            //上传数据到后台
-            int result = trackImp(b);
-            //判断删除
-            checkDel(b,result);
+            //上传数据到后台并且判断删除
+            trackTransferAndDel(b);
+
         }
     }
 
     //上传数据到后台
-    private int trackImp(TrackDbBean b) {
-        if (b.getState() == 0 && b.gettCode() == b.getlCode()){
-            //不执行上传操作
-            return 0;
+    private void trackTransferAndDel(TrackDbBean b) {
+
+        LLog.print("传输"+b.getState()+" "+b.gettCode()+" "+b.getlCode()+" "+b.getcCode());
+        int result = 1;
+
+        //原始轨迹同步标识远大于纠偏轨迹同步标识
+        if (b.gettCode() - b.getcCode() > 10 && b.getlCode() == b.getcCode()){
+            result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
         }
-        int result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
-        if (result==0){
-            b.setlCode(b.getlCode()+1);
-            db.updateTransfer(b);
+
+        //纠偏成功一次 , 则数据同步一次 ,成功改变传输同步下标+1
+        if (b.getcCode()>b.getlCode()){
+            result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
+            if (result==0){
+                b.setlCode(b.getcCode()+1);
+                db.updateTransfer(b);
+            }
         }
-        return result;
+
+        //删除数据:保证数据一定传输到后台
+        if (b.getState() > 0) {
+            //执行上传操作
+            result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
+        }
+
+        //删除操作
+        if (b.getState() > 0 && result == 0){
+            if (b.gettCode() == b.getcCode()){
+                int del = db.deleteTrack(b.getId());
+                if (del == 0) LLog.print("订单:"+b.getOrderId()+ " 删除成功");
+            }else{
+                b.setlCode(b.getcCode()+1);
+                db.updateTransfer(b);
+            }
+        }
     }
 
-    /**判断是否删除数据*/
-    private void checkDel(TrackDbBean b, int result) {
-        //LLog.print("检测订单是否删除:"+b.getOrderId()+ " - "+ b.getState() +" "+b.gettCode() +" "+ b.getcCode()+" "+ b.getlCode() );
-        if (b.getState() > 0 && result == 0 && b.gettCode() == b.getcCode()){
-            int del = db.deleteTrack(b.getId());
-            if (del == 0) LLog.print("订单:"+b.getOrderId()+ " 删除成功");
-        }
-    }
+
 
     @Override
     public void onFilterError(AMapLocation location) {
@@ -269,7 +278,7 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
             StringBuilder stringBuffer = new StringBuilder();
             for (int i=0;i<error.length-1;i++) stringBuffer.append(error[i]);
             createInfoNotify(stringBuffer.toString()).showNotification();
-            locManage.networkLocationOnce();
+            locManage.networkLocationOnce(false);
         } catch (Exception e) {
             e.printStackTrace();
         }

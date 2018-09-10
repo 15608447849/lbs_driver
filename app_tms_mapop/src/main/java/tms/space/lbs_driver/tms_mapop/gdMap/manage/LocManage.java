@@ -4,13 +4,17 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
 import com.leezp.lib_gdmap.GdMapUtils;
-import com.leezp.lib_log.LLog;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.ILocationAbs;
 import tms.space.lbs_driver.tms_mapop.gdMap.IStrategy;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocAccuracyFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocDistanceFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocErrorCodeFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocInfoPrint;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocNullFilter;
 
 /**
@@ -21,14 +25,27 @@ import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocNullFilter;
 public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListener,AMapLocation> implements AMapLocationListener,Runnable{
 
 
+    private static class Loc extends LocNullFilter{
+        AMapLocation location;
+        int filterType = 1; //默认基础过滤
+        private Loc(AMapLocation location, int filterType) {
+            this.location = location;
+            this.filterType = filterType;
+            if (intercept(location)) throw new NullPointerException();
+        }
+    }
+
     //间隔采集网络定位
     private static class LoopNetWorkLocation extends Thread {
         private long oldTime = System.currentTimeMillis();
         private volatile boolean flag = true;
-        private final long interval =  15 * 60 * 1000L; // 15分钟一次
+        private final long interval =  3 * 60 * 1000L; // 3分钟一次
         private WeakReference<LocManage> locManageWeakReference;
-
-        public LoopNetWorkLocation(LocManage locManage) {
+        private IFilter<AMapLocation> filter = new LocErrorCodeFilter();
+        LoopNetWorkLocation(LocManage locManage) {
+            filter.setNext(new LocAccuracyFilter().setAccuracy(100));
+            filter.setNext(new LocDistanceFilter().setIntervalMin(10));
+            filter.setNext(new LocInfoPrint());
             this.locManageWeakReference = new WeakReference<>(locManage);
             setName("t-loop-net-location");
             start();
@@ -49,7 +66,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
                         try {  this.wait( interval-difference );} catch (InterruptedException ignored) { }
                     }
                 }
-                locManageWeakReference.get().onCollection( GdMapUtils.get().getCurrentLocation());
+                locManageWeakReference.get().addLocationToQueue(GdMapUtils.get().getCurrentLocation(),2);
                 oldTime = System.currentTimeMillis();
             }
         }
@@ -62,7 +79,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
     };
 
     //并发无界限线程安全队列
-    private final ConcurrentLinkedQueue<AMapLocation> locQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Loc> locQueue = new ConcurrentLinkedQueue<>();
 
     //取数据线程
     private Thread t;
@@ -71,8 +88,6 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     private volatile boolean isRun = true;
 
-    private LocNullFilter nullFilter = new LocNullFilter();
-
     public LocManage() {
         this.t = new Thread(this);
         this.t.setName("t-"+getClass().getSimpleName());
@@ -80,13 +95,11 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
         this.t.start();
     }
 
-
     @Override
     public void create(IStrategy<AMapLocationClient, AMapLocation> configStrategy) {
         super.create(configStrategy);
         mLocationClient.setLocationListener(this);
     }
-
 
     @Override
     public void destroy() {
@@ -118,28 +131,33 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
         return mLocationClient.isStarted();
     }
 
+    void addLocationToQueue(AMapLocation location,int type){
+        try {
+            boolean isAdd = locQueue.offer(new Loc(location,type));
+            if (isAdd){
+                synchronized (this){
+                    this.notify();
+                }
+            }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * 定位回调
      */
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         //当前回调在main线程  方法: 添加队列 放入队列中 ,执行异步线程取点
-        if (nullFilter.intercept(aMapLocation)){
-            return;
-        }
-        locQueue.offer(aMapLocation);
-        synchronized (this){
-           this.notify();
-        }
+         addLocationToQueue(aMapLocation,1);
     }
 
     @Override
     public void run() {
         while (isRun){
-
-            AMapLocation aMapLocation = locQueue.poll();
-            if (nullFilter.intercept(aMapLocation)) {
+            Loc loc = locQueue.poll();
+            if (loc == null){
                 synchronized (this){
                     try {
                         this.wait();
@@ -147,16 +165,26 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
                 }
                 continue;
             }
-            if (baseFilter.chainIntercept(aMapLocation)) {
-                continue;
+            if (loc.filterType == 1){
+                if (baseFilter.chainIntercept(loc.location)) {
+                    continue;
+                }
             }
-            onCollection(aMapLocation);
+            if (loc.filterType == 2){
+                if(t2.filter.chainIntercept(loc.location)){
+                    continue;
+                }
+            }
+
+            onCollection(loc.location);
+
+            loc.location = null;
+            loc = null;
         }
     }
 
-    public synchronized void onCollection(AMapLocation aMapLocation) {
-        if (nullFilter.intercept(aMapLocation)) return;
-        // 2.分配
+    // 分配坐标
+    private void onCollection(AMapLocation aMapLocation) {
         int size = listeners.size();
         if (size>0){
             for (int i = 0; i< listeners.size(); i++){
@@ -165,10 +193,11 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
         }
     }
 
-    public void networkLocationOnce(){
-
-        if (t2!=null) {
+    public void networkLocationOnce(boolean flag){
+        if (flag && t2!=null) {
             t2.locOnce();
+        }else{
+            addLocationToQueue(GdMapUtils.get().getCurrentLocation(),0);
         }
     }
 }

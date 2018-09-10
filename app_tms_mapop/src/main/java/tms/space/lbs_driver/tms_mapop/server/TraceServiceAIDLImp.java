@@ -2,8 +2,6 @@ package tms.space.lbs_driver.tms_mapop.server;
 
 import android.os.RemoteException;
 
-import com.leezp.lib_gdmap.GdMapUtils;
-
 import tms.space.lbs_driver.tms_mapop.ITrackService;
 import tms.space.lbs_driver.tms_mapop.db.TrackDb;
 import tms.space.lbs_driver.tms_mapop.entity.TrackDbBean;
@@ -31,7 +29,7 @@ class TraceServiceAIDLImp extends ITrackService.Stub{
 
         int result = db.inset(new TrackDbBean(orderId,userid,enterpriseId));
         if (result == 0) {
-            if (this.locManage!=null) this.locManage.networkLocationOnce();
+            if (this.locManage!=null) this.locManage.networkLocationOnce(true);
         }else{
             result = updateState(orderId,0);
         }
@@ -40,7 +38,7 @@ class TraceServiceAIDLImp extends ITrackService.Stub{
 
     @Override
     public int updateState(long orderId, int state) throws RemoteException {
-        if (this.locManage!=null) this.locManage.networkLocationOnce();
+        if (this.locManage!=null) this.locManage.networkLocationOnce(true);
         return db.updateState(orderId,state);
     }
 

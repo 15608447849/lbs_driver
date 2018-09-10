@@ -20,7 +20,7 @@ public abstract class HearServer extends Service implements Runnable{
     private FrontNotification notification;//前台通知栏
     private Thread thread;
     private volatile boolean isRun = true;
-    private long interval = 5 * 1000;
+    private long interval = 15 * 1000L;
 
     @Override
     public void onCreate() {

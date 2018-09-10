@@ -10,8 +10,8 @@
       <module fileurl="file://$PROJECT_DIR$/app_tms_required/app_tms_required.iml" filepath="$PROJECT_DIR$/app_tms_required/app_tms_required.iml" />
       <module fileurl="file://$PROJECT_DIR$/app_tms_scanqr/app_tms_scan_qr_code.iml" filepath="$PROJECT_DIR$/app_tms_scanqr/app_tms_scan_qr_code.iml" />
       <module fileurl="file://$PROJECT_DIR$/app_tms_scanqr/app_tms_scanqr.iml" filepath="$PROJECT_DIR$/app_tms_scanqr/app_tms_scanqr.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/lbs_driver.iml" filepath="$PROJECT_DIR$/.idea/lbs_driver.iml" />
       <module fileurl="file://$PROJECT_DIR$/lbs_driver.iml" filepath="$PROJECT_DIR$/lbs_driver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/lbs_driver.iml" filepath="$PROJECT_DIR$/.idea/lbs_driver.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib_cusview/lib_cusview.iml" filepath="$PROJECT_DIR$/lib_cusview/lib_cusview.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib_gdmap/lib_gdmap.iml" filepath="$PROJECT_DIR$/lib_gdmap/lib_gdmap.iml" />
       <module fileurl="file://$PROJECT_DIR$/lib_log/lib_log.iml" filepath="$PROJECT_DIR$/lib_log/lib_log.iml" />

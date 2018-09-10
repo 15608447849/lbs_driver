@@ -3,8 +3,6 @@ package tms.space.lbs_driver.tms_mapop.gdMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import tms.space.lbs_driver.tms_mapop.server.TrackTransferService;
-
 /**
  * Created by Leeping on 2018/7/23.
  * email: 793065165@qq.com
@@ -15,8 +13,6 @@ public abstract class ILocationAbs<T,L,D> implements ILocation<T,L,D>{
     protected final LinkedList<L> listeners = new LinkedList<>();
     protected IFilter<D> baseFilter;
     protected T mLocationClient;
-
-
 
     @Override
     public void create(IStrategy<T,D> configStrategy) {

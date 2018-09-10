@@ -5,7 +5,6 @@ import com.leezp.lib.util.StrUtil;
 import com.leezp.lib_log.LLog;
 
 import tms.space.lbs_driver.tms_mapop.gdMap.FilterAbs;
-import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 
 /**
  * Created by Leeping on 2018/7/24.
@@ -22,7 +21,8 @@ public class LocInfoPrint extends FilterAbs {
                 "速度:" + location.getSpeed() + "m/s," +
                 "角度:" + location.getBearing() + "°," +
                 "海拔"+location.getAltitude()+"m"+
-                (StrUtil.validate(location.getLocationQualityReport().getAdviseMessage())? ",建议:" + location.getLocationQualityReport().getAdviseMessage():"");
+                (StrUtil.validate(location.getLocationQualityReport().getAdviseMessage())? ",建议:" + location.getLocationQualityReport().getAdviseMessage():"")+
+                (StrUtil.validate(location.getAddress())? ",地址:" + location.getAddress():"");
         LLog.print(string);
         return false;
     }
