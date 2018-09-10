@@ -29,7 +29,7 @@ public class OrderListPresenter extends BasePresenter<OrderListContract.View> im
     private DriverUser user = new DriverUser().fetch();
 
     private OrderListContract.Model model = new OrderIceModel();
-
+    //年份信息
     private final List<String> yearList = TimeUtil.getYearNowToTarget(-10);
 
     //当前查询的年份

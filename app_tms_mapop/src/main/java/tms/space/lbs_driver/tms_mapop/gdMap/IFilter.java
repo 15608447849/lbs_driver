@@ -6,5 +6,9 @@ package tms.space.lbs_driver.tms_mapop.gdMap;
  */
 
 public interface IFilter<T> {
-    boolean filter(T t);
+    void setNext(IFilter<T> iFilter);
+    void setFilterError(IFilterError<T> filterError);
+    boolean chainIntercept(T t);
+    boolean intercept(T t);
+
 }

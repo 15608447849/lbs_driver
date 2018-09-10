@@ -16,7 +16,7 @@ public class Build {
     boolean isWriteConsole = true;//输出控制台
     boolean isWriteFile = false;//写入文件
     boolean isWriteThreadInfo = false; //打印线程信息
-    int logFileSizeLimit = 500 * 1024; //500kb
+    int logFileSizeLimit = 100 * 1024; //500kb
     SimpleDateFormat dateFormat = new SimpleDateFormat("[yyy-MM-dd HH:mm:ss]", Locale.CHINA);
     String logFolderPath = Environment.getExternalStorageDirectory().getAbsolutePath()+ File.separatorChar + "AppLogger";
     String logFileName = "console";

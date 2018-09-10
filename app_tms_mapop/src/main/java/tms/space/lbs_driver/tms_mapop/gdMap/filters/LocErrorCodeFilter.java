@@ -3,6 +3,7 @@ package tms.space.lbs_driver.tms_mapop.gdMap.filters;
 import com.amap.api.location.AMapLocation;
 import com.leezp.lib_log.LLog;
 
+import tms.space.lbs_driver.tms_mapop.gdMap.FilterAbs;
 import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.IFilterError;
 
@@ -11,19 +12,11 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IFilterError;
  * email: 793065165@qq.com
  */
 
-public class LocBaseFilter implements IFilter<AMapLocation> {
-
-    private IFilterError<AMapLocation> filterError;
-
-    public void setFilterError(IFilterError<AMapLocation> filterError) {
-        this.filterError = filterError;
-    }
+public class LocErrorCodeFilter extends FilterAbs {
 
     @Override
-    public boolean filter(AMapLocation aMapLocation) {
-        if (aMapLocation == null){
-            return true;
-        }
+    public boolean intercept(AMapLocation aMapLocation) {
+
         if (aMapLocation.getErrorCode() != 0){
             LLog.print("错误码: " +aMapLocation.getErrorInfo());
             if (filterError!=null){

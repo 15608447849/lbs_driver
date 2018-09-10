@@ -1,5 +1,7 @@
 package tms.space.lbs_driver.tms_mapop.gdMap;
 
+import com.amap.api.location.AMapLocation;
+
 /**
  * Created by Leeping on 2018/7/23.
  * email: 793065165@qq.com
@@ -23,7 +25,8 @@ public interface ILocation<T,L,D>{
 
     void addLocationListener(L listener);
 
-    void addLocationFilter(IFilter<D> filter);
+    void setLocationFilter(IFilter<D> filter);
 
+    void setFilterError(IFilterError<D> filterError);
 
 }

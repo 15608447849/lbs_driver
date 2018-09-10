@@ -11,21 +11,11 @@ import com.leezp.lib.zerocice.IceServerAbs;
  */
 
 public class TrackTransferIce  extends IceServerAbs<DriverServicePrx> {
+
     public TrackTransferIce() {
         super(DriverServicePrx.class);
     }
-    /**上传轨迹 原始*/
-    public int transferTrack(long orderId, int userId, int enterpriseId, String track){
-        if (StrUtil.validate(track)){
-            try {
-                printParam("传输原始轨迹",orderId,userId,enterpriseId,track);
-                return getProxy().driverUploadOriginal(userId,enterpriseId,orderId,track);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return 1;
-    }
+
     /**上传轨迹 纠偏*/
     public int transferCorrect(long orderId,int userId,int enterpriseId,String correct) {
         if (!StrUtil.validate(correct)){

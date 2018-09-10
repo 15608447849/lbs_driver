@@ -152,7 +152,6 @@ public class OrderDetailFragment extends CanBackUpFragmentAbs<OrderDetailVh,Orde
             public void run() {
                 //通知状态跟更新
                 presenter.updateOrder(getSpaActivity());
-
             }
         });
     }

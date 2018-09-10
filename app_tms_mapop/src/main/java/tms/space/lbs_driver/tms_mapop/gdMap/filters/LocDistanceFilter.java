@@ -5,6 +5,7 @@ import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.leezp.lib_log.LLog;
 
+import tms.space.lbs_driver.tms_mapop.gdMap.FilterAbs;
 import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 
 /**
@@ -13,9 +14,9 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
  * 距离过滤
  */
 
-public class LocDistanceFilter implements IFilter<AMapLocation> {
+public class LocDistanceFilter extends FilterAbs {
 
-    private float intervalMin = 12;
+    private float intervalMin = 15;
 
     public LocDistanceFilter setIntervalMin(float intervalMin) {
         this.intervalMin = intervalMin;
@@ -25,7 +26,7 @@ public class LocDistanceFilter implements IFilter<AMapLocation> {
     private AMapLocation prev;
 
     @Override
-    public boolean filter(AMapLocation location) {
+    public boolean intercept(AMapLocation location) {
         if (prev!=null){
             LatLng s =  new LatLng(prev.getLatitude(), prev.getLatitude());
             LatLng d = new LatLng(location.getLatitude(), location.getLatitude());

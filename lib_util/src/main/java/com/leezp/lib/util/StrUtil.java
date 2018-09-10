@@ -23,7 +23,7 @@ public class StrUtil {
      * @return
      */
     public static boolean validate(String str){
-        return str!=null && str.length()>0;
+        return str!=null && str.length()> 0;
     }
     /**
      * 检测一组字符串是否有效

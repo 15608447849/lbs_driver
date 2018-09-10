@@ -14,6 +14,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IStrategy;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocAccuracyFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocBearingFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocDistanceFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocErrorCodeFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocInfoPrint;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSatellitesFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSpeedFilter;
@@ -35,7 +36,7 @@ public class GpsStrategy extends IStrategy<AMapLocationClient,AMapLocation> {
             AMapLocationClientOption mLocationOption = new AMapLocationClientOption();
             mLocationOption.setLocationMode(AMapLocationClientOption.AMapLocationMode.Device_Sensors);//定位模式,gps
             mLocationOption.setInterval(2000);//间隔
-            mLocationOption.setHttpTimeOut(30000);
+            mLocationOption.setHttpTimeOut(60000);
             mLocationOption.setSensorEnable(false);//不使用手机传感器定位角度
             mLocationOption.setLocationCacheEnable(false);//不使用定位缓存
             mLocationOption.setNeedAddress(false);//不用返回地理信息
@@ -58,5 +59,10 @@ public class GpsStrategy extends IStrategy<AMapLocationClient,AMapLocation> {
         list.add(new LocDistanceFilter());//距离过滤
         list.add(new LocInfoPrint());//信息打印
         return list;
+    }
+
+    @Override
+    public IFilter<AMapLocation> getFilter() {
+        return new LocErrorCodeFilter();
     }
 }

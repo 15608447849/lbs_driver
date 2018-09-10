@@ -14,6 +14,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IStrategy;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocAccuracyFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocBearingFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocDistanceFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocErrorCodeFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocInfoPrint;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSatellitesFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSpeedFilter;
@@ -59,4 +60,10 @@ public class NetStrategy extends IStrategy<AMapLocationClient,AMapLocation> {
         list.add(new LocInfoPrint());//信息打印
         return list;
     }
+
+    @Override
+    public IFilter<AMapLocation> getFilter() {
+        return new LocErrorCodeFilter();
+    }
+
 }

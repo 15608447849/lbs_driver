@@ -7,6 +7,7 @@ import com.amap.api.trace.TraceLocation;
 import com.google.gson.reflect.TypeToken;
 import com.leezp.lib.util.JsonUti;
 import com.leezp.lib.util.StrUtil;
+import com.leezp.lib_gdmap.GdMapUtils;
 import com.leezp.lib_log.LLog;
 
 import java.util.List;
@@ -56,9 +57,18 @@ public class TrackCorrectResult implements TraceListener {
     public void onRequestFailed(int id, String cause) {
         LLog.print("纠偏失败",id+ " 原因:"+cause);
         //获取原始轨迹->纠偏点
-        bean.setCorrect(bean.getTrack());
+
+        bean.setCorrect(convertTrace(bean.getTrack()));
         dataUpdate(false);
         threadRouse();
+    }
+
+    private String convertTrace(String track) {
+        if (StrUtil.validate(track)){
+            List<TraceLocation> path = JsonUti.jsonToJavaBean(track,new TypeToken<List<TraceLocation>>(){}.getType());
+           return JsonUti.javaBeanToJson(GdMapUtils.get().convertTracePointToLatLng(path));
+        }
+        return null;
     }
 
     @Override
@@ -92,8 +102,7 @@ public class TrackCorrectResult implements TraceListener {
                 String json = bean.getTrack();//原始轨迹
                 if (StrUtil.validate(json)){
                     List<TraceLocation> path = JsonUti.jsonToJavaBean(json,new TypeToken<List<TraceLocation>>(){}.getType());
-                    if (path!=null && path.size()>2 ){
-                        LLog.print("纠偏,原始轨迹点数量:"+path.size());
+                    if (path!=null && path.size()>2){
                         lbsTraceClient.queryProcessedTrace(
                                 bean.getId(),
                                 path,

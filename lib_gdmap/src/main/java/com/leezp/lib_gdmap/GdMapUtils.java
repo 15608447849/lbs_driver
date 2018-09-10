@@ -1,6 +1,8 @@
 package com.leezp.lib_gdmap;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -23,6 +25,7 @@ import com.amap.api.services.route.DriveRouteResult;
 import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.TruckPath;
 import com.amap.api.services.route.TruckRouteRestult;
+import com.amap.api.trace.TraceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +37,10 @@ import java.util.List;
 
 public class GdMapUtils {
     private GdMapUtils(){}
-
-
-
-    private static final class Holder{private  final static GdMapUtils INSTANCE = new GdMapUtils();}
+    private static final class Holder{
+        @SuppressLint("StaticFieldLeak")
+        private final static GdMapUtils INSTANCE = new GdMapUtils();
+    }
     public static GdMapUtils get(){
         return Holder.INSTANCE;
     }
@@ -45,7 +48,6 @@ public class GdMapUtils {
     public void init(Context context){
         this.context = context;
     }
-
     //地址转换经纬度, 全国范围查询,异步执行
     public synchronized void addressConvertLatLonAsync(String address, GeocodeSearch.OnGeocodeSearchListener listener){
         //条件
@@ -165,19 +167,17 @@ public class GdMapUtils {
         }
         return arr;
     }
-
-    // 获取当前地理位置的描述信息
-    public String getCurrentLocationDesc(){
+    // 获取当前地理位置loc对象
+    public AMapLocation getCurrentLocation(){
         final Object lock = new Object();
-        final String[] result = new String[1];
+        final AMapLocation[] result = new AMapLocation[1];
 
         AMapLocationListener mLocationListener = new AMapLocationListener(){
             @Override
             public void onLocationChanged(AMapLocation aMapLocation) {
                 if (aMapLocation != null && aMapLocation.getErrorCode() == 0){
-                    result[0] = aMapLocation.getAddress();
+                    result[0] = aMapLocation;
                 }
-
                 synchronized (lock){
                     lock.notify();
                 }
@@ -185,11 +185,11 @@ public class GdMapUtils {
         };
 
         AMapLocationClientOption option = new AMapLocationClientOption();
-            option.setLocationPurpose(AMapLocationClientOption.AMapLocationPurpose.SignIn);
-            option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
-            option.setOnceLocationLatest(true);
-            option.setMockEnable(true);
-            option.setHttpTimeOut(8000);
+        option.setLocationPurpose(AMapLocationClientOption.AMapLocationPurpose.SignIn);
+        option.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy);
+        option.setOnceLocationLatest(true);
+        option.setMockEnable(true);
+        option.setHttpTimeOut(8000);
         AMapLocationClient mLocationClient = new AMapLocationClient(context);
         mLocationClient.setLocationOption(option);
         mLocationClient.setLocationListener(mLocationListener);
@@ -204,7 +204,14 @@ public class GdMapUtils {
         mLocationClient.onDestroy();
         return result[0];
     }
-
+    // 获取当前地理位置的描述信息
+    public String getCurrentLocationDesc(){
+        AMapLocation loc = getCurrentLocation();
+        if (loc!=null) {
+            return loc.getAddress();
+        }
+        return "人类未知的地理位置";
+    }
     //打开导航到指定地方
     public void openNaviToDesAddress(final String desAddress) {
         new Thread(new Runnable() {
@@ -224,4 +231,16 @@ public class GdMapUtils {
             }
         }).start();
     }
+
+    //经纬度转换 - 原始轨迹->轨迹点
+    public List<LatLng> convertTracePointToLatLng(List<TraceLocation> path){
+        ArrayList<LatLng> sList = new ArrayList<>();
+        if (path!=null && path.size() > 0){
+            for (TraceLocation mTraceLocation : path){
+                sList.add(new LatLng(mTraceLocation.getLatitude(),mTraceLocation.getLongitude()));
+            }
+        }
+        return sList;
+    }
+
 }

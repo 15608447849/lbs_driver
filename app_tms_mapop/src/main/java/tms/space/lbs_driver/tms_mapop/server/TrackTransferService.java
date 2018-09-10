@@ -25,6 +25,7 @@ import tms.space.lbs_driver.tms_mapop.entity.TrackDbBean;
 import tms.space.lbs_driver.tms_mapop.gdMap.IFilterError;
 import tms.space.lbs_driver.tms_mapop.gdMap.manage.CorManage;
 import tms.space.lbs_driver.tms_mapop.gdMap.manage.LocManage;
+import tms.space.lbs_driver.tms_mapop.gdMap.strategys.GpsStrategy;
 import tms.space.lbs_driver.tms_mapop.gdMap.strategys.NetStrategy;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -84,10 +85,10 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         gpsNotify = createGpsNotify();
         corManage = new CorManage(getApplicationContext());
         locManage = new LocManage();
-//        locManage.create(new GpsStrategy(getApplicationContext()));
-        locManage.create(new NetStrategy(getApplicationContext()));
+        locManage.create(new GpsStrategy(getApplicationContext()));
+//        locManage.create(new NetStrategy(getApplicationContext()));
         locManage.addLocationListener(new LocGather(db));//坐标点采集实现
-        locManage.getBaseFilter().setFilterError(this);
+        locManage.setFilterError(this);
         locManage.startLoc();
     }
 
@@ -125,16 +126,16 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         build.setGroup(getNotificationGroupKey());
         return build.autoGenerateNotification(
                 getNotificationTitle(),
-                TimeUtil.formatUTCByCurrent()+"\t"+error,
+                error,
                 getNotificationInfo(),
                 getNotificationIcon(),
-                Notification.DEFAULT_ALL);
+                Notification.DEFAULT_LIGHTS);
     }
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
 //        Logger.i("绑定客户端 : "+ intent);
-        return new TraceServiceAIDLImp(db);
+        return new TraceServiceAIDLImp(locManage,db);
     }
 
     @Override
@@ -183,8 +184,10 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         if (user != null){
             checkGps();//检查GPS
             launchClient();//启动定位服务
-            locDataCorrection();//数据纠偏
+            locDataCorrection(user);//数据纠偏
             iceTransfer(user);//数据传输
+        }else{
+            stopClient();//用户已退出
         }
     }
 
@@ -213,12 +216,12 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
     }
 
     /**定位数据坐标点纠偏*/
-    private void locDataCorrection() {
+    private void locDataCorrection(DriverUser user) {
         //判断网络是否有效
         if (AppUtil.isNetworkAvailable(getApplicationContext())){
             //获取数据库存在的数据
             List<TrackDbBean> list = db.queryAll();
-            corManage.correct(list,db);
+            corManage.correct(user,list,db);
         }
     }
 
@@ -238,13 +241,22 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
 
     //上传数据到后台
     private int trackImp(TrackDbBean b) {
-        return iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
+        if (b.getState() == 0 && b.gettCode() == b.getlCode()){
+            //不执行上传操作
+            return 0;
+        }
+        int result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
+        if (result==0){
+            b.setlCode(b.getlCode()+1);
+            db.updateTransfer(b);
+        }
+        return result;
     }
 
     /**判断是否删除数据*/
     private void checkDel(TrackDbBean b, int result) {
-
-        if (b.getState() > 0 && result == 0 && b.gettCode() == b.getcCode()){ //
+        //LLog.print("检测订单是否删除:"+b.getOrderId()+ " - "+ b.getState() +" "+b.gettCode() +" "+ b.getcCode()+" "+ b.getlCode() );
+        if (b.getState() > 0 && result == 0 && b.gettCode() == b.getcCode()){
             int del = db.deleteTrack(b.getId());
             if (del == 0) LLog.print("订单:"+b.getOrderId()+ " 删除成功");
         }
@@ -253,8 +265,11 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
     @Override
     public void onFilterError(AMapLocation location) {
         try {
-            String error = location.getErrorInfo().split("\\s+")[0];
-            createInfoNotify(error).showNotification();
+            String[] error = location.getErrorInfo().split("\\s+");
+            StringBuilder stringBuffer = new StringBuilder();
+            for (int i=0;i<error.length-1;i++) stringBuffer.append(error[i]);
+            createInfoNotify(stringBuffer.toString()).showNotification();
+            locManage.networkLocationOnce();
         } catch (Exception e) {
             e.printStackTrace();
         }

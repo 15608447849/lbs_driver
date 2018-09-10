@@ -6,6 +6,7 @@ import com.amap.api.trace.LBSTraceClient;
 
 import java.util.List;
 
+import tms.space.lbs_driver.tms_base.beans.DriverUser;
 import tms.space.lbs_driver.tms_mapop.db.TrackDb;
 import tms.space.lbs_driver.tms_mapop.entity.TrackCorrectResult;
 import tms.space.lbs_driver.tms_mapop.entity.TrackDbBean;
@@ -25,16 +26,14 @@ public class CorManage{
         this.lbsTraceClient = LBSTraceClient.getInstance(context);
     }
 
-    public void correct(List<TrackDbBean> list, final TrackDb db){
+    public void correct(DriverUser user,List<TrackDbBean> list, final TrackDb db){
         int size = list.size();
         if (size>0){
             for (int i = 0; i < size ; i ++){
                 TrackDbBean b = list.get(i);
-                result.setLbsTraceClient(lbsTraceClient)
-                        .setDb(db)
-                        .setBean(b)
-                        .execute()
-                        .clear();
+                if (b.getUserId() == user.getUserCode()){
+                    result.setLbsTraceClient(lbsTraceClient).setDb(db).setBean(b).execute().clear();
+                }
             }
         }
     }

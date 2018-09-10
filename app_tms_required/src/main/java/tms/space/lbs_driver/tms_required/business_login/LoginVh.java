@@ -40,7 +40,6 @@ public class LoginVh extends ViewHolderAbs{
     public LoginVh(Context context) {
         super(context, R.layout.frg_login);
         version.setText(StrUtil.stringFormat("%s %s",context.getString(R.string.app_name),AppUtil.getVersionName(context)));
-
     }
 
 }

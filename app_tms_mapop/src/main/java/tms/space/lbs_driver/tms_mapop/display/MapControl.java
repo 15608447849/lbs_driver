@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
+import android.util.Log;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
@@ -19,6 +20,7 @@ import com.amap.api.trace.TraceLocation;
 import com.google.gson.reflect.TypeToken;
 import com.leezp.lib.util.JsonUti;
 import com.leezp.lib.util.StrUtil;
+import com.leezp.lib_gdmap.GdMapUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,11 +126,11 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
         for (TrackDbBean bean : list){
             //原始路径
             Polyline line = getLine(bean.getId());
-            ArrayList<LatLng> path = getLinePath(bean.getTrack());
+            List<LatLng> path = getLinePath(bean.getTrack());
             showLine(line,path);
             //纠偏路径
             Polyline line2 = getLine2(bean.getId());
-            ArrayList<LatLng> path2 = getLinePath2(bean.getCorrect());
+            List<LatLng> path2 = getLinePath2(bean.getCorrect());
             showLine(line2,path2);
             mapCallback.setLineInfo(bean.getId(),path.size(),path2.size());
         }
@@ -152,23 +154,18 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
         return line;
     }
 
-    private void showLine(Polyline line, ArrayList<LatLng> linePath) {
+    private void showLine(Polyline line,List<LatLng> linePath) {
         line.setPoints(linePath);
     }
 
-    private ArrayList<LatLng> getLinePath(String trackJson) {
-        ArrayList<LatLng> sList = new ArrayList<>();
+    private List<LatLng> getLinePath(String trackJson) {
         if (StrUtil.validate(trackJson)){
             List<TraceLocation> path = JsonUti.jsonToJavaBean(trackJson,new TypeToken<List<TraceLocation>>(){}.getType());
-            if (path!=null && path.size() > 0){
-                for (TraceLocation mTraceLocation : path){
-                    sList.add(new LatLng(mTraceLocation.getLatitude(),mTraceLocation.getLongitude()));
-                }
-            }
+            return GdMapUtils.get().convertTracePointToLatLng(path);
         }
-        return sList;
+        return new ArrayList<>();
     }
-    private ArrayList<LatLng> getLinePath2(String correctJson) {
+    private List<LatLng> getLinePath2(String correctJson) {
         if (StrUtil.validate(correctJson)){
             return JsonUti.jsonToJavaBean(correctJson,new TypeToken<List<LatLng>>(){}.getType());
         }

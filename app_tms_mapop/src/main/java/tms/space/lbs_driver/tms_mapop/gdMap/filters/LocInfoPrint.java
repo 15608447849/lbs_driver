@@ -1,8 +1,10 @@
 package tms.space.lbs_driver.tms_mapop.gdMap.filters;
 
 import com.amap.api.location.AMapLocation;
+import com.leezp.lib.util.StrUtil;
 import com.leezp.lib_log.LLog;
 
+import tms.space.lbs_driver.tms_mapop.gdMap.FilterAbs;
 import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 
 /**
@@ -10,9 +12,9 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
  * email: 793065165@qq.com
  */
 
-public class LocInfoPrint implements IFilter<AMapLocation> {
+public class LocInfoPrint extends FilterAbs {
     @Override
-    public boolean filter(AMapLocation location) {
+    public boolean intercept(AMapLocation location) {
         String string =
                 "经纬度:(" + location.getLongitude()  + "," + location.getLatitude() + ")," +
                 "卫星数:" + location.getSatellites() + ",强度:" + location.getGpsAccuracyStatus() + "," +
@@ -20,7 +22,7 @@ public class LocInfoPrint implements IFilter<AMapLocation> {
                 "速度:" + location.getSpeed() + "m/s," +
                 "角度:" + location.getBearing() + "°," +
                 "海拔"+location.getAltitude()+"m"+
-                (null!=location.getLocationQualityReport().getAdviseMessage() ? ",建议:" + location.getLocationQualityReport().getAdviseMessage():"");
+                (StrUtil.validate(location.getLocationQualityReport().getAdviseMessage())? ",建议:" + location.getLocationQualityReport().getAdviseMessage():"");
         LLog.print(string);
         return false;
     }

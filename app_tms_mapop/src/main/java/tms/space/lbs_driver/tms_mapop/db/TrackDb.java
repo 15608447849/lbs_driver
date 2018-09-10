@@ -6,11 +6,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.leezp.lib_log.LLog;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import tms.space.lbs_driver.tms_mapop.entity.TrackDbBean;
+
 
 /**
  * Created by Leeping on 2018/7/20.
@@ -18,7 +21,6 @@ import tms.space.lbs_driver.tms_mapop.entity.TrackDbBean;
  */
 
 public class TrackDb extends SQLiteOpenHelper {
-
 
     public TrackDb(Context context) {
         super(context, TrackDbInfo.dbName, null, TrackDbInfo.version);
@@ -30,19 +32,25 @@ public class TrackDb extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        if (oldVersion<TrackDbInfo.version){
+            db.execSQL(TrackDbInfo.sql_deleteTable);
+            db.execSQL(TrackDbInfo.sql_createTable);
+        }
     }
 
     private int executeSqlWrite(String sql){
+        int result = 1;
         try {
             getWritableDatabase().execSQL(sql);
-            return 0;
+            result =  0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return 1;
+//        LLog.print("SQL写入: "+ sql+"\n result = "+ result);
+        return result;
     }
     private Cursor executeSqlRead(String sql){
-        //Logger.i("SQL: "+ sql);
         return executeSqlRead(sql,null);
     }
     private Cursor executeSqlRead(String sql,String[] params){
@@ -96,6 +104,14 @@ public class TrackDb extends SQLiteOpenHelper {
         executeSqlWrite(sql);;
     }
 
+    public void updateTransfer(TrackDbBean bean) {
+        String sql = String.format(Locale.getDefault(),
+                TrackDbInfo.sql_update_transfer,
+                bean.getlCode(),
+                bean.getId());
+        executeSqlWrite(sql);;
+    }
+
     public synchronized List<TrackDbBean> queryAll(){
 
         List<TrackDbBean> list = new ArrayList<>();
@@ -128,7 +144,8 @@ public class TrackDb extends SQLiteOpenHelper {
                 cursor.getString(cursor.getColumnIndex(TrackDbInfo.correct)),
                 cursor.getInt(cursor.getColumnIndex(TrackDbInfo.state)),
                 cursor.getInt(cursor.getColumnIndex(TrackDbInfo.tCode)),
-                cursor.getInt(cursor.getColumnIndex(TrackDbInfo.cCode))
+                cursor.getInt(cursor.getColumnIndex(TrackDbInfo.cCode)),
+                cursor.getInt(cursor.getColumnIndex(TrackDbInfo.lCode))
         );
     }
 

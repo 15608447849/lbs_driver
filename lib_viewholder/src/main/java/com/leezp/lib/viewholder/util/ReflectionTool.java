@@ -97,11 +97,11 @@ public class ReflectionTool {
                 Object value = field.get(holder);
                 if (value==null) continue;
                 c = field.getType();
-                setValueIsNull(holder,field);
-                if (ViewHolderAbs.class.isAssignableFrom(c)) {
+                if (View.class.isAssignableFrom(c)){
+                    setValueIsNull(holder,field);
+                } else if (ViewHolderAbs.class.isAssignableFrom(c)) {
                     autoViewValueNull((ViewHolderAbs) value);
                 }
-
             }
         }catch (Exception ignored){}
     }

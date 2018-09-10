@@ -65,7 +65,7 @@ public class IceIo implements Closeable {
 
 
     /**是否打印信息*/
-    private boolean isPrint = false;
+    private boolean isPrint = true;
 
     public void setPrintln(boolean f){
         this.isPrint = f;

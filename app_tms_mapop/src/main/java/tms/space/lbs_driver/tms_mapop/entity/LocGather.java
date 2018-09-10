@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import tms.space.lbs_driver.tms_mapop.db.TrackDb;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocNullFilter;
 
 /**
  * Created by Leeping on 2018/7/23.
@@ -25,12 +26,13 @@ public class LocGather implements AMapLocationListener {
         this.db = db;
     }
 
+
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-
         //获取数据库存在的数据
         List<TrackDbBean> list = db.queryAll();
         int size = list.size();
+
         if (size>0){
             for (int i = 0 ; i < size ; i++ ){
                 handleTrack(list.get(i),aMapLocation);
@@ -39,7 +41,10 @@ public class LocGather implements AMapLocationListener {
     }
 
     private void handleTrack(TrackDbBean bean, AMapLocation aMapLocation) {
-        if (bean.getState() > 0) return; //不收集轨迹数据
+        if (bean.getState() > 0) {
+            LLog.print("当前状态拒绝轨收集,存储对象状态码:"+bean.getState());
+            return; //不收集轨迹数据
+        }
         List<TraceLocation> path = null;
         String json = bean.getTrack();
         if (StrUtil.validate(json)){

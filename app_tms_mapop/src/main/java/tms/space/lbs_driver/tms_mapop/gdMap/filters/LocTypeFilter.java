@@ -5,6 +5,7 @@ import com.leezp.lib_log.LLog;
 
 import java.util.Arrays;
 
+import tms.space.lbs_driver.tms_mapop.gdMap.FilterAbs;
 import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 
 /**
@@ -12,7 +13,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
  * email: 793065165@qq.com
  */
 
-public class LocTypeFilter implements IFilter<AMapLocation> {
+public class LocTypeFilter extends FilterAbs {
 
     //可用类型
     private int[] type = new int[]{AMapLocation.LOCATION_TYPE_GPS}; //默认GPS
@@ -23,7 +24,7 @@ public class LocTypeFilter implements IFilter<AMapLocation> {
     }
 
     @Override
-    public boolean filter(AMapLocation location) {
+    public boolean intercept(AMapLocation location) {
         boolean isFilter = true;
         //类型范围过滤
         for (int i = 0; i < type.length ;i++){

@@ -27,8 +27,8 @@ import tms.space.lbs_driver.tms_mapop.server.TrackTransferService;
  * email: 793065165@qq.com
  */
 public class LbsApplication extends LeeApplicationAbs {
-    //打包使用 是否debug模式 - false:正式环境 true:测试环境
-    private static boolean isDebug = true;
+    //打包使用 0测试环境 1准生产环境 2正式环境
+    private static int envFlag = 1;
 
     /**
      * 所有进程需要的初始化操作
@@ -42,6 +42,8 @@ public class LbsApplication extends LeeApplicationAbs {
         initServiceParams();
         //k-v SqlLite3
         DbStore.get().init(getApplicationContext());
+        //高德地图工具库
+        GdMapUtils.get().init(getApplicationContext());
     }
 
     //异常捕获
@@ -50,27 +52,34 @@ public class LbsApplication extends LeeApplicationAbs {
             @Override
             public void crash(String crashFilePath, Throwable ex) {
                 LLog.print(ErrorUtil.printExceptInfo(ex),"\n",crashFilePath);
+                if (envFlag!=0) System.exit(-1);
                 //发送日志到服务器 pass
-                Toast.makeText(getApplicationContext(),"捕获到未处理的异常信息",Toast.LENGTH_SHORT).show();
-                if (!isDebug) System.exit(-1);
+                Toast.makeText(getApplicationContext(),"捕获到未处理的异常信息:\n"+ErrorUtil.printExceptInfo(ex),Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     //服务器信息
     private void initServiceParams() {
-        String host;
-        int port;
-        String fileServerUpload;
-        String fileServerDownload;
+        String host = null;
+        int port = 0;
+        String fileServerUpload = null;
+        String fileServerDownload = null;
 
-        if (isDebug) {
+        if (envFlag==0) {
             host = "192.168.1.241";
             port = 7061;
             fileServerUpload = "http://"+host+":8090/fileUploadApp";
             fileServerDownload = "http://"+host+":8080/wlq";
-        } else {
+        }
+        if (envFlag==1) {
             host = "39.108.85.159";
+            port = 4061;
+            fileServerUpload = "http://"+host+":8090/fileUploadApp";
+            fileServerDownload = "http://"+host+":80/wlq";
+        }
+        if (envFlag==2) {
+            host = "119.23.203.132";
             port = 4061;
             fileServerUpload = "http://"+host+":8090/fileUploadApp";
             fileServerDownload = "http://"+host+":80/wlq";
@@ -103,19 +112,22 @@ public class LbsApplication extends LeeApplicationAbs {
     private void initUI() {
         //碎片页面注册
         FragmentReg.init();
-        //高德地图工具库
-        GdMapUtils.get().init(getApplicationContext());
         //图片工具
         ImageUtil.initAppContext(getApplicationContext());
         //glide加载
         GlideUtil.initAppContext(getApplicationContext());
     }
+
     //APP 自动升级
     private void initAppUpdate() {
-        if (isDebug) {
-            ApkUpdateConfig.init(getApplicationContext(), "19b2b95628");//测试
-        } else {
-            ApkUpdateConfig.init(getApplicationContext(), "e7895e9bd9");//正式
+        if (envFlag==0) {
+            ApkUpdateConfig.init(getApplicationContext(), "cc893a1f7d");//测试
+        }
+        if (envFlag==1) {
+            ApkUpdateConfig.init(getApplicationContext(), "e7895e9bd9");//准生产
+        }
+        if (envFlag==2) {
+            ApkUpdateConfig.init(getApplicationContext(), "198d7b8d74");//正式
         }
     }
     //打开轨迹服务
