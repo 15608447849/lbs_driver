@@ -26,6 +26,16 @@ public class LocAddressNameFilter extends FilterAbs {
             LLog.print("与前二点地址相同:"+prev2.getAddress());
             return true;
         }
+        if (prev!=null && location.getTime() - prev.getTime() <= 0) {
+            LLog.print("时间相同");
+            return true;
+        }
+        if (prev2!=null && location.getTime() - prev2.getTime() <= 0) {
+            LLog.print("时间相同");
+            return true;
+        }
+
+
         if (prev!=null) prev2 = prev;
         prev = location;
         return false;

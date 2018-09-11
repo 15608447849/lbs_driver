@@ -77,6 +77,7 @@ public class LocGather implements AMapLocationListener {
 
     }
 
+
     private void filterPath(List<TraceLocation> path) {
         //没三个点一组    pre cur bak
         // 三个点之间速度<4m/s 认为是静止状态
@@ -90,6 +91,8 @@ public class LocGather implements AMapLocationListener {
         float vPre,vBak;//速度
         float aver;//速度平均值
         boolean flag;
+
+
         List<Integer> delIndex = new ArrayList<>();
         for (int i = 0; i < path.size(); i++){
             flag = false;
@@ -112,6 +115,7 @@ public class LocGather implements AMapLocationListener {
 
             toBak = AMapUtils.calculateLineDistance(cur,bak);//距离改变量,单位米
             difBak = ( bakTime - curTime ) / 1000.0f;//时间改变量
+
 
             if (toPre<15){
                 LLog.print("当前: "+ i+"->"+(i+1)+" 距离过短, "+ toPre);
@@ -140,6 +144,8 @@ public class LocGather implements AMapLocationListener {
             if (difPre > (30*60) || difBak > (30*60)){
                 LLog.print("当前: "+ (i)+"->"+(i+2)+" 其中一个时间线过长 "+difPre+" , "+ difBak);
                 if (AMapUtils.calculateLineDistance(pre,bak)<100){
+                    delIndex.add(i+1);
+                }else if (toPre>100 && toPre<500){
                     delIndex.add(i+1);
                 }
                 continue;
@@ -174,8 +180,19 @@ public class LocGather implements AMapLocationListener {
             location = path.get(1);
             bak = new LatLng(location.getLatitude(),location.getLongitude());
             if (AMapUtils.calculateLineDistance(pre,bak)<=100 && (location.getBearing() == 0 && location.getSpeed() == 0) ) path.remove(1);
+            if (delCount>0) {
+                filterPath(path);
+            }else{
+
+                for (int i = 0; i < path.size() ; i++ ){
+                    if (i+1 >= path.size()) break;
+                    pre = new LatLng(path.get(i).getLatitude(),path.get(i).getLongitude());
+                    cur = new LatLng(path.get(i+1).getLatitude(),path.get(i+1).getLongitude());
+                    LLog.print(i+" -> "+(i+1) +" , "+ AMapUtils.calculateLineDistance(pre,cur)+ "time: "+(path.get(i+1).getTime() - path.get(i).getTime())/1000L );
+                }
+            }
+
         }
-        if (delCount>0) filterPath(path);
 
 
     }
