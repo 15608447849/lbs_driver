@@ -68,7 +68,6 @@ public class MapActivity extends BaseActivityAbs implements MapControl.Callback 
                 textView.setText("");
             }
         });
-
     }
 
     @SuppressLint("SetTextI18n")

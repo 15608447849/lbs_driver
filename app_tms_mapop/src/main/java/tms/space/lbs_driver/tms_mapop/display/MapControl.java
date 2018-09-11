@@ -24,6 +24,7 @@ import com.leezp.lib_gdmap.GdMapUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import tms.space.lbs_driver.tms_mapop.db.TrackDb;
@@ -116,14 +117,32 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
                 execute();
             }
             try {Thread.sleep(5000);} catch (InterruptedException ignored) {}
+            if (isLaunch){
+                clearLine();
+            }
+        }
+    }
+
+    private void clearLine() {
+        Iterator<Polyline> iterator = lineMap.values().iterator();
+        while (iterator.hasNext()){
+            iterator.next().getPoints().clear();
+        }
+
+        iterator = lineMap2.values().iterator();
+        while (iterator.hasNext()){
+            iterator.next().getPoints().clear();
         }
     }
 
     private void execute() {
         //获取数据库存在的数据
         List<TrackDbBean> list = db.queryAll();
+
         mapCallback.clearLineInfo();
+
         for (TrackDbBean bean : list){
+
             //原始路径
             Polyline line = getLine(bean.getId());
             List<LatLng> path = getLinePath(bean.getTrack());
@@ -132,8 +151,10 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
             Polyline line2 = getLine2(bean.getId());
             List<LatLng> path2 = getLinePath2(bean.getCorrect());
             showLine(line2,path2);
+
             mapCallback.setLineInfo(bean.getId(),path.size(),path2.size());
         }
+
     }
 
     private Polyline getLine(int id) {

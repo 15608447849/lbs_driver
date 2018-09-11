@@ -17,6 +17,8 @@ public class LocDistanceFilter extends FilterAbs {
 
     private float intervalMin = 15;
 
+    private float intervalMax = 200; //距离改变量最大值  *如果在短期内 距离改变量很大 ,认为在做加速运动
+
     public LocDistanceFilter setIntervalMin(float intervalMin) {
         this.intervalMin = intervalMin;
         return this;
@@ -31,6 +33,8 @@ public class LocDistanceFilter extends FilterAbs {
             LatLng s =  new LatLng(prev.getLatitude(), prev.getLatitude());
             LatLng d = new LatLng(location.getLatitude(), location.getLatitude());
             float distance = AMapUtils.calculateLineDistance(s,d);//距离改变量,单位米
+            LLog.print("距离: "+ distance+" 米" +" - 两点精度最小值: "+ Math.min(prev.getAccuracy(),location.getAccuracy()));
+
             if (distance <= intervalMin ) {
                 LLog.print("距离改变量不合格: "+ distance+" 米,最小距离改变:"+intervalMin+"米");
                 flag = true;

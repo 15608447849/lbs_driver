@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -52,7 +53,7 @@ public class LbsApplication extends LeeApplicationAbs {
             @Override
             public void crash(String crashFilePath, Throwable ex) {
                 LLog.print(ErrorUtil.printExceptInfo(ex),"\n",crashFilePath);
-                if (envFlag!=0) System.exit(-1);
+                //if (envFlag!=0) System.exit(-1);
                 //发送日志到服务器 pass
                 Toast.makeText(getApplicationContext(),"捕获到未处理的异常信息:\n"+ErrorUtil.printExceptInfo(ex),Toast.LENGTH_SHORT).show();
             }

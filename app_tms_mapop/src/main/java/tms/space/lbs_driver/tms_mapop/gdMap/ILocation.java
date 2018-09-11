@@ -9,9 +9,9 @@ import com.amap.api.location.AMapLocation;
 
 public interface ILocation<T,L,D>{
 
-    void create(IStrategy<T,D> configStrategy);
+    void create(IStrategy<T> configStrategy);
 
-    void destroy();
+    void onDestroy();
 
     void startLoc();
 
@@ -24,9 +24,5 @@ public interface ILocation<T,L,D>{
     boolean isLaunch();
 
     void addLocationListener(L listener);
-
-    void setLocationFilter(IFilter<D> filter);
-
-    void setFilterError(IFilterError<D> filterError);
 
 }

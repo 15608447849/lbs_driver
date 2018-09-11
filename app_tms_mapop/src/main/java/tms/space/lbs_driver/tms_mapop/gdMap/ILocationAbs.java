@@ -11,23 +11,18 @@ import java.util.List;
 public abstract class ILocationAbs<T,L,D> implements ILocation<T,L,D>{
 
     protected final LinkedList<L> listeners = new LinkedList<>();
-    protected IFilter<D> baseFilter;
+
     protected T mLocationClient;
 
     @Override
-    public void create(IStrategy<T,D> configStrategy) {
+    public void create(IStrategy<T> configStrategy) {
         if (mLocationClient==null){
             mLocationClient = configStrategy.config();
-            setLocationFilter(configStrategy.getFilter());
-            List<IFilter<D>> filterList = configStrategy.filterList();
-            if (baseFilter!=null && filterList!=null && filterList.size() > 0) {
-                for (IFilter<D> filter : filterList) baseFilter.setNext(filter);
-            }
         }
     }
 
     @Override
-    public void destroy() {
+    public void onDestroy() {
         if (mLocationClient!=null){
             stopLoc();
             listeners.clear();
@@ -41,17 +36,9 @@ public abstract class ILocationAbs<T,L,D> implements ILocation<T,L,D>{
     }
 
     @Override
-    public void setLocationFilter(IFilter<D> filter) {
-        this.baseFilter = filter;
-    }
-
-    @Override
     public T getLocClient() {
         return mLocationClient;
     }
 
-    @Override
-    public void setFilterError(IFilterError<D> filterError) {
-        if (baseFilter!=null) baseFilter.setFilterError(filterError);
-    }
+
 }

@@ -25,7 +25,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocTypeFilter;
  * email: 793065165@qq.com
  */
 
-public class NetStrategy extends IStrategy<AMapLocationClient,AMapLocation> {
+public class NetStrategy extends IStrategy<AMapLocationClient> {
 
     public NetStrategy(Context context) {
         super(context);
@@ -46,24 +46,6 @@ public class NetStrategy extends IStrategy<AMapLocationClient,AMapLocation> {
             AMapLocationClient mLocationClient = new AMapLocationClient(getContext());//定位客户端
             mLocationClient.setLocationOption(mLocationOption);
             return mLocationClient;
-    }
-
-    @Override
-    public List<IFilter<AMapLocation>> filterList() {
-        List<IFilter<AMapLocation>> list = new LinkedList<>();
-        list.add(new LocTypeFilter().setType(AMapLocation.LOCATION_TYPE_GPS,AMapLocation.LOCATION_TYPE_WIFI));//GPS和wifi类型过滤
-        list.add(new LocSatellitesFilter());//卫星数过滤
-        list.add(new LocAccuracyFilter());//精度范围过滤
-        list.add(new LocSpeedFilter());//速度过滤
-        list.add(new LocBearingFilter());//角度过滤
-        list.add(new LocDistanceFilter());//距离过滤
-        list.add(new LocInfoPrint());//信息打印
-        return list;
-    }
-
-    @Override
-    public IFilter<AMapLocation> getFilter() {
-        return new LocErrorCodeFilter();
     }
 
 }

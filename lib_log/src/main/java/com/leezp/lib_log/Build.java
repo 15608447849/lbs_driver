@@ -23,7 +23,7 @@ public class Build {
     String tag = "logger";
     int level = Log.VERBOSE;
     int methodLineCount = 0;
-    final String BLANK = "^";
+    final String BLANK = "\t";
     long threadTime = 30 * 1000;
 
     Build(){}

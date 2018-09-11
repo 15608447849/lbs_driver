@@ -1,6 +1,7 @@
 package tms.space.lbs_driver.base.track;
 
 import com.leezp.lib.singlepageapplication.base.SpaBaseMessage;
+import com.leezp.lib_log.LLog;
 
 import tms.space.lbs_driver.base.entrance.LbsActivity;
 import tms.space.lbs_driver.base.messages.MessageOpAbs;
@@ -19,6 +20,7 @@ public class DelTrack extends MessageOpAbs {
     @Override
     public void execute(LbsActivity lbsActivity, SpaBaseMessage sbMsg) {
         try {
+            long t = System.currentTimeMillis();
             TrackServerConnect serverConn = lbsActivity.getTrackServerConnect();
 //            Logger.i("删除轨迹记录 : " + Arrays.toString(sbMsg.args));
             java.lang.Object[] objArr = sbMsg.args;
@@ -27,6 +29,7 @@ public class DelTrack extends MessageOpAbs {
                 int result = serverConn.getStub().updateState(orderId,1);
                 if (sbMsg.callback!=null) sbMsg.callback.onCallback(result);
             }
+            LLog.print("删除轨迹时间"+ (System.currentTimeMillis() - t) );
         } catch (Exception e) {
             e.printStackTrace();
         }

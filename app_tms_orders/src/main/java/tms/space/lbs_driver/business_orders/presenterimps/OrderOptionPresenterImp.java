@@ -88,14 +88,24 @@ public class OrderOptionPresenterImp<V extends OrderDetailContract.View> extends
 
     //添加轨迹记录
     @Override
-    public void addTrackRecode(SpaBaseHandle handler) {
-        stackOptionImp.addTrackRecode(handler);
+    public void addTrackRecode(final SpaBaseHandle handler) {
+        handler.toIoNew(new Runnable() {
+            @Override
+            public void run() {
+                stackOptionImp.addTrackRecode(handler);
+            }
+        });
     }
 
     //移除轨迹记录
     @Override
-    public void removeTrackRecode(SpaBaseHandle handler) {
+    public void removeTrackRecode(final SpaBaseHandle handler) {
+        handler.toIoNew(new Runnable() {
+            @Override
+            public void run() {
         stackOptionImp.removeTrackRecode(handler);
+            }
+        });
     }
 
 

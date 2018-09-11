@@ -2,6 +2,8 @@ package com.leezp.lib_gdmap;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.amap.api.location.AMapLocation;
@@ -27,8 +29,11 @@ import com.amap.api.services.route.TruckPath;
 import com.amap.api.services.route.TruckRouteRestult;
 import com.amap.api.trace.TraceLocation;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Leeping on 2018/4/23.
@@ -48,6 +53,35 @@ public class GdMapUtils {
     public void init(Context context){
         this.context = context;
     }
+
+   public void setGDApiKey(String key){
+       AMapLocationClient.setApiKey(key);
+   }
+
+    public static String SHA1(Context context) {
+        try {
+            @SuppressLint("PackageManagerGetSignatures") PackageInfo info = context.getPackageManager().getPackageInfo(
+                    context.getPackageName(), PackageManager.GET_SIGNATURES);
+            byte[] cert = info.signatures[0].toByteArray();
+            MessageDigest md = MessageDigest.getInstance("SHA1");
+            byte[] publicKey = md.digest(cert);
+            StringBuilder hexString = new StringBuilder();
+            for (int i = 0; i < publicKey.length; i++) {
+                String appendString = Integer.toHexString(0xFF & publicKey[i])
+                        .toUpperCase(Locale.US);
+                if (appendString.length() == 1)
+                    hexString.append("0");
+                hexString.append(appendString);
+                hexString.append(":");
+            }
+            String result = hexString.toString();
+            return result.substring(0, result.length()-1);
+        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     //地址转换经纬度, 全国范围查询,异步执行
     public synchronized void addressConvertLatLonAsync(String address, GeocodeSearch.OnGeocodeSearchListener listener){
         //条件
@@ -173,10 +207,15 @@ public class GdMapUtils {
         final AMapLocation[] result = new AMapLocation[1];
 
         AMapLocationListener mLocationListener = new AMapLocationListener(){
+            private int count = 0;
             @Override
             public void onLocationChanged(AMapLocation aMapLocation) {
+                count++;
+
                 if (aMapLocation != null && aMapLocation.getErrorCode() == 0){
                     result[0] = aMapLocation;
+                }else if (count!=10){
+                    return;
                 }
                 synchronized (lock){
                     lock.notify();
@@ -193,15 +232,17 @@ public class GdMapUtils {
         AMapLocationClient mLocationClient = new AMapLocationClient(context);
         mLocationClient.setLocationOption(option);
         mLocationClient.setLocationListener(mLocationListener);
+
         mLocationClient.startLocation();
         synchronized (lock){
             try {
                 lock.wait();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
         mLocationClient.stopLocation();
         mLocationClient.onDestroy();
+
         return result[0];
     }
     // 获取当前地理位置的描述信息

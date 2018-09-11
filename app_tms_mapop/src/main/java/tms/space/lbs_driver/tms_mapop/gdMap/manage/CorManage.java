@@ -66,7 +66,7 @@ public class CorManage extends Thread{
         }
     }
 
-    public void destroy() {
+    public void onDestroy() {
         isRun = false;
         result.clear();
         result = null;

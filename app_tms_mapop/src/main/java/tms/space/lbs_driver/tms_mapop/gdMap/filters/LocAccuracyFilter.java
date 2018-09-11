@@ -13,7 +13,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
  */
 public class LocAccuracyFilter extends FilterAbs {
     //最大精度范围默认50
-    private float accuracy = 50.0f;
+    private float accuracy = 30.0f;
     public LocAccuracyFilter setAccuracy(float accuracy) {
         this.accuracy = accuracy;
         return this;

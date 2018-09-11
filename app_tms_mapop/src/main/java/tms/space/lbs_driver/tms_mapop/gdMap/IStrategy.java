@@ -12,7 +12,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocErrorCodeFilter;
  * email: 793065165@qq.com
  */
 
-public abstract class IStrategy<T,D> {
+public abstract class IStrategy<T> {
     private SoftReference<Context> contextRef;
 
     public IStrategy(Context context) {
@@ -22,9 +22,5 @@ public abstract class IStrategy<T,D> {
         return contextRef.get();
     }
     public abstract T config();
-
-    public abstract List<IFilter<D>> filterList();
-
-    public abstract IFilter<D> getFilter() ;
 
 }

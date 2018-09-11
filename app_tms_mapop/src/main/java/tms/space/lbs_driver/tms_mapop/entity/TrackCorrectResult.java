@@ -58,7 +58,7 @@ public class TrackCorrectResult implements TraceListener {
 
     @Override
     public void onRequestFailed(int id, String cause) {
-        LLog.print("纠偏失败",id+ " 原因:"+cause);
+//        LLog.print("纠偏失败 id="+id+" ,原因:\n"+cause);
         //获取原始轨迹->纠偏点
         bean.setCorrect(convertTrace(bean.getTrack()));
         errorCount++ ;
@@ -68,7 +68,6 @@ public class TrackCorrectResult implements TraceListener {
         }else {
             dataUpdate(false);
         }
-
         threadRouse();
     }
 
@@ -87,7 +86,7 @@ public class TrackCorrectResult implements TraceListener {
 
     @Override
     public void onFinished(int id, List<LatLng> list, int distance, int waitingtime) {
-        LLog.print("纠偏成功", id+" 距离 = "+distance+" ,停留时间 = "+ waitingtime);
+        //LLog.print("纠偏成功 id=" +id+ " 距离 = "+distance+" m,停留时间 = "+ waitingtime+" s");
         //轨迹纠偏完成
         String json = JsonUti.javaBeanToJson(list);
         bean.setCorrect(json);
@@ -115,9 +114,7 @@ public class TrackCorrectResult implements TraceListener {
                 if (StrUtil.validate(json)){
                     List<TraceLocation> path = JsonUti.jsonToJavaBean(json,new TypeToken<List<TraceLocation>>(){}.getType());
                     if (path!=null){
-
                         preformPath(path);
-
                         if (path.size()>=10){
                             lbsTraceClient.queryProcessedTrace(
                                     bean.getId(),

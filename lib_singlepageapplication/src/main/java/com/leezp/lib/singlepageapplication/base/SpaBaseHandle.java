@@ -93,6 +93,10 @@ public class SpaBaseHandle extends Handler implements OnSpaFragmentCommunication
         }
     }
 
+    public void toIoNew(Runnable r){
+        pool.post(r);
+    }
+
     /**
      * 添加fragment->activity消息传递回调接口实现类
      */

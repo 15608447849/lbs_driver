@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.amap.api.location.AMapLocation;
 import com.leezp.lib.util.AppUtil;
@@ -85,13 +86,13 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         locManage.create(new GpsStrategy(getApplicationContext()));
 //        locManage.create(new NetStrategy(getApplicationContext()));
         locManage.addLocationListener(new LocGather(db));//坐标点采集实现
-        locManage.setFilterError(this);
+        locManage.getBaseFilter().setFilterError(this);//类型过滤
     }
 
     @Override
     public void onDestroy() {
-        corManage.destroy();
-        locManage.destroy();
+        corManage.onDestroy();
+        locManage.onDestroy();
         super.onDestroy();
     }
 
@@ -242,17 +243,15 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
 
     //上传数据到后台
     private void trackTransferAndDel(TrackDbBean b) {
-
-        LLog.print("传输"+b.getState()+" "+b.gettCode()+" "+b.getlCode()+" "+b.getcCode());
         int result = 1;
 
         //原始轨迹同步标识远大于纠偏轨迹同步标识
-        if (b.gettCode() - b.getcCode() > 10 && b.getlCode() == b.getcCode()){
+        if (b.gettCode() - b.getcCode() > 10 && b.getcCode() == b.getlCode()){
             result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
         }
 
         //纠偏成功一次 , 则数据同步一次 ,成功改变传输同步下标+1
-        if (b.getcCode()>b.getlCode()){
+        if (b.getcCode() > b.getlCode()){
             result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
             if (result==0){
                 b.setlCode(b.getcCode()+1);
@@ -264,18 +263,16 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         if (b.getState() > 0) {
             //执行上传操作
             result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
-        }
-
-        //删除操作
-        if (b.getState() > 0 && result == 0){
-            if (b.gettCode() == b.getcCode()){
-                int del = db.deleteTrack(b.getId());
-                if (del == 0) LLog.print("订单:"+b.getOrderId()+ " 删除成功");
-            }else{
-                b.setlCode(b.getcCode()+1);
-                db.updateTransfer(b);
+            if (result == 0){
+                if (b.gettCode() == b.getcCode()){
+                    int del = db.deleteTrack(b.getId());
+                    if (del == 0) LLog.print("订单(" + b.getOrderId()+ ")删除成功");
+                }
             }
         }
+
+
+
     }
 
 

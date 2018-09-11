@@ -2,10 +2,17 @@
     package="tms.space.lbs_driver.tms_mapop" >
 
     <application>
-        <!--高德地图-->
+
+
+        <!--笔记本-->
+        <!--<meta-data-->
+            <!--android:name="com.amap.api.v2.apikey"-->
+            <!--android:value="38955b37ec2d7b55d09d2511a9159b19"/>-->
+
+        <!--公司pc-->
         <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="38955b37ec2d7b55d09d2511a9159b19"/>
+        android:name="com.amap.api.v2.apikey"
+        android:value="b6f90b7e102bb4303824e0bc6f0be458"/>
 
         <!-- 高德地图定位服务 -->
         <service android:name="com.amap.api.location.APSService"
@@ -14,7 +21,6 @@
         <!-- 本地定位采集服务 -->
         <service android:name=".server.TrackTransferService"
             android:process=":track"/>
-        <!--tms.space.lbs_track-->
 
         <!--地图显示-->
         <activity android:name=".display.MapActivity"

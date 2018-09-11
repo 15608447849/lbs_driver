@@ -16,7 +16,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 public class LocTypeFilter extends FilterAbs {
 
     //可用类型
-    private int[] type = new int[]{AMapLocation.LOCATION_TYPE_GPS}; //默认GPS
+    private int[] type = new int[]{AMapLocation.LOCATION_TYPE_GPS,AMapLocation.LOCATION_TYPE_WIFI}; //默认GPS
 
     public LocTypeFilter setType(int... type) {
         this.type = type;
@@ -33,7 +33,7 @@ public class LocTypeFilter extends FilterAbs {
                 break;
             }
         }
-        if (isFilter) LLog.print("数据类型不合格: "+location.getLocationType()+",可用类型:"+ Arrays.toString(type));
+        if (isFilter) LLog.print("数据类型不合格: "+ location.getLocationType()+",可用类型:"+ Arrays.toString(type));
         return isFilter;
     }
 }

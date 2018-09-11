@@ -1,21 +1,26 @@
 package tms.space.lbs_driver.tms_mapop.gdMap.manage;
 
+import android.util.Log;
+
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
 import com.leezp.lib_gdmap.GdMapUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.ILocationAbs;
 import tms.space.lbs_driver.tms_mapop.gdMap.IStrategy;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocAccuracyFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocBearingFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocDistanceFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocErrorCodeFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocInfoPrint;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocNullFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSatellitesFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSpeedFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocTypeFilter;
 
 /**
  * Created by Leeping on 2018/7/23.
@@ -24,54 +29,42 @@ import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocNullFilter;
 
 public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListener,AMapLocation> implements AMapLocationListener,Runnable{
 
-
+    //坐标过滤
     private static class Loc extends LocNullFilter{
         AMapLocation location;
         int filterType = 1; //默认基础过滤
         private Loc(AMapLocation location, int filterType) {
+            if (intercept(location)) throw new NullPointerException();
             this.location = location;
             this.filterType = filterType;
-            if (intercept(location)) throw new NullPointerException();
         }
     }
 
-    //间隔采集网络定位
+    //30s间隔采集网络定位
     private static class LoopNetWorkLocation extends Thread {
-        private long oldTime = System.currentTimeMillis();
-        private volatile boolean flag = true;
-        private final long interval =  3 * 60 * 1000L; // 3分钟一次
-        private WeakReference<LocManage> locManageWeakReference;
-        private IFilter<AMapLocation> filter = new LocErrorCodeFilter();
+        private final long interval =  30 * 1000L; // 30秒一次
+        private LocManage locManage;
+
         LoopNetWorkLocation(LocManage locManage) {
-            filter.setNext(new LocAccuracyFilter().setAccuracy(100));
-            filter.setNext(new LocDistanceFilter().setIntervalMin(10));
-            filter.setNext(new LocInfoPrint());
-            this.locManageWeakReference = new WeakReference<>(locManage);
+            this.locManage = locManage;
             setName("t-loop-net-location");
             start();
         }
 
-        void stopLoop(){
-            this.flag = false;
-        }
-
         @Override
         public void run() {
-            long difference ;
-            while (flag){
-                if (locManageWeakReference==null || locManageWeakReference.get()==null) stopLoop();
-                difference = System.currentTimeMillis() - oldTime;
-                if ( difference < interval){
+            while (locManage.isRun){
                     synchronized (this){
-                        try {  this.wait( interval-difference );} catch (InterruptedException ignored) { }
+                        try {  this.wait( interval );} catch (InterruptedException ignored) { }
                     }
+
+                if (locManage.isLaunch()){
+                    locManage.addLocationToQueue(GdMapUtils.get().getCurrentLocation(),2);
                 }
-                locManageWeakReference.get().addLocationToQueue(GdMapUtils.get().getCurrentLocation(),2);
-                oldTime = System.currentTimeMillis();
             }
         }
 
-        void locOnce() {
+        void awaken() {
             synchronized (this){
                 this.notify();
             }
@@ -83,10 +76,41 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     //取数据线程
     private Thread t;
-
+    //循环网络坐标
     private LoopNetWorkLocation t2 = new LoopNetWorkLocation(this);
 
     private volatile boolean isRun = true;
+
+    private IFilter<AMapLocation> baseFilter = createBaseFilter();
+    private IFilter<AMapLocation> onceFilter = createOnceFilter();
+
+
+
+    //创建基础坐标过滤
+    private IFilter<AMapLocation> createBaseFilter() {
+        LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
+            locErrorCodeFilter.setNext(new LocTypeFilter()); //GPS和wifi类型过滤
+            locErrorCodeFilter.setNext(new LocSatellitesFilter()); //卫星数过滤-4
+            locErrorCodeFilter.setNext(new LocAccuracyFilter());//精度范围过滤-50
+            locErrorCodeFilter.setNext(new LocSpeedFilter());//速度过滤-0
+            locErrorCodeFilter.setNext(new LocBearingFilter());//角度过滤-0
+            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤-12
+            locErrorCodeFilter.setNext(new LocInfoPrint());//信息打印
+        return locErrorCodeFilter;
+    }
+
+
+    private IFilter<AMapLocation> createOnceFilter() {
+        LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
+            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤-8
+            locErrorCodeFilter.setNext(new LocInfoPrint());//信息打印
+        return locErrorCodeFilter;
+    }
+
+
+    public IFilter<AMapLocation> getBaseFilter(){
+        return baseFilter;
+    }
 
     public LocManage() {
         this.t = new Thread(this);
@@ -96,17 +120,17 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
     }
 
     @Override
-    public void create(IStrategy<AMapLocationClient, AMapLocation> configStrategy) {
+    public void create(IStrategy<AMapLocationClient> configStrategy) {
         super.create(configStrategy);
         mLocationClient.setLocationListener(this);
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void onDestroy() {
+        super.onDestroy();
         isRun = false;
+        t2.awaken();
         t = null;
-        t2.stopLoop();
         t2=null;
     }
 
@@ -128,12 +152,17 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     @Override
     public boolean isLaunch() {
-        return mLocationClient.isStarted();
+        if (mLocationClient!=null){
+            return mLocationClient.isStarted();
+        }
+        return false;
     }
 
     void addLocationToQueue(AMapLocation location,int type){
         try {
-            boolean isAdd = locQueue.offer(new Loc(location,type));
+            Loc loc = new Loc(location,type);
+            boolean isAdd = locQueue.offer(loc);
+
             if (isAdd){
                 synchronized (this){
                     this.notify();
@@ -171,7 +200,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
                 }
             }
             if (loc.filterType == 2){
-                if(t2.filter.chainIntercept(loc.location)){
+                if(onceFilter.chainIntercept(loc.location)){
                     continue;
                 }
             }
@@ -197,7 +226,9 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
         if (flag) {
             addLocationToQueue(GdMapUtils.get().getCurrentLocation(),0);
         }else{
-            if (t2!=null) t2.locOnce();
+            if (t2!=null) t2.awaken();
         }
     }
+
+
 }

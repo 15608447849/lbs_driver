@@ -2,6 +2,7 @@ package tms.space.lbs_driver.tms_base.beans;
 
 import com.leezp.lib.singlepageapplication.base.SpaBaseHandle;
 import com.leezp.lib.singlepageapplication.base.SpaBaseMessage;
+import com.leezp.lib.util.AppUtil;
 
 /**
  * Created by Leeping on 2018/8/16.
@@ -23,6 +24,7 @@ public class StackOptionImp implements IStackOption {
      */
     @Override
     public void addTrackRecode(SpaBaseHandle handler) {
+       if (AppUtil.checkUIThread()) throw new IllegalStateException("不能在主线程执行.");
         if (orderInfo==null) return;
 
         //添加一条记录
