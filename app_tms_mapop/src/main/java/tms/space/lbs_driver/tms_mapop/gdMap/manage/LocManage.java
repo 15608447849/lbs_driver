@@ -20,6 +20,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocInfoPrint;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocNullFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSatellitesFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSpeedFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocTimeFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocTypeFilter;
 
 /**
@@ -95,6 +96,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
             locErrorCodeFilter.setNext(new LocSpeedFilter());//速度过滤-0
             locErrorCodeFilter.setNext(new LocBearingFilter());//角度过滤-0
             locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤-12
+            locErrorCodeFilter.setNext(new LocTimeFilter());//时间差过滤-12
             locErrorCodeFilter.setNext(new LocInfoPrint());//信息打印
         return locErrorCodeFilter;
     }

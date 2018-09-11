@@ -29,7 +29,7 @@ class TraceServiceAIDLImp extends ITrackService.Stub{
 
         int result = db.inset(new TrackDbBean(orderId,userid,enterpriseId));
         if (result == 0) {
-            if (this.locManage!=null) this.locManage.networkLocationOnce(true);
+            locManage.networkLocationOnce(true);
         }else{
             result = updateState(orderId,0);
         }
@@ -38,7 +38,8 @@ class TraceServiceAIDLImp extends ITrackService.Stub{
 
     @Override
     public int updateState(long orderId, int state) throws RemoteException {
-        if (this.locManage!=null) this.locManage.networkLocationOnce(true);
+        if (state==1) locManage.networkLocationOnce(true);
+        else locManage.networkLocationOnce(false);
         return db.updateState(orderId,state);
     }
 
