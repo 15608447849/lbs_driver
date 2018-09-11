@@ -15,9 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import tms.space.lbs_driver.tms_mapop.db.TrackDb;
-import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocNullFilter;
-
-import static java.lang.Float.NaN;
 
 /**
  * Created by Leeping on 2018/7/23.
@@ -81,11 +78,14 @@ public class LocGather implements AMapLocationListener {
     }
 
     private void filterPath(List<TraceLocation> path) {
-        //没三个点一组    pre cur bak  两点间速度<10m/s 认为是静止状态
+        //没三个点一组    pre cur bak
+        // 三个点之间速度<4m/s 认为是静止状态
+        // 三个点之间速度>40m/s 认为是超速状态
+
         TraceLocation location;
         LatLng pre,cur,bak;
         long preTime,curTime,bakTime;
-        long difPre,difBak;//时间改变量
+        float difPre,difBak;//时间改变量
         float toPre,toBak;//距离改变量
         float vPre,vBak;//速度
         float aver;//速度平均值
@@ -98,35 +98,66 @@ public class LocGather implements AMapLocationListener {
             location = path.get(i);
             pre = new LatLng(location.getLatitude(),location.getLongitude());
             preTime = location.getTime();
+
             location = path.get(i+1);
             cur = new LatLng(location.getLatitude(),location.getLongitude());
             curTime = location.getTime();
+
             location = path.get(i+2);
             bak = new LatLng(location.getLatitude(),location.getLongitude());
             bakTime = location.getTime();
-
+//
             toPre = AMapUtils.calculateLineDistance(pre,cur);//距离改变量,单位米
-            difPre = Math.abs(( curTime - preTime ) / 1000L);
+            difPre = ( curTime - preTime ) / 1000.0f;//时间改变量
 
             toBak = AMapUtils.calculateLineDistance(cur,bak);//距离改变量,单位米
-            difBak = Math.abs(( bakTime - curTime ) / 1000L);
+            difBak = ( bakTime - curTime ) / 1000.0f;//时间改变量
+
+            if (toPre<15){
+                LLog.print("当前: "+ i+"->"+(i+1)+" 距离过短, "+ toPre);
+                delIndex.add(i+1);
+                continue;
+            }
+            if (toBak<15){
+                LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 距离过短, "+toBak);
+                delIndex.add(i+2);
+                continue;
+            }
 
 
-            vPre = (difPre*1.0f)/toPre;
-            vBak = (difBak*1.0f)/toBak;
+            if (difPre<=0){
+                LLog.print("当前: "+ i+"->"+(i+1)+" 时间线异常, "+ difPre);
+                delIndex.add(i+1);
+                continue;
+            }
+
+            if (difBak<=0){
+                LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 时间线异常, "+difBak);
+                delIndex.add(i+2);
+                continue;
+            }
+
+            if (difPre > (30*60) || difBak > (30*60)){
+                LLog.print("当前: "+ (i)+"->"+(i+2)+" 其中一个时间线过长 "+difPre+" , "+ difBak);
+                if (AMapUtils.calculateLineDistance(pre,bak)<100){
+                    delIndex.add(i+1);
+                }
+                continue;
+            }
+
+            vPre = toPre/difPre;
+            vBak = toBak/difBak;
             aver = (vPre + vBak)/2;
 
-//            LLog.print("当前: "+ i+" A-B: 时间/距离=速度 => "+ difPre+"/"+toPre+"="+vPre);
-//            LLog.print("当前: "+ i+" B-C: 时间/距离=速度 => "+ difBak+"/"+toBak+"="+vBak);
-            LLog.print("当前速度平均值:"+aver );
+            LLog.print("当前: "+ i+"->"+(i+1)+" 速度 => "+ toPre+"/"+difPre+"="+vPre);
+            LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 速度 => "+ toBak+"/"+difBak+"="+vBak);
+            LLog.print("当前距离速度平均值:"+aver );
 
             if (Double.isNaN(vPre)  ||Double.isInfinite(vPre)){
                 flag = true;
             }else if (Double.isNaN(vBak) || Double.isInfinite(vBak)){
                 flag = true;
-            }else if ( aver < 15 ){
-                flag = true;
-            }else if (aver > 315){
+            }else if ( aver < 0.65 ){
                 flag = true;
             }
             if (flag) delIndex.add(i+1);
@@ -135,14 +166,14 @@ public class LocGather implements AMapLocationListener {
         for (int index : delIndex){
             location = path.remove(index-delCount);
             delCount++;
-            LLog.print("删除: "+ JsonUti.javaBeanToJson(location));
+            LLog.print("删除: index="+index +" - " + JsonUti.javaBeanToJson(location));
         }
         if (path.size() == 2) {
             location = path.get(0);
             pre = new LatLng(location.getLatitude(),location.getLongitude());
             location = path.get(1);
             bak = new LatLng(location.getLatitude(),location.getLongitude());
-            if (AMapUtils.calculateLineDistance(pre,bak)<30) path.remove(1);
+            if (AMapUtils.calculateLineDistance(pre,bak)<=100 && (location.getBearing() == 0 && location.getSpeed() == 0) ) path.remove(1);
         }
         if (delCount>0) filterPath(path);
 

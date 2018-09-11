@@ -1,7 +1,5 @@
 package tms.space.lbs_driver.tms_mapop.gdMap.manage;
 
-import android.util.Log;
-
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
 import com.amap.api.location.AMapLocationListener;
@@ -13,6 +11,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.ILocationAbs;
 import tms.space.lbs_driver.tms_mapop.gdMap.IStrategy;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocAccuracyFilter;
+import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocAddressNameFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocBearingFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocDistanceFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocErrorCodeFilter;
@@ -43,7 +42,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     //30s间隔采集网络定位
     private static class LoopNetWorkLocation extends Thread {
-        private final long interval =  30 * 1000L; // 30秒一次
+        private final long interval =  10 * 1000L; // 10秒一次
         private LocManage locManage;
 
         LoopNetWorkLocation(LocManage locManage) {
@@ -55,13 +54,15 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
         @Override
         public void run() {
             while (locManage.isRun){
+                try {
                     synchronized (this){
                         try {  this.wait( interval );} catch (InterruptedException ignored) { }
                     }
 
-                if (locManage.isLaunch()){
-                    locManage.addLocationToQueue(GdMapUtils.get().getCurrentLocation(),2);
-                }
+                    if (locManage.isLaunch()){
+                        locManage.addLocationToQueue(GdMapUtils.get().getCurrentLocation(),2);
+                    }
+                } catch (Exception ignored) { }
             }
         }
 
@@ -80,6 +81,9 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
     //循环网络坐标
     private LoopNetWorkLocation t2 = new LoopNetWorkLocation(this);
 
+    //开始定位
+    private boolean isLaunchLoc = false;
+
     private volatile boolean isRun = true;
 
     private IFilter<AMapLocation> baseFilter = createBaseFilter();
@@ -90,22 +94,26 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
     //创建基础坐标过滤
     private IFilter<AMapLocation> createBaseFilter() {
         LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
+            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("1#"));//信息打印
             locErrorCodeFilter.setNext(new LocTypeFilter()); //GPS和wifi类型过滤
-            locErrorCodeFilter.setNext(new LocSatellitesFilter()); //卫星数过滤-4
-            locErrorCodeFilter.setNext(new LocAccuracyFilter());//精度范围过滤-50
-            locErrorCodeFilter.setNext(new LocSpeedFilter());//速度过滤-0
-            locErrorCodeFilter.setNext(new LocBearingFilter());//角度过滤-0
-            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤-12
-            locErrorCodeFilter.setNext(new LocTimeFilter());//时间差过滤-12
-            locErrorCodeFilter.setNext(new LocInfoPrint());//信息打印
+            locErrorCodeFilter.setNext(new LocSatellitesFilter()); //卫星数过滤
+            locErrorCodeFilter.setNext(new LocAccuracyFilter());//精度范围过滤
+            locErrorCodeFilter.setNext(new LocSpeedFilter());//速度过滤
+            locErrorCodeFilter.setNext(new LocBearingFilter());//角度过滤
+            locErrorCodeFilter.setNext(new LocTimeFilter());//时间差过滤
+            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤
+
+
         return locErrorCodeFilter;
     }
 
 
     private IFilter<AMapLocation> createOnceFilter() {
         LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
-            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤-8
-            locErrorCodeFilter.setNext(new LocInfoPrint());//信息打印
+            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("2#"));//信息打印
+            locErrorCodeFilter.setNext(new LocAddressNameFilter());//地名过滤
+            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤
+
         return locErrorCodeFilter;
     }
 
@@ -125,6 +133,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
     public void create(IStrategy<AMapLocationClient> configStrategy) {
         super.create(configStrategy);
         mLocationClient.setLocationListener(this);
+
     }
 
     @Override
@@ -138,26 +147,28 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     @Override
     public void startLoc() {
-        stopLoc();
+        if (isLaunchLoc) return;
         mLocationClient.startLocation();
+        isLaunchLoc = true;
     }
 
     @Override
     public void stopLoc() {
-        if(isLaunch()) mLocationClient.stopLocation();
+         mLocationClient.stopLocation();
     }
 
     @Override
     public void closeClient(){
-        mLocationClient.onDestroy(); // 高德定位客户端销毁
+        if (isLaunchLoc){
+            mLocationClient.onDestroy(); // 高德定位客户端销毁
+            isLaunchLoc = false;
+        }
+
     }
 
     @Override
     public boolean isLaunch() {
-        if (mLocationClient!=null){
-            return mLocationClient.isStarted();
-        }
-        return false;
+        return isLaunchLoc;
     }
 
     void addLocationToQueue(AMapLocation location,int type){
@@ -186,8 +197,9 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     @Override
     public void run() {
+        Loc loc = null;
         while (isRun){
-            Loc loc = locQueue.poll();
+            loc = locQueue.poll();
             if (loc == null){
                 synchronized (this){
                     try {
@@ -200,8 +212,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
                 if (baseFilter.chainIntercept(loc.location)) {
                     continue;
                 }
-            }
-            if (loc.filterType == 2){
+            }else if (loc.filterType == 2){
                 if(onceFilter.chainIntercept(loc.location)){
                     continue;
                 }

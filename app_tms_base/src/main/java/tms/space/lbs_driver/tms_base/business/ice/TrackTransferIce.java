@@ -22,7 +22,7 @@ public class TrackTransferIce  extends IceServerAbs<DriverServicePrx> {
            return 0;
         }
         try {
-            printParam("传输纠正轨迹",orderId,userId,enterpriseId);
+            //printParam("传输纠正轨迹",orderId,userId,enterpriseId);
             return getProxy().driverUploadCorrect(userId,enterpriseId,orderId,correct);
         } catch (Exception e) {
             e.printStackTrace();

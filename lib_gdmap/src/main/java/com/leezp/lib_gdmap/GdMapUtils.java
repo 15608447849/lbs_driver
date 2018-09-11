@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -236,7 +235,7 @@ public class GdMapUtils {
         mLocationClient.startLocation();
         synchronized (lock){
             try {
-                lock.wait();
+                lock.wait(10000);
             } catch (InterruptedException ignored) {
             }
         }

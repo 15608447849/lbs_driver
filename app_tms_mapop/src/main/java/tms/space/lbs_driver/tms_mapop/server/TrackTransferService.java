@@ -5,7 +5,6 @@ import android.app.Notification;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.amap.api.location.AMapLocation;
 import com.leezp.lib.util.AppUtil;
@@ -13,7 +12,6 @@ import com.leezp.lib.util.FrontNotification;
 import com.leezp.lib.util.HearServer;
 import com.leezp.lib_log.LLog;
 
-import java.util.Iterator;
 import java.util.List;
 
 import tms.space.lbs_driver.tms_base.beans.DriverUser;
@@ -179,9 +177,8 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         //获取数据库存在的数据
         List<TrackDbBean> list = db.queryAll();
         int validCount = list.size();
-        Iterator<TrackDbBean> iterator = list.iterator();
-        while (iterator.hasNext()){
-            if (iterator.next().getState() > 0) validCount--;
+        for (TrackDbBean item : list) {
+            if (item.getState() > 0) validCount--;
         }
         if (user != null ){
             if (validCount > 0){
@@ -225,7 +222,6 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
     private void locDataCorrection(DriverUser user,List<TrackDbBean> list) {
         //判断网络是否有效
         if (AppUtil.isNetworkAvailable(getApplicationContext())){
-
             corManage.correct(user,list);
         }
     }
@@ -237,7 +233,6 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
             if (b.getUserId() != user.getUserCode()) continue; //判断当前登陆用户
             //上传数据到后台并且判断删除
             trackTransferAndDel(b);
-
         }
     }
 
@@ -247,7 +242,7 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
 
         //原始轨迹同步标识远大于纠偏轨迹同步标识
         if (b.gettCode() - b.getcCode() > 10 && b.getcCode() == b.getlCode()){
-            result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
+           iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
         }
 
         //纠偏成功一次 , 则数据同步一次 ,成功改变传输同步下标+1
@@ -270,9 +265,6 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
                 }
             }
         }
-
-
-
     }
 
 

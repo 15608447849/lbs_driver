@@ -1,7 +1,6 @@
 package tms.space.lbs_driver.tms_mapop.gdMap;
 
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by Leeping on 2018/7/23.
@@ -23,6 +22,7 @@ public abstract class ILocationAbs<T,L,D> implements ILocation<T,L,D>{
 
     @Override
     public void onDestroy() {
+        closeClient();
         if (mLocationClient!=null){
             stopLoc();
             listeners.clear();

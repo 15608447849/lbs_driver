@@ -4,7 +4,6 @@ import com.amap.api.location.AMapLocation;
 import com.leezp.lib_log.LLog;
 
 import tms.space.lbs_driver.tms_mapop.gdMap.FilterAbs;
-import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 
 /**
  * Created by Leeping on 2018/8/18.
@@ -21,6 +20,9 @@ public class LocSpeedFilter extends FilterAbs {
     }
     @Override
     public boolean intercept(AMapLocation location) {
+        if (location.getAccuracy()<=10){
+            return false;
+        }
         //速度小于或者等于指定速度
         if (location.getSpeed() <= speed) {
             LLog.print("速度不合格: "+ location.getSpeed()+",最小速度:"+speed);

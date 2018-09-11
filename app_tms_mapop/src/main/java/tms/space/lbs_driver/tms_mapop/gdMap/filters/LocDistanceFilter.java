@@ -17,8 +17,6 @@ public class LocDistanceFilter extends FilterAbs {
 
     private float intervalMin = 15;
 
-    private float intervalMax = 200; //距离改变量最大值  *如果在短期内 距离改变量很大 ,认为在做加速运动
-
     public LocDistanceFilter setIntervalMin(float intervalMin) {
         this.intervalMin = intervalMin;
         return this;
@@ -28,20 +26,34 @@ public class LocDistanceFilter extends FilterAbs {
 
     @Override
     public boolean intercept(AMapLocation location) {
-        boolean flag = false;
+
         if (prev!=null){
             LatLng s =  new LatLng(prev.getLatitude(), prev.getLatitude());
             LatLng d = new LatLng(location.getLatitude(), location.getLatitude());
             float distance = AMapUtils.calculateLineDistance(s,d);//距离改变量,单位米
-            LLog.print("距离: "+ distance+" 米" +" - 两点精度最小值: "+ Math.min(prev.getAccuracy(),location.getAccuracy()));
 
             if (distance <= intervalMin ) {
                 LLog.print("距离改变量不合格: "+ distance+" 米,最小距离改变:"+intervalMin+"米");
-                flag = true;
+                return true;
+            }
+            float rangerMax = Math.min(prev.getAccuracy(),location.getAccuracy());
+            if (distance> rangerMax){
+                float timeDiff = (location.getTime() - prev.getTime()) / 1000.0f;
+                if (timeDiff<=0) {
+                    LLog.print("距离改变量不合格: "+ distance+" 米,时间改变差:"+timeDiff);
+                    return true;
+                }else{
+                    float v = distance/timeDiff; // m/s ,车辆速度最大值  50米/秒(m/s)=180千米/时(km/h)
+                    if (v>50){
+                        LLog.print("距离改变量不合格: "+ distance+" 米,速度过大:"+v+"m/s");
+                        return true;
+                    }
+                }
+
             }
         }
-        if (prev == null) flag = true;
+
         prev = location;
-        return flag;
+        return false;
     }
 }
