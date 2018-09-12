@@ -120,22 +120,57 @@ public class LocGather implements AMapLocationListener {
 
             LLog.print((i+1)+" -> "+(i+2) +" " +
                     ",距离: "+ curToBak+ "米," +
-                    "["+ TimeUtil.formatUTC(preTime,"HH:mm:ss")+" - "+ TimeUtil.formatUTC(curTime,"HH:mm:ss")+"]," +
+                    "["+ TimeUtil.formatUTC(curTime,"HH:mm:ss")+" - "+ TimeUtil.formatUTC(bakTime,"HH:mm:ss")+"]," +
                     "时间差: "+(bakTime - curTime)/1000L+"秒" );
 
             if (preTime>curTime){
                 delIndex.add(i+1);
-                continue;
+                LLog.print((i+1) + " 时间异常");
+                break;
             }
-            if (bakTime>curTime){
+            if (curTime>bakTime){
                 delIndex.add(i+2);
-                continue;
+                LLog.print((i+2) + " 时间异常");
+                break;
             }
-            if (aver<50){
-                if (preToCur-curToBak < 0 ){
+            LLog.print(i+" -> "+(i+2) +" 平均距离:"+aver);
+            if (aver<5){
+                delIndex.add(i+1);
+                delIndex.add(i+2);
+                LLog.print("同一点");
+                loc1.setTime(loc3.getTime());
+
+                break;
+            }
+            if (aver<35){
+                if (preToCur < aver){
                     delIndex.add(i+1);
-                }else{
+                    LLog.print((i+1) + " 距离过小");
+                    break;
+                }else if (curToBak<aver){
                     delIndex.add(i+2);
+                    LLog.print((i+2) + " 距离过小");
+                    break;
+                }
+            }
+            if (aver>80 && aver<500){
+                if (preToCur > aver){
+                    if (loc2.getSpeed() < 1.5  && loc2.getBearing() == 0){
+                        delIndex.add(i+1);
+                        LLog.print((i+1) + " 距离非法");
+                        break;
+                    }else {
+                        LLog.print(JsonUti.javaBeanToJson(loc2));
+                    }
+                }else if (curToBak > aver){
+                    if (loc3.getSpeed() < 1.5 && loc3.getBearing() == 0){
+                        delIndex.add(i+2);
+                        LLog.print((i+2) + " 距离非法");
+                        break;
+                    }else {
+                        LLog.print(JsonUti.javaBeanToJson(loc3));
+                    }
+
                 }
             }
 

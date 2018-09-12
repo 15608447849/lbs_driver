@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
-import android.util.Log;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
@@ -36,8 +35,6 @@ import tms.space.lbs_driver.tms_mapop.entity.TrackDbBean;
  */
 
 class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
-
-
 
     public interface Callback {
         void clearLineInfo();
@@ -160,7 +157,7 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
     private Polyline getLine(int id) {
         Polyline line = lineMap.get(id);
         if (line == null) {
-            line = createLine(10,Color.BLACK);
+            line = createLine(8,Color.BLACK);
             lineMap.put(id,line);
         }
         return line;
@@ -169,7 +166,7 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
     private Polyline getLine2(int id) {
         Polyline line = lineMap2.get(id);
         if (line == null) {
-            line = createLine(10,Color.RED);
+            line = createLine(8,Color.RED);
             lineMap2.put(id,line);
         }
         return line;
@@ -210,4 +207,8 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
             isFirst = false;
         }
     }
+
+
+
+
 }

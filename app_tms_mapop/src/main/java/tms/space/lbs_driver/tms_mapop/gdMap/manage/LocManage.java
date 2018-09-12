@@ -93,14 +93,14 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
     //创建基础坐标过滤
     private IFilter<AMapLocation> createBaseFilter() {
         LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
-            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("GPS# "));//信息打印
+
             locErrorCodeFilter.setNext(new LocTypeFilter().setType(AMapLocation.LOCATION_TYPE_GPS)); //只允许GPS类型
             locErrorCodeFilter.setNext(new LocSatellitesFilter()); //卫星数
             locErrorCodeFilter.setNext(new LocAccuracyFilter());//精度范围
             locErrorCodeFilter.setNext(new LocSpeedFilter());//速度
             locErrorCodeFilter.setNext(new LocBearingFilter());//角度
             locErrorCodeFilter.setNext(new LocDistanceFilter());//距离
-
+            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("GPS# "));//信息打印
 
         return locErrorCodeFilter;
     }
@@ -108,11 +108,11 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     private IFilter<AMapLocation> createOnceFilter() {
         LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
-            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("间隔# "));//信息打印
-            locErrorCodeFilter.setNext(new LocAccuracyFilter().setAccuracy(100));//精度过滤
-            locErrorCodeFilter.setNext(new LocAddressNameFilter());//地名过滤
-            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤
 
+            locErrorCodeFilter.setNext(new LocAccuracyFilter().setAccuracy(100));//精度过滤
+            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤
+            locErrorCodeFilter.setNext(new LocAddressNameFilter());//地名过滤
+            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("间隔# "));//信息打印
         return locErrorCodeFilter;
     }
 
@@ -182,7 +182,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
     /**

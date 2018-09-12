@@ -1,7 +1,5 @@
 package tms.space.lbs_driver.tms_mapop.gdMap.filters;
 
-import android.util.Log;
-
 import com.amap.api.location.AMapLocation;
 import com.leezp.lib.util.StrUtil;
 import com.leezp.lib.util.TimeUtil;
@@ -26,7 +24,7 @@ public class LocInfoPrint extends FilterAbs {
     public boolean intercept(AMapLocation location) {
         String string = tag==null?"":tag +
                 //"经纬度:(" + location.getLongitude()  + "," + location.getLatitude() + ")," +
-                "卫星数:" + location.getSatellites() + ",强度:" + location.getGpsAccuracyStatus() + "," +
+                ( location.getSatellites()>0?"卫星数:" + location.getSatellites() + ",强度:" + location.getGpsAccuracyStatus() :  "," )+
                 "精度:" + location.getAccuracy() + "m," +
                 (location.getSpeed()>0?"速度:" + location.getSpeed() + "m/s,":"") +
                 (location.getBearing()>0?"角度:" + location.getBearing() + "°,":"") +

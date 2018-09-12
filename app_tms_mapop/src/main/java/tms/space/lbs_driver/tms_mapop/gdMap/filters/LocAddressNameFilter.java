@@ -41,8 +41,8 @@ public class LocAddressNameFilter extends FilterAbs {
 
         if (prev!=null && prev2!=null){
             float time = (prev.getTime() - prev2.getTime());
-            if ( time > (5*60*1000L)){
-                LLog.print("静止状态, 两点时间差: "+ time+" 毫秒");
+            if ( time > (2*60*1000L)){
+                LLog.print("静止状态, 两点时间差: "+ ( time/1000L )+" 秒");
                 //如果俩点时间差>10分钟  认为此刻是静止不动的
                 return true;
             }
