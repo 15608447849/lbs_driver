@@ -1,5 +1,7 @@
 package tms.space.lbs_driver.tms_mapop.entity;
 
+import android.util.Log;
+
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.trace.LBSTraceClient;
@@ -23,7 +25,7 @@ import tms.space.lbs_driver.tms_mapop.db.TrackDb;
 
 public class TrackCorrectResult implements TraceListener {
 
-    private static final boolean isCorrect = false;
+    private static final boolean isCorrect = true;
 
     private LBSTraceClient lbsTraceClient;
     private TrackDb db;
@@ -104,6 +106,7 @@ public class TrackCorrectResult implements TraceListener {
     private void dataUpdate(boolean flag) {
         int count = bean.getcCode() + 1;
         if (count > bean.gettCode()) count = bean.gettCode();
+        else if (bean.gettCode()-count>10)  count = bean.gettCode()-10;
         if (flag) bean.setcCode(count);//已纠偏次数
         db.updateCorrect(bean);
     }

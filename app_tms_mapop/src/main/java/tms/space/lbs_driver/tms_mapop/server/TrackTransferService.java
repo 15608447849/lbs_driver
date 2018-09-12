@@ -248,6 +248,8 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
 
     //上传数据到后台
     private void trackTransferAndDel(TrackDbBean b) {
+
+
         int result = 1;
 
         //原始轨迹同步标识远大于纠偏轨迹同步标识
@@ -269,9 +271,9 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
             //执行上传操作
             result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
             if (result == 0){
+
                 if (b.gettCode() == b.getcCode()){
                     int del = db.deleteTrack(b.getId());
-
                     if (del == 0) {
                         LLog.print("订单(" + b.getOrderId()+ ")删除成功");
                         createInfoNotify("订单"+b.getOrderId()+"已停止轨迹收集",500+b.getId());

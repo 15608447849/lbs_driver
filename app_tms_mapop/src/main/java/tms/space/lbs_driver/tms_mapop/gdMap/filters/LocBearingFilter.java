@@ -21,7 +21,7 @@ public class LocBearingFilter extends FilterAbs {
 
     @Override
     public boolean intercept(AMapLocation location) {
-        if (location.getAccuracy()<=10){
+        if (location.getAccuracy()<10){
             return false;
         }
         //角度小于或等于指定角度

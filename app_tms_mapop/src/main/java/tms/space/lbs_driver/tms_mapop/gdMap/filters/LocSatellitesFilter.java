@@ -13,7 +13,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.IFilter;
 
 public class LocSatellitesFilter  extends FilterAbs {
     //最小卫星数
-    private int satellites = 4;
+    private int satellites = 5;
     public LocSatellitesFilter setSatellites(int satellites) {
         this.satellites = satellites;
         return this;

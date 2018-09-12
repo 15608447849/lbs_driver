@@ -38,11 +38,14 @@ public class LocAddressNameFilter extends FilterAbs {
 
         if (prev!=null) prev2 = prev;
         prev = location;
-        if (prev!=null && prev2!=null && (prev.getTime() - prev2.getTime()) > (10*60*1000L)){
-//            LLog.print("静止状态");
-            //如果俩点时间差>10分钟  认为此刻是静止不动的
-            return true;
 
+        if (prev!=null && prev2!=null){
+            float time = (prev.getTime() - prev2.getTime());
+            if ( time > (5*60*1000L)){
+                LLog.print("静止状态, 两点时间差: "+ time+" 毫秒");
+                //如果俩点时间差>10分钟  认为此刻是静止不动的
+                return true;
+            }
         }
         return false;
     }

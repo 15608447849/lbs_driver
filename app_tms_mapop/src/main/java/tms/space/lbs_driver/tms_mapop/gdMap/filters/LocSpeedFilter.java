@@ -12,7 +12,7 @@ import tms.space.lbs_driver.tms_mapop.gdMap.FilterAbs;
 
 public class LocSpeedFilter extends FilterAbs {
     //速度过滤
-    private float speed = 0.0f;
+    private float speed = 1.5f;
 
     public LocSpeedFilter setSpeed(float speed) {
         this.speed = speed;
@@ -20,11 +20,11 @@ public class LocSpeedFilter extends FilterAbs {
     }
     @Override
     public boolean intercept(AMapLocation location) {
-        if (location.getAccuracy()<=10){
+        if (location.getAccuracy()<10){
             return false;
         }
         //速度小于或者等于指定速度
-        if (location.getSpeed() <= speed) {
+        if (location.getSpeed() < speed) {
 //            LLog.print("速度不合格: "+ location.getSpeed()+",最小速度:"+speed);
             return true;
         }

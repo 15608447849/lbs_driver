@@ -19,7 +19,6 @@ import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocInfoPrint;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocNullFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSatellitesFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocSpeedFilter;
-import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocTimeFilter;
 import tms.space.lbs_driver.tms_mapop.gdMap.filters.LocTypeFilter;
 
 /**
@@ -94,15 +93,14 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
     //创建基础坐标过滤
     private IFilter<AMapLocation> createBaseFilter() {
         LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
+            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("GPS# "));//信息打印
+            locErrorCodeFilter.setNext(new LocTypeFilter().setType(AMapLocation.LOCATION_TYPE_GPS)); //只允许GPS类型
+            locErrorCodeFilter.setNext(new LocSatellitesFilter()); //卫星数
+            locErrorCodeFilter.setNext(new LocAccuracyFilter());//精度范围
+            locErrorCodeFilter.setNext(new LocSpeedFilter());//速度
+            locErrorCodeFilter.setNext(new LocBearingFilter());//角度
+            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离
 
-            locErrorCodeFilter.setNext(new LocTypeFilter()); //GPS和wifi类型过滤
-            locErrorCodeFilter.setNext(new LocSatellitesFilter()); //卫星数过滤
-            locErrorCodeFilter.setNext(new LocAccuracyFilter());//精度范围过滤
-            locErrorCodeFilter.setNext(new LocSpeedFilter());//速度过滤
-            locErrorCodeFilter.setNext(new LocBearingFilter());//角度过滤
-            locErrorCodeFilter.setNext(new LocTimeFilter());//时间差过滤
-            locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤
-        locErrorCodeFilter.setNext(new LocInfoPrint().setTag("1#"));//信息打印
 
         return locErrorCodeFilter;
     }
@@ -110,11 +108,11 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     private IFilter<AMapLocation> createOnceFilter() {
         LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
-
+            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("间隔# "));//信息打印
             locErrorCodeFilter.setNext(new LocAccuracyFilter().setAccuracy(100));//精度过滤
             locErrorCodeFilter.setNext(new LocAddressNameFilter());//地名过滤
             locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤
-            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("2#"));//信息打印
+
         return locErrorCodeFilter;
     }
 
@@ -198,31 +196,37 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     @Override
     public void run() {
-        Loc loc = null;
+        Loc loc;
         while (isRun){
-            loc = locQueue.poll();
-            if (loc == null){
-                synchronized (this){
-                    try {
-                        this.wait();
-                    } catch (InterruptedException ignored) {}
-                }
-                continue;
-            }
-            if (loc.filterType == 1){
-                if (baseFilter.chainIntercept(loc.location)) {
+
+            try {
+                loc = locQueue.poll();
+                if (loc == null){
+                    synchronized (this){
+                        try {
+                            this.wait();
+                        } catch (InterruptedException ignored) {}
+                    }
                     continue;
                 }
-            }else if (loc.filterType == 2){
-                if(onceFilter.chainIntercept(loc.location)){
-                    continue;
+                if (loc.filterType == 1){
+                    if (baseFilter.chainIntercept(loc.location)) {
+                        continue;
+                    }
+                }else if (loc.filterType == 2){
+                    if(onceFilter.chainIntercept(loc.location)){
+                        continue;
+                    }
                 }
+
+                onCollection(loc.location);
+
+                loc.location = null;
+                loc = null;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            onCollection(loc.location);
-
-            loc.location = null;
-            loc = null;
         }
     }
 

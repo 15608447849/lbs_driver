@@ -43,10 +43,11 @@ public class LocGather implements AMapLocationListener {
         }
     }
 
-    private void handleTrack(TrackDbBean bean, AMapLocation aMapLocation) {
+    private void handleTrack(TrackDbBean bean, final AMapLocation aMapLocation) {
         if (bean.getState() > 0) {
             return; //不收集轨迹数据
         }
+        LLog.print("\n"+bean.getId()+" 开始处理原始轨迹点");
         List<TraceLocation> path = null;
         String json = bean.getTrack();
         if (StrUtil.validate(json)){
@@ -65,137 +66,87 @@ public class LocGather implements AMapLocationListener {
 
         //对点进行筛选
         filterPath(path);
-        printDistance(path);
         //设置等待轨迹纠偏次数+1
         bean.settCode(bean.gettCode() + 1);
         bean.setTrack(JsonUti.javaBeanToJson(path));
         int result = db.updateTrack(bean);
         if (result == 0){
-            LLog.print(bean.getId()+"记录原始轨迹点成功,当前数量:"+path.size());
+            LLog.print(bean.getId()+" 记录原始轨迹点成功,当前数量:"+path.size()+"\n");
         }else{
-            LLog.print(bean.getId()+"数据库记录轨迹点失败");
+            LLog.print(bean.getId()+" 数据库记录轨迹点失败");
         }
 
     }
 
-    private void printDistance(List<TraceLocation> path) {
-        LatLng pre,cur;
-        for (int i = 0; i < path.size() ; i++ ){
-            if (i+1 >= path.size()) break;
-            pre = new LatLng(path.get(i).getLatitude(),path.get(i).getLongitude());
-            cur = new LatLng(path.get(i+1).getLatitude(),path.get(i+1).getLongitude());
-            LLog.print(i+" -> "+(i+1) +" , 距离: "+ AMapUtils.calculateLineDistance(pre,cur)+ " - "+ TimeUtil.formatUTC(path.get(i).getTime(),"HH:mm:ss")+" - "+ TimeUtil.formatUTC(path.get(i+1).getTime(),"HH:mm:ss")+",时间差: "+(path.get(i+1).getTime() - path.get(i).getTime())/1000L+"秒" );
-        }
-    }
 
 
     private void filterPath(List<TraceLocation> path) {
-        //没三个点一组    pre cur bak
-        // 三个点之间速度<4m/s 认为是静止状态
-        // 三个点之间速度>40m/s 认为是超速状态
 
-        TraceLocation location;
+        // 1. 3个点之间时间线递增
+        // 2. 3个点距离平均值 大于 30米
+
+        TraceLocation loc1,loc2,loc3;
         LatLng pre,cur,bak;
-        long preTime,curTime,bakTime;
-        float difPre,difBak;//时间改变量
-        float toPre,toBak;//距离改变量
-        float vPre,vBak;//速度
-        float aver;//速度平均值
-        boolean flag;
-
-
+        long preTime,curTime,bakTime; //时间
+        float preToCur,curToBak,aver;//两段距离改变量和平均值
+        //需要删除的点下标
         List<Integer> delIndex = new ArrayList<>();
+
         for (int i = 0; i < path.size(); i++){
-            flag = false;
-            if (i+2>=path.size()) break;
 
-            location = path.get(i);
-            pre = new LatLng(location.getLatitude(),location.getLongitude());
-            preTime = location.getTime();
+            if (i+2>=path.size()) break; //三个循环一次
 
-            location = path.get(i+1);
-            cur = new LatLng(location.getLatitude(),location.getLongitude());
-            curTime = location.getTime();
+            loc1 = path.get(i);
+            pre = new LatLng(loc1.getLatitude(),loc1.getLongitude());
+            preTime = loc1.getTime();
 
-            location = path.get(i+2);
-            bak = new LatLng(location.getLatitude(),location.getLongitude());
-            bakTime = location.getTime();
-//
-            toPre = AMapUtils.calculateLineDistance(pre,cur);//距离改变量,单位米
-            difPre = ( curTime - preTime ) / 1000.0f;//时间改变量
+            loc2 = path.get(i+1);
+            cur = new LatLng(loc2.getLatitude(),loc2.getLongitude());
+            curTime = loc2.getTime();
 
-            toBak = AMapUtils.calculateLineDistance(cur,bak);//距离改变量,单位米
-            difBak = ( bakTime - curTime ) / 1000.0f;//时间改变量
+            loc3 = path.get(i+2);
+            bak = new LatLng(loc3.getLatitude(),loc3.getLongitude());
+            bakTime = loc3.getTime();
 
+            preToCur = AMapUtils.calculateLineDistance(pre,cur);//A-B距离改变量,单位米
+            curToBak = AMapUtils.calculateLineDistance(cur,bak);//B-C距离改变量,单位米
+            aver = (preToCur+curToBak)/2.0f;
 
-            if (toPre<15){
-//                LLog.print("当前: "+ i+"->"+(i+1)+" 距离过短, "+ toPre);
+            //打印
+            LLog.print(i+" -> "+(i+1) +" " +
+                    ",距离: "+ preToCur+ "米," +
+                    "["+ TimeUtil.formatUTC(preTime,"HH:mm:ss")+" - "+ TimeUtil.formatUTC(curTime,"HH:mm:ss")+"]," +
+                    "时间差: "+(curTime - preTime)/1000L+"秒" );
+
+            LLog.print((i+1)+" -> "+(i+2) +" " +
+                    ",距离: "+ curToBak+ "米," +
+                    "["+ TimeUtil.formatUTC(preTime,"HH:mm:ss")+" - "+ TimeUtil.formatUTC(curTime,"HH:mm:ss")+"]," +
+                    "时间差: "+(bakTime - curTime)/1000L+"秒" );
+
+            if (preTime>curTime){
                 delIndex.add(i+1);
                 continue;
             }
-            if (toBak<15){
-//                LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 距离过短, "+toBak);
+            if (bakTime>curTime){
                 delIndex.add(i+2);
                 continue;
             }
-
-
-            if (difPre<=0){
-//                LLog.print("当前: "+ i+"->"+(i+1)+" 时间线异常, "+ difPre);
-                delIndex.add(i+1);
-                continue;
-            }
-
-            if (difBak<=0){
-//                LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 时间线异常, "+difBak);
-                delIndex.add(i+2);
-                continue;
-            }
-
-            if (difPre > (30*60) || difBak > (30*60)){
-//                LLog.print("当前: "+ (i)+"->"+(i+2)+" 其中一个时间线过长 "+difPre+" , "+ difBak);
-                if (AMapUtils.calculateLineDistance(pre,bak)<100){
+            if (aver<50){
+                if (preToCur-curToBak < 0 ){
                     delIndex.add(i+1);
-                }else if (toPre>100 && toPre<500){
-                    delIndex.add(i+1);
+                }else{
+                    delIndex.add(i+2);
                 }
-                continue;
             }
 
-            vPre = toPre/difPre;
-            vBak = toBak/difBak;
-            aver = (vPre + vBak)/2;
-
-//            LLog.print("当前: "+ i+"->"+(i+1)+" 速度 => "+ toPre+"/"+difPre+"="+vPre);
-//            LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 速度 => "+ toBak+"/"+difBak+"="+vBak);
-//            LLog.print("当前距离速度平均值:"+aver );
-
-            if (Double.isNaN(vPre)  ||Double.isInfinite(vPre)){
-                flag = true;
-            }else if (Double.isNaN(vBak) || Double.isInfinite(vBak)){
-                flag = true;
-            }else if ( aver < 0.65 ){
-                flag = true;
-            }
-            if (flag) delIndex.add(i+1);
         }
+
         int delCount = 0;
         for (int index : delIndex){
-            location = path.remove(index-delCount);
+            path.remove(index-delCount);
             delCount++;
-            LLog.print("删除: index="+index );
-        }
-        if (path.size() == 2) {
-            location = path.get(0);
-            pre = new LatLng(location.getLatitude(),location.getLongitude());
-            location = path.get(1);
-            bak = new LatLng(location.getLatitude(),location.getLongitude());
-            if (AMapUtils.calculateLineDistance(pre,bak) <= 50 && (location.getBearing() == 0 && location.getSpeed() == 0) ) path.remove(1);
-            if (delCount>0) {
-                filterPath(path);
-            }
         }
 
-
+        if (delCount>0) filterPath(path);
     }
 }
