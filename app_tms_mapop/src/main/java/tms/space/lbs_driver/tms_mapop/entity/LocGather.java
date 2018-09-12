@@ -8,6 +8,7 @@ import com.amap.api.trace.TraceLocation;
 import com.google.gson.reflect.TypeToken;
 import com.leezp.lib.util.JsonUti;
 import com.leezp.lib.util.StrUtil;
+import com.leezp.lib.util.TimeUtil;
 import com.leezp.lib_log.LLog;
 
 import java.util.ArrayList;
@@ -62,19 +63,29 @@ public class LocGather implements AMapLocationListener {
         );
         path.add(traceLocation);//添加轨迹点
 
-        //对规矩点进行筛选
+        //对点进行筛选
         filterPath(path);
-
+        printDistance(path);
         //设置等待轨迹纠偏次数+1
         bean.settCode(bean.gettCode() + 1);
         bean.setTrack(JsonUti.javaBeanToJson(path));
         int result = db.updateTrack(bean);
         if (result == 0){
-            LLog.print("记录原始轨迹点成功,当前数量:"+path.size());
+            LLog.print(bean.getId()+"记录原始轨迹点成功,当前数量:"+path.size());
         }else{
-            LLog.print("数据库记录轨迹点失败");
+            LLog.print(bean.getId()+"数据库记录轨迹点失败");
         }
 
+    }
+
+    private void printDistance(List<TraceLocation> path) {
+        LatLng pre,cur;
+        for (int i = 0; i < path.size() ; i++ ){
+            if (i+1 >= path.size()) break;
+            pre = new LatLng(path.get(i).getLatitude(),path.get(i).getLongitude());
+            cur = new LatLng(path.get(i+1).getLatitude(),path.get(i+1).getLongitude());
+            LLog.print(i+" -> "+(i+1) +" , 距离: "+ AMapUtils.calculateLineDistance(pre,cur)+ " - "+ TimeUtil.formatUTC(path.get(i).getTime(),"HH:mm:ss")+" - "+ TimeUtil.formatUTC(path.get(i+1).getTime(),"HH:mm:ss")+",时间差: "+(path.get(i+1).getTime() - path.get(i).getTime())/1000L+"秒" );
+        }
     }
 
 
@@ -118,31 +129,31 @@ public class LocGather implements AMapLocationListener {
 
 
             if (toPre<15){
-                LLog.print("当前: "+ i+"->"+(i+1)+" 距离过短, "+ toPre);
+//                LLog.print("当前: "+ i+"->"+(i+1)+" 距离过短, "+ toPre);
                 delIndex.add(i+1);
                 continue;
             }
             if (toBak<15){
-                LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 距离过短, "+toBak);
+//                LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 距离过短, "+toBak);
                 delIndex.add(i+2);
                 continue;
             }
 
 
             if (difPre<=0){
-                LLog.print("当前: "+ i+"->"+(i+1)+" 时间线异常, "+ difPre);
+//                LLog.print("当前: "+ i+"->"+(i+1)+" 时间线异常, "+ difPre);
                 delIndex.add(i+1);
                 continue;
             }
 
             if (difBak<=0){
-                LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 时间线异常, "+difBak);
+//                LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 时间线异常, "+difBak);
                 delIndex.add(i+2);
                 continue;
             }
 
             if (difPre > (30*60) || difBak > (30*60)){
-                LLog.print("当前: "+ (i)+"->"+(i+2)+" 其中一个时间线过长 "+difPre+" , "+ difBak);
+//                LLog.print("当前: "+ (i)+"->"+(i+2)+" 其中一个时间线过长 "+difPre+" , "+ difBak);
                 if (AMapUtils.calculateLineDistance(pre,bak)<100){
                     delIndex.add(i+1);
                 }else if (toPre>100 && toPre<500){
@@ -155,9 +166,9 @@ public class LocGather implements AMapLocationListener {
             vBak = toBak/difBak;
             aver = (vPre + vBak)/2;
 
-            LLog.print("当前: "+ i+"->"+(i+1)+" 速度 => "+ toPre+"/"+difPre+"="+vPre);
-            LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 速度 => "+ toBak+"/"+difBak+"="+vBak);
-            LLog.print("当前距离速度平均值:"+aver );
+//            LLog.print("当前: "+ i+"->"+(i+1)+" 速度 => "+ toPre+"/"+difPre+"="+vPre);
+//            LLog.print("当前: "+ (i+1)+"->"+(i+2)+" 速度 => "+ toBak+"/"+difBak+"="+vBak);
+//            LLog.print("当前距离速度平均值:"+aver );
 
             if (Double.isNaN(vPre)  ||Double.isInfinite(vPre)){
                 flag = true;
@@ -172,26 +183,17 @@ public class LocGather implements AMapLocationListener {
         for (int index : delIndex){
             location = path.remove(index-delCount);
             delCount++;
-            LLog.print("删除: index="+index +" - " + JsonUti.javaBeanToJson(location));
+            LLog.print("删除: index="+index );
         }
         if (path.size() == 2) {
             location = path.get(0);
             pre = new LatLng(location.getLatitude(),location.getLongitude());
             location = path.get(1);
             bak = new LatLng(location.getLatitude(),location.getLongitude());
-            if (AMapUtils.calculateLineDistance(pre,bak)<=100 && (location.getBearing() == 0 && location.getSpeed() == 0) ) path.remove(1);
+            if (AMapUtils.calculateLineDistance(pre,bak) <= 50 && (location.getBearing() == 0 && location.getSpeed() == 0) ) path.remove(1);
             if (delCount>0) {
                 filterPath(path);
-            }else{
-
-                for (int i = 0; i < path.size() ; i++ ){
-                    if (i+1 >= path.size()) break;
-                    pre = new LatLng(path.get(i).getLatitude(),path.get(i).getLongitude());
-                    cur = new LatLng(path.get(i+1).getLatitude(),path.get(i+1).getLongitude());
-                    LLog.print(i+" -> "+(i+1) +" , "+ AMapUtils.calculateLineDistance(pre,cur)+ "time: "+(path.get(i+1).getTime() - path.get(i).getTime())/1000L );
-                }
             }
-
         }
 
 

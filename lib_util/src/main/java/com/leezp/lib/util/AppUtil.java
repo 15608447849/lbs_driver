@@ -115,7 +115,7 @@ public class AppUtil {
         if (cm != null) {
             try {
                 return cm.getActiveNetworkInfo().isAvailable();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
         return false;

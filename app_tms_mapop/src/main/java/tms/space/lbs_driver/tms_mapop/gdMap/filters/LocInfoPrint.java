@@ -1,5 +1,7 @@
 package tms.space.lbs_driver.tms_mapop.gdMap.filters;
 
+import android.util.Log;
+
 import com.amap.api.location.AMapLocation;
 import com.leezp.lib.util.StrUtil;
 import com.leezp.lib.util.TimeUtil;
@@ -33,6 +35,7 @@ public class LocInfoPrint extends FilterAbs {
                 (StrUtil.validate(location.getLocationQualityReport().getAdviseMessage())? ",建议:" + location.getLocationQualityReport().getAdviseMessage():"")+
                 (StrUtil.validate(location.getAddress())? ",地址:" + location.getAddress():"");
         LLog.print(string);
+//        Log.d("坐标",string);
         return false;
     }
 }

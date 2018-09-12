@@ -33,19 +33,19 @@ public class LocDistanceFilter extends FilterAbs {
             float distance = AMapUtils.calculateLineDistance(s,d);//距离改变量,单位米
 
             if (distance <= intervalMin ) {
-                LLog.print("距离改变量不合格: "+ distance+" 米,最小距离改变:"+intervalMin+"米");
+//                LLog.print("距离改变量不合格: "+ distance+" 米,最小距离改变:"+intervalMin+"米");
                 return true;
             }
             float rangerMax = Math.min(prev.getAccuracy(),location.getAccuracy());
             if (distance> rangerMax){
                 float timeDiff = (location.getTime() - prev.getTime()) / 1000.0f;
                 if (timeDiff<=0) {
-                    LLog.print("距离改变量不合格: "+ distance+" 米,时间改变差:"+timeDiff);
+//                    LLog.print("距离改变量不合格: "+ distance+" 米,时间改变差:"+timeDiff);
                     return true;
                 }else{
                     float v = distance/timeDiff; // m/s ,车辆速度最大值  50米/秒(m/s)=180千米/时(km/h)
                     if (v>50){
-                        LLog.print("距离改变量不合格: "+ distance+" 米,速度过大:"+v+"m/s");
+//                        LLog.print("距离改变量不合格: "+ distance+" 米,速度过大:"+v+"m/s");
                         return true;
                     }
                 }

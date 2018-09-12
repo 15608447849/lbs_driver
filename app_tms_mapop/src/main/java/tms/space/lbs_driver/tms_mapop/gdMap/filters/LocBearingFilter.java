@@ -26,7 +26,7 @@ public class LocBearingFilter extends FilterAbs {
         }
         //角度小于或等于指定角度
         if (location.getBearing() <= bearing) {
-            LLog.print("角度不合格: "+ location.getBearing()+",最小角度:"+bearing);
+//            LLog.print("角度不合格: "+ location.getBearing()+",最小角度:"+bearing);
             return true;
         }
         return false;

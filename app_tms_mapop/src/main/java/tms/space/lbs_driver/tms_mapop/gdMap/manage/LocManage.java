@@ -42,7 +42,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     //30s间隔采集网络定位
     private static class LoopNetWorkLocation extends Thread {
-        private final long interval =  10 * 1000L; // 10秒一次
+        private final long interval =  2 * 1000L; // 10秒一次
         private LocManage locManage;
 
         LoopNetWorkLocation(LocManage locManage) {
@@ -94,7 +94,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
     //创建基础坐标过滤
     private IFilter<AMapLocation> createBaseFilter() {
         LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
-            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("1#"));//信息打印
+
             locErrorCodeFilter.setNext(new LocTypeFilter()); //GPS和wifi类型过滤
             locErrorCodeFilter.setNext(new LocSatellitesFilter()); //卫星数过滤
             locErrorCodeFilter.setNext(new LocAccuracyFilter());//精度范围过滤
@@ -102,7 +102,7 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
             locErrorCodeFilter.setNext(new LocBearingFilter());//角度过滤
             locErrorCodeFilter.setNext(new LocTimeFilter());//时间差过滤
             locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤
-
+        locErrorCodeFilter.setNext(new LocInfoPrint().setTag("1#"));//信息打印
 
         return locErrorCodeFilter;
     }
@@ -110,10 +110,11 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     private IFilter<AMapLocation> createOnceFilter() {
         LocErrorCodeFilter locErrorCodeFilter =  new LocErrorCodeFilter();
-            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("2#"));//信息打印
+
+            locErrorCodeFilter.setNext(new LocAccuracyFilter().setAccuracy(100));//精度过滤
             locErrorCodeFilter.setNext(new LocAddressNameFilter());//地名过滤
             locErrorCodeFilter.setNext(new LocDistanceFilter());//距离过滤
-
+            locErrorCodeFilter.setNext(new LocInfoPrint().setTag("2#"));//信息打印
         return locErrorCodeFilter;
     }
 
@@ -154,16 +155,16 @@ public class LocManage extends ILocationAbs<AMapLocationClient,AMapLocationListe
 
     @Override
     public void stopLoc() {
-         mLocationClient.stopLocation();
+        if (isLaunchLoc){
+            mLocationClient.stopLocation();
+            isLaunchLoc = false;
+        }
+
     }
 
     @Override
     public void closeClient(){
-        if (isLaunchLoc){
-            mLocationClient.onDestroy(); // 高德定位客户端销毁
-            isLaunchLoc = false;
-        }
-
+        if (mLocationClient.isStarted())  mLocationClient.onDestroy(); // 高德定位客户端销毁
     }
 
     @Override

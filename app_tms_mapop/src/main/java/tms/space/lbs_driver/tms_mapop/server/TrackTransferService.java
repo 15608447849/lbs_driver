@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.amap.api.location.AMapLocation;
 import com.leezp.lib.util.AppUtil;
@@ -105,23 +106,24 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         build.setGroup(getNotificationGroupKey());
         return build.autoGenerateNotification(
                 getNotificationTitle(),
-                "请在设置中打开定位功能",
+                "您好,请在设置中打开定位功能,避免影响您的行程录入",
                 getNotificationInfo(),
                 getNotificationIcon(),
-                Notification.DEFAULT_ALL);
+                Notification.DEFAULT_LIGHTS);
     }
 
-    private FrontNotification createInfoNotify(String error) {
-        FrontNotification.Build build = new FrontNotification.Build(getApplicationContext(),500);
-        // 打开GPS设置界面
+
+    private void createInfoNotify(String error,int id) {
+        FrontNotification.Build build = new FrontNotification.Build(getApplicationContext(),id);
         build.setFlags(new int[]{Notification.FLAG_INSISTENT,Notification.FLAG_AUTO_CANCEL});
         build.setGroup(getNotificationGroupKey());
-        return build.autoGenerateNotification(
+        build.autoGenerateNotification(
                 getNotificationTitle(),
                 error,
                 getNotificationInfo(),
                 getNotificationIcon(),
-                Notification.DEFAULT_LIGHTS);
+                Notification.DEFAULT_LIGHTS)
+                .showNotification();
     }
 
     @Nullable
@@ -144,7 +146,7 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
 
     @Override
     public String getNotificationContent() {
-        return getApplication().getString(R.string.app_name)+" 正在为您服务";
+        return getApplication().getString(R.string.app_name)+" 正在为您服务,点击查看当前轨迹情况";
     }
     protected String getNotificationInfo() {
         return "谢谢使用";
@@ -180,19 +182,26 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         for (TrackDbBean item : list) {
             if (item.getState() > 0) validCount--;
         }
+
         if (user != null ){
             if (validCount > 0){
-                checkGps();//检查GPS
-                launchClient();//启动定位服务
-                locDataCorrection(user,list);//数据纠偏
+                checkGps();//检查GPS-提示通知
+                if (AppUtil.isNetworkAvailable(getApplicationContext())){
+                    launchClient();//启动定位服务
+                }else{
+                    stopClient();//停止定位服务
+                }
             }else{
                 stopClient();//停止定位服务
             }
+            locDataCorrection(user,list);//数据纠偏
             iceTransfer(user,list);//数据传输
         }else{
             stopClient();//停止定位服务
         }
     }
+
+
 
     /** 检查GPS */
     private void checkGps() {
@@ -202,6 +211,7 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
             gpsNotify.cancelNotification();
         }
     }
+
 
     /**启动客户端*/
     private void launchClient() {
@@ -261,7 +271,11 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
             if (result == 0){
                 if (b.gettCode() == b.getcCode()){
                     int del = db.deleteTrack(b.getId());
-                    if (del == 0) LLog.print("订单(" + b.getOrderId()+ ")删除成功");
+
+                    if (del == 0) {
+                        LLog.print("订单(" + b.getOrderId()+ ")删除成功");
+                        createInfoNotify("订单"+b.getOrderId()+"已停止轨迹收集",500+b.getId());
+                    }
                 }
             }
         }
@@ -272,10 +286,9 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
     @Override
     public void onFilterError(AMapLocation location) {
         try {
-            String[] error = location.getErrorInfo().split("\\s+");
-            StringBuilder stringBuffer = new StringBuilder();
-            for (int i=0;i<error.length-1;i++) stringBuffer.append(error[i]);
-            createInfoNotify(stringBuffer.toString()).showNotification();
+//            String[] error = location.getErrorInfo().split("\\s+");
+//            StringBuilder stringBuffer = new StringBuilder();
+//            for (int i=0;i<error.length-1;i++) stringBuffer.append(error[i]);
             locManage.networkLocationOnce(false);
         } catch (Exception e) {
             e.printStackTrace();

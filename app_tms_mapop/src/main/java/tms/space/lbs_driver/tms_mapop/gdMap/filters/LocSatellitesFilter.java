@@ -22,7 +22,7 @@ public class LocSatellitesFilter  extends FilterAbs {
     public boolean intercept(AMapLocation location) {
         //卫星数过滤
         if (location.getLocationType() == AMapLocation.LOCATION_TYPE_GPS && location.getSatellites() < satellites){
-            LLog.print("卫星数量不合格: "+ location.getSatellites()+",最小卫星数:"+satellites);
+//            LLog.print("卫星数量不合格: "+ location.getSatellites()+",最小卫星数:"+satellites);
             return true;
         }
         return false;

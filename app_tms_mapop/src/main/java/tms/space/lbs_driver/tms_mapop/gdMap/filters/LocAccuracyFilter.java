@@ -22,7 +22,7 @@ public class LocAccuracyFilter extends FilterAbs {
     public boolean intercept(AMapLocation location) {
         //精度范围过滤
         if (location.getAccuracy() > accuracy){
-            LLog.print("精度范围不合格: "+location.getAccuracy()+",有效范围:"+accuracy);
+//            LLog.print("精度范围不合格: "+location.getAccuracy()+",有效范围:"+accuracy);
             return true;
         }
         return false;

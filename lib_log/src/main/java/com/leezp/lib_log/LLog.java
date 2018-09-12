@@ -184,8 +184,7 @@ public class LLog{
 
     private static void consolePrint(StringBuffer stringBuffer) {
         if (!build.isWriteConsole) return;
-        Log.println(build.level,build.tag,build.BLANK);
-        Log.println(build.level,build.tag,stringBuffer.toString());
+        Log.println(build.level,build.tag,"\n"+stringBuffer.toString());
     }
 
     private static void filePrint(StringBuffer stringBuffer) throws Exception {

@@ -25,7 +25,7 @@ public class LocSpeedFilter extends FilterAbs {
         }
         //速度小于或者等于指定速度
         if (location.getSpeed() <= speed) {
-            LLog.print("速度不合格: "+ location.getSpeed()+",最小速度:"+speed);
+//            LLog.print("速度不合格: "+ location.getSpeed()+",最小速度:"+speed);
             return true;
         }
         return false;

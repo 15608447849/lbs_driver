@@ -18,7 +18,7 @@ public class LocErrorCodeFilter extends FilterAbs {
     public boolean intercept(AMapLocation aMapLocation) {
 
         if (aMapLocation.getErrorCode() != 0){
-            LLog.print("错误码: " +aMapLocation.getErrorInfo());
+//            LLog.print("错误码: " +aMapLocation.getErrorInfo());
             if (filterError!=null){
                 filterError.onFilterError(aMapLocation);
             }

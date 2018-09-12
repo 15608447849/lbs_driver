@@ -33,7 +33,7 @@ public class LocTypeFilter extends FilterAbs {
                 break;
             }
         }
-        if (isFilter) LLog.print("数据类型不合格: "+ location.getLocationType()+",可用类型:"+ Arrays.toString(type));
+//        if (isFilter) LLog.print("数据类型不合格: "+ location.getLocationType()+",可用类型:"+ Arrays.toString(type));
         return isFilter;
     }
 }

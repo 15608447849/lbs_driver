@@ -212,6 +212,10 @@ public class GdMapUtils {
                 count++;
 
                 if (aMapLocation != null && aMapLocation.getErrorCode() == 0){
+                    if (aMapLocation.getTime() - System.currentTimeMillis() > (30*1000L)){
+                        aMapLocation.setTime(System.currentTimeMillis());
+                    }
+
                     result[0] = aMapLocation;
                 }else if (count!=10){
                     return;

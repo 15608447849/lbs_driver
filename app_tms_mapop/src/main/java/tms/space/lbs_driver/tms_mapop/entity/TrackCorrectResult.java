@@ -23,6 +23,8 @@ import tms.space.lbs_driver.tms_mapop.db.TrackDb;
 
 public class TrackCorrectResult implements TraceListener {
 
+    private static final boolean isCorrect = false;
+
     private LBSTraceClient lbsTraceClient;
     private TrackDb db;
     private TrackDbBean bean;
@@ -61,13 +63,18 @@ public class TrackCorrectResult implements TraceListener {
 //        LLog.print("纠偏失败 id="+id+" ,原因:\n"+cause);
         //获取原始轨迹->纠偏点
         bean.setCorrect(convertTrace(bean.getTrack()));
-        errorCount++ ;
-        if (errorCount > 10){
+        if (isCorrect){
+            errorCount++ ;
+            if (errorCount > 10){
+                dataUpdate(true);
+                errorCount = 0;
+            }else {
+                dataUpdate(false);
+            }
+        }else{
             dataUpdate(true);
-            errorCount = 0;
-        }else {
-            dataUpdate(false);
         }
+
         threadRouse();
     }
 
@@ -114,16 +121,20 @@ public class TrackCorrectResult implements TraceListener {
                 if (StrUtil.validate(json)){
                     List<TraceLocation> path = JsonUti.jsonToJavaBean(json,new TypeToken<List<TraceLocation>>(){}.getType());
                     if (path!=null){
-                        preformPath(path);
-                        if (path.size()>=10){
-                            lbsTraceClient.queryProcessedTrace(
-                                    bean.getId(),
-                                    path,
-                                    LBSTraceClient.TYPE_AMAP,
-                                    this);
-                            threadWait();
+//                        preformPath(path);
+                        if (isCorrect){
+                            if (path.size() >= 2){
+                                lbsTraceClient.queryProcessedTrace(
+                                        bean.getId(),
+                                        path,
+                                        LBSTraceClient.TYPE_AMAP,
+                                        this);
+                                threadWait();
+                            }else{
+                                onRequestFailed(bean.getId(),"轨迹点过少,无法执行纠偏操作,当前有效轨迹数量:"+path.size());
+                            }
                         }else{
-                            onRequestFailed(bean.getId(),"轨迹点过少,无法执行纠偏操作,当前有效轨迹数量:"+path.size());
+                            onRequestFailed(bean.getId(),"禁止纠偏操作");
                         }
 
                     }

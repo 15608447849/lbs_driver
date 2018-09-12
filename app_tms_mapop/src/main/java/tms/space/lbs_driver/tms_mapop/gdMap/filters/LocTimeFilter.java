@@ -25,7 +25,7 @@ public class LocTimeFilter extends FilterAbs {
         if (location .getLocationType() == AMapLocation.LOCATION_TYPE_GPS && prev!=null) {
             long value = location.getTime() - prev.getTime();
             if (value<= timeDifference){
-                LLog.print("时间差不合格: "+ location.getBearing()+",最小时间差:"+timeDifference+"毫秒");
+//                LLog.print("时间差不合格: "+ location.getBearing()+",最小时间差:"+timeDifference+"毫秒");
                 return true;
             }
         }
