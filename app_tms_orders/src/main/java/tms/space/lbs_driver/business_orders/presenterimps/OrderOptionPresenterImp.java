@@ -47,6 +47,7 @@ public class OrderOptionPresenterImp<V extends OrderDetailContract.View> extends
         if (view!=null) view.showProgress();
         isExecute = true;
         OrderComplex complex = model.queryOrderInfo(
+                orderInfo.getUser().getUserCode(),
                 orderInfo.getComp().compid,
                 orderInfo.getInfo().orderNo);
         if (complex!=null){

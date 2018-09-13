@@ -122,9 +122,9 @@ public abstract class _DriverServiceDisp extends Ice.ObjectImpl implements Drive
      * enterpriseid 企业号
      * info 订单对象
      **/
-    public final OrderComplex driverQueryOrderInfo(int enterpriseid, long orderNo)
+    public final OrderComplex driverQueryOrderInfo(int userid, int enterpriseid, long orderNo)
     {
-        return driverQueryOrderInfo(enterpriseid, orderNo, null);
+        return driverQueryOrderInfo(userid, enterpriseid, orderNo, null);
     }
 
     /**
@@ -268,12 +268,14 @@ public abstract class _DriverServiceDisp extends Ice.ObjectImpl implements Drive
     {
         __checkMode(Ice.OperationMode.Idempotent, __current.mode);
         IceInternal.BasicStream __is = __inS.startReadParams();
+        int userid;
         int enterpriseid;
         long orderNo;
+        userid = __is.readInt();
         enterpriseid = __is.readInt();
         orderNo = __is.readLong();
         __inS.endReadParams();
-        OrderComplex __ret = __obj.driverQueryOrderInfo(enterpriseid, orderNo, __current);
+        OrderComplex __ret = __obj.driverQueryOrderInfo(userid, enterpriseid, orderNo, __current);
         IceInternal.BasicStream __os = __inS.__startWriteParams(Ice.FormatType.DefaultFormat);
         OrderComplex.__write(__os, __ret);
         __inS.__endWriteParams(true);

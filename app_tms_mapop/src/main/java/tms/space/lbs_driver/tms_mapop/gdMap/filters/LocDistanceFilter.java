@@ -44,7 +44,7 @@ public class LocDistanceFilter extends FilterAbs {
             LatLng s =  new LatLng(prev.getLatitude(), prev.getLatitude());
             LatLng d = new LatLng(location.getLatitude(), location.getLatitude());
             float distance = AMapUtils.calculateLineDistance(s,d);//距离改变量,单位米
-            LLog.print("距离改变量: "+ distance+" 米");
+//            LLog.print("距离改变量: "+ distance+" 米");
             if (distance < intervalMin ) {
 //                LLog.print("距离改变量过小: "+ distance+" 米");
                 if (distance<3) {
@@ -82,7 +82,8 @@ public class LocDistanceFilter extends FilterAbs {
                 if (time <= 0) {
                     //LLog.print("时间异常: " + time);
                     return true;
-                }else{
+                }
+                else{
 //                    prev.setTime(location.getTime());
                     float speed = distance/time; // m/s ,车辆速度最大值  50米/秒(m/s)=180千米/时(km/h)
                     if (speed < 1.5){
@@ -100,7 +101,6 @@ public class LocDistanceFilter extends FilterAbs {
         }
         LLog.print("移动状态");
         prev = location;
-
         return false;
     }
 }

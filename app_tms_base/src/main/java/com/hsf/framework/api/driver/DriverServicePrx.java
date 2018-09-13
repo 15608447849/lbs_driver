@@ -637,7 +637,7 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * enterpriseid 企业号
      * info 订单对象
      **/
-    public OrderComplex driverQueryOrderInfo(int enterpriseid, long orderNo);
+    public OrderComplex driverQueryOrderInfo(int userid, int enterpriseid, long orderNo);
 
     /**
      * 查询单个订单的详情信息
@@ -645,7 +645,7 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * info 订单对象
      * @param __ctx The Context map to send with the invocation.
      **/
-    public OrderComplex driverQueryOrderInfo(int enterpriseid, long orderNo, java.util.Map<String, String> __ctx);
+    public OrderComplex driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, java.util.Map<String, String> __ctx);
 
     /**
      * 查询单个订单的详情信息
@@ -653,7 +653,7 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * info 订单对象
      * @return The asynchronous result object.
      **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo);
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo);
 
     /**
      * 查询单个订单的详情信息
@@ -662,7 +662,7 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * @param __ctx The Context map to send with the invocation.
      * @return The asynchronous result object.
      **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, java.util.Map<String, String> __ctx);
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, java.util.Map<String, String> __ctx);
 
     /**
      * 查询单个订单的详情信息
@@ -671,26 +671,7 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * @param __cb The asynchronous callback object.
      * @return The asynchronous result object.
      **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, Ice.Callback __cb);
-
-    /**
-     * 查询单个订单的详情信息
-     * enterpriseid 企业号
-     * info 订单对象
-     * @param __ctx The Context map to send with the invocation.
-     * @param __cb The asynchronous callback object.
-     * @return The asynchronous result object.
-     **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, Ice.Callback __cb);
-
-    /**
-     * 查询单个订单的详情信息
-     * enterpriseid 企业号
-     * info 订单对象
-     * @param __cb The asynchronous callback object.
-     * @return The asynchronous result object.
-     **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, Callback_DriverService_driverQueryOrderInfo __cb);
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, Ice.Callback __cb);
 
     /**
      * 查询单个订单的详情信息
@@ -700,7 +681,26 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * @param __cb The asynchronous callback object.
      * @return The asynchronous result object.
      **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, Callback_DriverService_driverQueryOrderInfo __cb);
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, Ice.Callback __cb);
+
+    /**
+     * 查询单个订单的详情信息
+     * enterpriseid 企业号
+     * info 订单对象
+     * @param __cb The asynchronous callback object.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, Callback_DriverService_driverQueryOrderInfo __cb);
+
+    /**
+     * 查询单个订单的详情信息
+     * enterpriseid 企业号
+     * info 订单对象
+     * @param __ctx The Context map to send with the invocation.
+     * @param __cb The asynchronous callback object.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, Callback_DriverService_driverQueryOrderInfo __cb);
 
     /**
      * 查询单个订单的详情信息
@@ -710,7 +710,8 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * @param __exceptionCb The lambda exception callback.
      * @return The asynchronous result object.
      **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                      int enterpriseid, 
                                                       long orderNo, 
                                                       IceInternal.Functional_GenericCallback1<OrderComplex> __responseCb, 
                                                       IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb);
@@ -724,7 +725,8 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * @param __sentCb The lambda sent callback.
      * @return The asynchronous result object.
      **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                      int enterpriseid, 
                                                       long orderNo, 
                                                       IceInternal.Functional_GenericCallback1<OrderComplex> __responseCb, 
                                                       IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb, 
@@ -739,7 +741,8 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * @param __exceptionCb The lambda exception callback.
      * @return The asynchronous result object.
      **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                      int enterpriseid, 
                                                       long orderNo, 
                                                       java.util.Map<String, String> __ctx, 
                                                       IceInternal.Functional_GenericCallback1<OrderComplex> __responseCb, 
@@ -755,7 +758,8 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * @param __sentCb The lambda sent callback.
      * @return The asynchronous result object.
      **/
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                      int enterpriseid, 
                                                       long orderNo, 
                                                       java.util.Map<String, String> __ctx, 
                                                       IceInternal.Functional_GenericCallback1<OrderComplex> __responseCb, 

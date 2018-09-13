@@ -66,7 +66,7 @@ public interface _DriverServiceOperations
      * info 订单对象
      * @param __current The Current object for the invocation.
      **/
-    OrderComplex driverQueryOrderInfo(int enterpriseid, long orderNo, Ice.Current __current);
+    OrderComplex driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, Ice.Current __current);
 
     /**
      * 查询单个订单的状态

@@ -154,7 +154,7 @@
         *   enterpriseid 企业号
         *   info 订单对象
         */
-        idempotent OrderComplex driverQueryOrderInfo(int enterpriseid,long orderNo);
+        idempotent OrderComplex driverQueryOrderInfo(int userid,int enterpriseid,long orderNo);
 
          /**
          查询单个订单的状态

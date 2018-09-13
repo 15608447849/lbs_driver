@@ -47,7 +47,7 @@ public class LocGather implements AMapLocationListener {
         if (bean.getState() > 0) {
             return; //不收集轨迹数据
         }
-        LLog.print("\n"+bean.getId()+" 开始处理原始轨迹点");
+//        LLog.print("\n"+bean.getId()+" 开始处理原始轨迹点");
         List<TraceLocation> path = null;
         String json = bean.getTrack();
         if (StrUtil.validate(json)){
@@ -71,7 +71,7 @@ public class LocGather implements AMapLocationListener {
         bean.setTrack(JsonUti.javaBeanToJson(path));
         int result = db.updateTrack(bean);
         if (result == 0){
-            LLog.print(bean.getId()+" 记录原始轨迹点成功,当前数量:"+path.size()+"\n");
+//            LLog.print(bean.getId()+" 记录原始轨迹点成功,当前数量:"+path.size()+"\n");
         }else{
             LLog.print(bean.getId()+" 数据库记录轨迹点失败");
         }
@@ -113,15 +113,15 @@ public class LocGather implements AMapLocationListener {
             aver = (preToCur+curToBak)/2.0f;
 
             //打印
-            LLog.print(i+" -> "+(i+1) +" " +
-                    ",距离: "+ preToCur+ "米," +
-                    "["+ TimeUtil.formatUTC(preTime,"HH:mm:ss")+" - "+ TimeUtil.formatUTC(curTime,"HH:mm:ss")+"]," +
-                    "时间差: "+(curTime - preTime)/1000L+"秒" );
-
-            LLog.print((i+1)+" -> "+(i+2) +" " +
-                    ",距离: "+ curToBak+ "米," +
-                    "["+ TimeUtil.formatUTC(curTime,"HH:mm:ss")+" - "+ TimeUtil.formatUTC(bakTime,"HH:mm:ss")+"]," +
-                    "时间差: "+(bakTime - curTime)/1000L+"秒" );
+//            LLog.print(i+" -> "+(i+1) +" " +
+//                    ",距离: "+ preToCur+ "米," +
+//                    "["+ TimeUtil.formatUTC(preTime,"HH:mm:ss")+" - "+ TimeUtil.formatUTC(curTime,"HH:mm:ss")+"]," +
+//                    "时间差: "+(curTime - preTime)/1000L+"秒" );
+//
+//            LLog.print((i+1)+" -> "+(i+2) +" " +
+//                    ",距离: "+ curToBak+ "米," +
+//                    "["+ TimeUtil.formatUTC(curTime,"HH:mm:ss")+" - "+ TimeUtil.formatUTC(bakTime,"HH:mm:ss")+"]," +
+//                    "时间差: "+(bakTime - curTime)/1000L+"秒" );
 
             if (preTime>curTime){
                 delIndex.add(i+1);
@@ -133,7 +133,7 @@ public class LocGather implements AMapLocationListener {
                 LLog.print((i+2) + " 时间异常");
                 break;
             }
-            LLog.print(i+" -> "+(i+2) +" 平均距离:"+aver);
+//            LLog.print(i+" -> "+(i+2) +" 平均距离:"+aver);
             if (aver<5){
                 delIndex.add(i+1);
                 delIndex.add(i+2);

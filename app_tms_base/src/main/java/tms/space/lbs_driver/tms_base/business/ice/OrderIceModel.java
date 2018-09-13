@@ -42,10 +42,10 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
 
     //查询订单详情
     @Override
-    public OrderComplex queryOrderInfo(int enterpriseid,long orderid) {
+    public OrderComplex queryOrderInfo(int userid,int enterpriseid,long orderid) {
         try {
-            printParam("查询订单详情",enterpriseid,orderid);
-            OrderComplex complex = getProxy().driverQueryOrderInfo(enterpriseid,orderid);
+            printParam("查询订单详情",userid,enterpriseid,orderid);
+            OrderComplex complex = getProxy().driverQueryOrderInfo(userid,enterpriseid,orderid);
             if (complex.isValid){
                 printParam(ReflectionTool.reflectionObjectFields(complex));
                 return complex;
@@ -229,7 +229,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
                             return false;
                         }
                         //查询详情
-                        OrderComplex complex = queryOrderInfo(enterpriseid,order.orderNo);
+                        OrderComplex complex = queryOrderInfo(userid,enterpriseid,order.orderNo);
                         if (complex == null){
                             return false;
                         }

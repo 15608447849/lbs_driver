@@ -29,7 +29,7 @@ import tms.space.lbs_driver.tms_mapop.server.TrackTransferService;
  */
 public class LbsApplication extends LeeApplicationAbs {
     //打包使用 0测试环境 1准生产环境 2正式环境
-    private static int envFlag = 1;
+    private static int envFlag = 0;
 
     /**
      * 所有进程需要的初始化操作

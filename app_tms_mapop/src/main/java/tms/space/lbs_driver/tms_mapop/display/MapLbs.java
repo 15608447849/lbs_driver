@@ -20,18 +20,15 @@ import java.util.List;
  * email: 793065165@qq.com
  */
 public class MapLbs implements TraceStatusListener {
-    private Context context;
+
     private LBSTraceClient lbsTraceClient;
-   private AMap aMap;
     private Polyline pathCor;
     private Polyline pathLoc;
-    public MapLbs(Context context, AMap aMap) {
-        this.context = context;
-        this.aMap = aMap;
-        lbsTraceClient = LBSTraceClient.getInstance(context);
 
-        pathLoc = this.aMap.addPolyline(new PolylineOptions().width(5).color(Color.BLUE));
-        pathCor = this.aMap.addPolyline(new PolylineOptions().width(5).color(Color.YELLOW));
+    public MapLbs(Context context, AMap aMap) {
+        lbsTraceClient = LBSTraceClient.getInstance(context);
+        pathLoc = aMap.addPolyline(new PolylineOptions().width(5).color(Color.BLUE));
+        pathCor = aMap.addPolyline(new PolylineOptions().width(5).color(Color.YELLOW));
     }
 
     @Override

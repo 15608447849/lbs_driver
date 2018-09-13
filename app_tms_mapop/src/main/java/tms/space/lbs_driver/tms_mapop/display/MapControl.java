@@ -57,7 +57,7 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
     @SuppressLint("UseSparseArrays")
     private HashMap<Integer,Polyline> lineMap2 = new HashMap<>();
 
-    public MapControl(MapView mapView,Callback mapCallback) {
+    MapControl(MapView mapView,Callback mapCallback) {
         this.aMap = mapView.getMap();
         this.context = mapView.getContext();
         this.mapCallback = mapCallback;
@@ -91,7 +91,6 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
         });
         aMap.setOnMyLocationChangeListener(this);
         aMap.setMyLocationEnabled(true);//可触发定位并显示当前位置
-
     }
 
     public void launch() {
@@ -166,7 +165,7 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
     private Polyline getLine2(int id) {
         Polyline line = lineMap2.get(id);
         if (line == null) {
-            line = createLine(8,Color.RED);
+            line = createLine(12,Color.RED);
             lineMap2.put(id,line);
         }
         return line;

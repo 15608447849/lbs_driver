@@ -19,7 +19,7 @@ public class MapActivity extends BaseActivityAbs implements MapControl.Callback 
     private com.amap.api.maps.MapView gdMapView;
     private TextView textView;
     private MapControl mapControl;
-    private MapLbs lbs;
+//    private MapLbs lbs;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,7 +28,7 @@ public class MapActivity extends BaseActivityAbs implements MapControl.Callback 
         textView = $(R.id.act_map_tv);
         gdMapView.onCreate(savedInstanceState);
         mapControl = new MapControl(gdMapView,this);
-        lbs = new MapLbs(this,gdMapView.getMap());
+//        lbs = new MapLbs(this,gdMapView.getMap());
     }
 
     @Override
@@ -36,7 +36,7 @@ public class MapActivity extends BaseActivityAbs implements MapControl.Callback 
         super.onResume();
         gdMapView.onResume();
         mapControl.launch();
-        lbs.launch();
+//        lbs.launch();
     }
     @Override
     public void onLowMemory() {
@@ -57,7 +57,7 @@ public class MapActivity extends BaseActivityAbs implements MapControl.Callback 
     @Override
     protected void onDestroy() {
         mapControl.kill();
-        lbs.unLaunch();
+//        lbs.unLaunch();
         gdMapView.onDestroy();
         super.onDestroy();
 

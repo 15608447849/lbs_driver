@@ -761,89 +761,94 @@ public final class DriverServicePrxHelper extends Ice.ObjectPrxHelperBase implem
 
     private static final String __driverQueryOrderInfo_name = "driverQueryOrderInfo";
 
-    public OrderComplex driverQueryOrderInfo(int enterpriseid, long orderNo)
+    public OrderComplex driverQueryOrderInfo(int userid, int enterpriseid, long orderNo)
     {
-        return driverQueryOrderInfo(enterpriseid, orderNo, null, false);
+        return driverQueryOrderInfo(userid, enterpriseid, orderNo, null, false);
     }
 
-    public OrderComplex driverQueryOrderInfo(int enterpriseid, long orderNo, java.util.Map<String, String> __ctx)
+    public OrderComplex driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, java.util.Map<String, String> __ctx)
     {
-        return driverQueryOrderInfo(enterpriseid, orderNo, __ctx, true);
+        return driverQueryOrderInfo(userid, enterpriseid, orderNo, __ctx, true);
     }
 
-    private OrderComplex driverQueryOrderInfo(int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, boolean __explicitCtx)
+    private OrderComplex driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, boolean __explicitCtx)
     {
         __checkTwowayOnly(__driverQueryOrderInfo_name);
-        return end_driverQueryOrderInfo(begin_driverQueryOrderInfo(enterpriseid, orderNo, __ctx, __explicitCtx, true, null));
+        return end_driverQueryOrderInfo(begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, __ctx, __explicitCtx, true, null));
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo)
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, null, false, false, null);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, null, false, false, null);
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, java.util.Map<String, String> __ctx)
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, java.util.Map<String, String> __ctx)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, __ctx, true, false, null);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, __ctx, true, false, null);
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, Ice.Callback __cb)
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, Ice.Callback __cb)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, null, false, false, __cb);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, null, false, false, __cb);
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, Ice.Callback __cb)
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, Ice.Callback __cb)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, __ctx, true, false, __cb);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, __ctx, true, false, __cb);
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, Callback_DriverService_driverQueryOrderInfo __cb)
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, Callback_DriverService_driverQueryOrderInfo __cb)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, null, false, false, __cb);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, null, false, false, __cb);
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, Callback_DriverService_driverQueryOrderInfo __cb)
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, int enterpriseid, long orderNo, java.util.Map<String, String> __ctx, Callback_DriverService_driverQueryOrderInfo __cb)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, __ctx, true, false, __cb);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, __ctx, true, false, __cb);
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                      int enterpriseid, 
                                                       long orderNo, 
                                                       IceInternal.Functional_GenericCallback1<OrderComplex> __responseCb, 
                                                       IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, null, false, false, __responseCb, __exceptionCb, null);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, null, false, false, __responseCb, __exceptionCb, null);
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                      int enterpriseid, 
                                                       long orderNo, 
                                                       IceInternal.Functional_GenericCallback1<OrderComplex> __responseCb, 
                                                       IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb, 
                                                       IceInternal.Functional_BoolCallback __sentCb)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, null, false, false, __responseCb, __exceptionCb, __sentCb);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, null, false, false, __responseCb, __exceptionCb, __sentCb);
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                      int enterpriseid, 
                                                       long orderNo, 
                                                       java.util.Map<String, String> __ctx, 
                                                       IceInternal.Functional_GenericCallback1<OrderComplex> __responseCb, 
                                                       IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, __ctx, true, false, __responseCb, __exceptionCb, null);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, __ctx, true, false, __responseCb, __exceptionCb, null);
     }
 
-    public Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    public Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                      int enterpriseid, 
                                                       long orderNo, 
                                                       java.util.Map<String, String> __ctx, 
                                                       IceInternal.Functional_GenericCallback1<OrderComplex> __responseCb, 
                                                       IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb, 
                                                       IceInternal.Functional_BoolCallback __sentCb)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, __ctx, true, false, __responseCb, __exceptionCb, __sentCb);
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, __ctx, true, false, __responseCb, __exceptionCb, __sentCb);
     }
 
-    private Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    private Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                       int enterpriseid, 
                                                        long orderNo, 
                                                        java.util.Map<String, String> __ctx, 
                                                        boolean __explicitCtx, 
@@ -852,7 +857,7 @@ public final class DriverServicePrxHelper extends Ice.ObjectPrxHelperBase implem
                                                        IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb, 
                                                        IceInternal.Functional_BoolCallback __sentCb)
     {
-        return begin_driverQueryOrderInfo(enterpriseid, orderNo, __ctx, __explicitCtx, __synchronous, 
+        return begin_driverQueryOrderInfo(userid, enterpriseid, orderNo, __ctx, __explicitCtx, __synchronous, 
                                           new IceInternal.Functional_TwowayCallbackArg1<com.hsf.framework.api.driver.OrderComplex>(__responseCb, __exceptionCb, __sentCb)
                                               {
                                                   public final void __completed(Ice.AsyncResult __result)
@@ -862,7 +867,8 @@ public final class DriverServicePrxHelper extends Ice.ObjectPrxHelperBase implem
                                               });
     }
 
-    private Ice.AsyncResult begin_driverQueryOrderInfo(int enterpriseid, 
+    private Ice.AsyncResult begin_driverQueryOrderInfo(int userid, 
+                                                       int enterpriseid, 
                                                        long orderNo, 
                                                        java.util.Map<String, String> __ctx, 
                                                        boolean __explicitCtx, 
@@ -875,6 +881,7 @@ public final class DriverServicePrxHelper extends Ice.ObjectPrxHelperBase implem
         {
             __result.prepare(__driverQueryOrderInfo_name, Ice.OperationMode.Idempotent, __ctx, __explicitCtx, __synchronous);
             IceInternal.BasicStream __os = __result.startWriteParams(Ice.FormatType.DefaultFormat);
+            __os.writeInt(userid);
             __os.writeInt(enterpriseid);
             __os.writeLong(orderNo);
             __result.endWriteParams();

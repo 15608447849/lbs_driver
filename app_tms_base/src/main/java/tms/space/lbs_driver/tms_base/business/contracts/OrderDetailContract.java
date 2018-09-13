@@ -26,7 +26,7 @@ public class OrderDetailContract {
     public interface Model{
 
         //获取订单详情
-        OrderComplex queryOrderInfo(int enterpriseid,long orderid);
+        OrderComplex queryOrderInfo(int userid,int enterpriseid,long orderid);
         //查询订单状态
         int queryOrderState(int enterpriseid,long orderid);
         //修改订单状态

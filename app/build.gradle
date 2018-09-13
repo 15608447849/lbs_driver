@@ -6,8 +6,8 @@ android {
         applicationId "tms.space.lbs_driver"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 7
-        versionName "v1.0.7"
+        versionCode 8
+        versionName "v1.0.8"
         resConfigs "zh" //只支持中文
         vectorDrawables.useSupportLibrary = true
         //如果我们没有设置 vectorDrawables.useSupportLibrary = true 的话，则在build项目的时候，gradle会为vcetor创建不同分辨率下的png序列，即预栅格化我们的vector为真正的png图片并会被加入到apk中，无形中增加了apk的大小
@@ -25,6 +25,13 @@ android {
 
     }
     buildToolsVersion '28.0.2'
+}
+android {
+    defaultConfig {
+        ndk {
+            abiFilters  "armeabi-v7a","x86"
+        }
+    }
 }
 dependencies {
     //    implementation fileTree(dir: 'libs', include: ['*.jar'])

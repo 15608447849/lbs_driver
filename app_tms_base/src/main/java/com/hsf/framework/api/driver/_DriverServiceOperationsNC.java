@@ -61,7 +61,7 @@ public interface _DriverServiceOperationsNC
      * enterpriseid 企业号
      * info 订单对象
      **/
-    OrderComplex driverQueryOrderInfo(int enterpriseid, long orderNo);
+    OrderComplex driverQueryOrderInfo(int userid, int enterpriseid, long orderNo);
 
     /**
      * 查询单个订单的状态
