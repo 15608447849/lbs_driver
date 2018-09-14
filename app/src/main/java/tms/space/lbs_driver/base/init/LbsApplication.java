@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.leezp.lib.storege.db.SQLiteStore;
 import com.leezp.lib.update.ApkUpdateConfig;
 import com.leezp.lib.util.AppUtil;
 import com.leezp.lib.util.CrashHandler;
@@ -19,7 +19,6 @@ import com.leezp.lib.zerocice.IceIo;
 import com.leezp.lib_gdmap.GdMapUtils;
 import com.leezp.lib_log.LLog;
 
-import tms.space.lbs_driver.tms_base.storage.DbStore;
 import tms.space.lbs_driver.tms_mapop.server.TrackTransferService;
 
 
@@ -42,7 +41,7 @@ public class LbsApplication extends LeeApplicationAbs {
         //初始化服务器参数信息
         initServiceParams();
         //k-v SqlLite3
-        DbStore.get().init(getApplicationContext());
+        SQLiteStore.get().init(getApplicationContext());
         //高德地图工具库
         GdMapUtils.get().init(getApplicationContext());
     }

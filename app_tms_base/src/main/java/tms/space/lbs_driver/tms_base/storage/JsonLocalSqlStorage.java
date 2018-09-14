@@ -1,5 +1,6 @@
 package tms.space.lbs_driver.tms_base.storage;
 
+import com.leezp.lib.storege.db.SQLiteStore;
 import com.leezp.lib.storege.inf.ICacheMap;
 import com.leezp.lib.storege.obs.IDataObjectAbs;
 import com.leezp.lib.util.JsonUti;
@@ -13,7 +14,7 @@ public abstract class JsonLocalSqlStorage<T> extends IDataObjectAbs<T>{
 
     @Override
     protected ICacheMap<String, String> getStorage() {
-        return DbStore.get().getSql();
+        return SQLiteStore.get().getSql();
     }
 
     @Override

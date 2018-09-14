@@ -97,6 +97,7 @@ public class IceIo implements Closeable {
     }
 
     private HashMap<String,String> params = new HashMap<>();
+
     public void addParams(String k, String v) {
         params.put(k,v);
     }

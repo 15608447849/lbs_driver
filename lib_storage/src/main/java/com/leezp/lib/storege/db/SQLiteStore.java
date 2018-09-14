@@ -1,8 +1,6 @@
-package tms.space.lbs_driver.tms_base.storage;
+package com.leezp.lib.storege.db;
 
 import android.content.Context;
-
-import com.leezp.lib.storege.db.LocalSql;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -13,15 +11,15 @@ import java.io.IOException;
  * string-string (k-v) 数据存储
  */
 
-public class DbStore implements Closeable {
-    private DbStore() {
+public class SQLiteStore implements Closeable {
+    private SQLiteStore() {
     }
 
     private static final class Holder{
-        private final static DbStore DB_STORE = new DbStore();
+        private final static SQLiteStore DB_STORE = new SQLiteStore();
     }
 
-    public static DbStore get(){
+    public static SQLiteStore get(){
         return Holder.DB_STORE;
     }
 
