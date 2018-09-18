@@ -19,7 +19,7 @@ import java.util.List;
 
 public class SpaFragmentOpDefaultImp implements SpaFragmentOperationInterface {
 
-    private static class Helper{
+    private class Helper{
         /**
          * 检测是否存在栈(链表结构)上fragment
          */
@@ -39,7 +39,19 @@ public class SpaFragmentOpDefaultImp implements SpaFragmentOperationInterface {
                 getFragmentStackAll(spaBaseFragment.getNext(),list);
             }
         }
+        /**提交*/
+        private void commit(FragmentTransaction ft){
+            synchronized (this){
+                try{
+                    ft.commit();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    ft.commitAllowingStateLoss();
+                }
+            }
+        }
     }
+
     private Helper h = new Helper();
 
     /**
@@ -91,7 +103,7 @@ public class SpaFragmentOpDefaultImp implements SpaFragmentOperationInterface {
                 flag = true;
             }
         }
-        if (flag) ft.commit();
+        if (flag) h.commit(ft);
         return  flag;
     }
 
@@ -132,7 +144,7 @@ public class SpaFragmentOpDefaultImp implements SpaFragmentOperationInterface {
             stackTop.setNext(newStackTop);
             newStackTop.setPrev(stackTop);
 
-            ft.commit();
+            h.commit(ft);
         }
     }
 
@@ -155,7 +167,7 @@ public class SpaFragmentOpDefaultImp implements SpaFragmentOperationInterface {
                     //隐藏
                     ft.hide(fragment);
                 }
-                ft.commit();
+                h.commit(ft);
                 return true;
             }
         }
@@ -178,7 +190,7 @@ public class SpaFragmentOpDefaultImp implements SpaFragmentOperationInterface {
             for (SpaBaseFragment f:list){
                 ft.remove(f);
             }
-            ft.commit();
+            h.commit(ft);
         }
     }
 
@@ -207,7 +219,7 @@ public class SpaFragmentOpDefaultImp implements SpaFragmentOperationInterface {
                 stackTop.setPrev(null);
                 ft.remove(stackTop);
                 ft.show(prevFragment);
-                ft.commit();
+                h.commit(ft);
             }
         }
     }
@@ -230,6 +242,6 @@ public class SpaFragmentOpDefaultImp implements SpaFragmentOperationInterface {
         for (SpaBaseFragment f:fragmentAll){
             ft.remove(f);
         }
-        ft.commit();
+        h.commit(ft);
     }
 }
