@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         applicationId "tms.space.lbs_driver"
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 8
         versionName "v1.0.8"
         resConfigs "zh" //只支持中文
@@ -34,8 +34,6 @@ android {
     }
 }
 dependencies {
-    //    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    //    implementation 'com.android.support:appcompat-v7:26.1.0'
     //基础模块
     implementation project(':app_tms_base')
     //登陆菜单个人中心模块
@@ -46,6 +44,6 @@ dependencies {
     implementation project(':app_tms_scanqr')
     //数据采集
     implementation project(':app_tms_mapop')
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
 
 }

@@ -71,17 +71,6 @@ public class IceIo implements Closeable {
         this.isPrint = f;
     }
 
-    /**ice string数组的参数传递 */
-    public synchronized String[] convert(Object... objects){
-        String[] strings = new String[objects.length];
-        String temp;
-        for (int i = 1;i<objects.length;i++){
-            temp = String.valueOf(objects[i]) ;
-            strings[i] = temp==null || temp.equals("null")?"":temp;
-        }
-        return strings;
-    }
-
     /**
      * 打印访问信息
      */
@@ -99,15 +88,18 @@ public class IceIo implements Closeable {
     private HashMap<String,String> params = new HashMap<>();
 
     public void addParams(String k, String v) {
+        if (v==null) return;
         params.put(k,v);
     }
+
     public String getParams(String k,String def){
         String v = params.get(k);
         if (v==null) return def;
         return v;
     }
+
     public String getParams(String k){
-        return getParams(k,"");
+        return getParams(k,null);
     }
 
 }

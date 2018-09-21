@@ -11,6 +11,7 @@ import com.amap.api.location.AMapLocation;
 import com.leezp.lib.util.AppUtil;
 import com.leezp.lib.util.FrontNotification;
 import com.leezp.lib.util.HearServer;
+import com.leezp.lib.util.JsonUti;
 import com.leezp.lib_log.LLog;
 
 import java.util.List;
@@ -179,10 +180,12 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         //获取数据库存在的数据
         List<TrackDbBean> list = db.queryAll();
         int validCount = list.size();
+
         for (TrackDbBean item : list) {
+//            LLog.print(user.getUserCode()+" "+item.getUserId()+" "+item.getOrderId()+" "+item.getEnterpriseId());
             if (item.getState() > 0) validCount--;
         }
-
+//        LLog.print("数据:"+list.size()+" ,有效数:"+validCount);
         if (user != null ){
             if (validCount > 0){
                 checkGps();//检查GPS-提示通知
@@ -271,7 +274,7 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
             //执行上传操作
             result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
             if (result == 0){
-
+//                LLog.print("轨迹删除: "+ JsonUti.javaBeanToJson(b));
                 if (b.gettCode() == b.getcCode()){
                     int del = db.deleteTrack(b.getId());
                     if (del == 0) {

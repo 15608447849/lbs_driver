@@ -12,10 +12,6 @@ import com.leezp.lib.zerocice.IceServerAbs;
 
 public class TrackTransferIce  extends IceServerAbs<DriverServicePrx> {
 
-    public TrackTransferIce() {
-        super(DriverServicePrx.class);
-    }
-
     /**上传轨迹 纠偏*/
     public int transferCorrect(long orderId,int userId,int enterpriseId,String correct) {
         if (!StrUtil.validate(correct)){

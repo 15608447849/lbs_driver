@@ -119,4 +119,10 @@ public interface _DriverServiceOperations
      * @param __current The Current object for the invocation.
      **/
     String getUploadPath(String compid, String orderno, Ice.Current __current);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __current The Current object for the invocation.
+     **/
+    String getFileServer(Ice.Current __current);
 }

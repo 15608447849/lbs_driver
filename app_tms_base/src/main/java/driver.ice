@@ -192,6 +192,9 @@
 
         /** 获取上传文件的文件夹路径 */
         string getUploadPath(string compid,string orderno);
+
+        /** 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'} */
+        string getFileServer();
      };
       	 
  };

@@ -51,7 +51,7 @@ class ImagePresenter extends BasePresenter<ImagePresenter.View> {
 
     public void loadImageUrl(String imageUrl) {
         if (view!=null) view.showProgress();
-        LLog.print("图片URL :"+imageUrl);
+//        LLog.print("图片URL :"+imageUrl);
         File imageFile = new File(Environment.getExternalStorageDirectory(), MD5Util.encryption(imageUrl));
         HttpUtil.Request request = new HttpUtil.Request(imageUrl,fileDownloadCallback);
         request.setStream().setDownloadFileLoc(imageFile).download();
@@ -60,7 +60,7 @@ class ImagePresenter extends BasePresenter<ImagePresenter.View> {
 
 
     public void loadImageFile(File imageFile) {
-        LLog.print("加载图片文件 :"+ imageFile);
+//        LLog.print("加载图片文件 :"+ imageFile);
         if (view!=null) view.openImageFile(imageFile);
     }
 

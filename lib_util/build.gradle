@@ -1,10 +1,10 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -18,20 +18,29 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    //日志
-    implementation project(':lib_log')
-    api 'com.android.support:design:26.1.0'
+
+    api 'com.android.support:animated-vector-drawable:28.0.0-rc02'
+    api 'com.android.support:exifinterface:28.0.0-rc02'
+    api 'com.android.support:appcompat-v7:28.0.0-rc02'
+    //5.0以上UI风格设置
+    api 'com.android.support:design:28.0.0-rc02'
+    //约束布局
+    api 'com.android.support.constraint:constraint-layout:1.1.3'
+    //android 百分比布局库
+    api 'com.android.support:percent:28.0.0-rc02'
+    //卡片布局
+    api 'com.android.support:cardview-v7:28.0.0-rc02'
     //json
     api 'com.google.code.gson:gson:2.8.1'
     //    api 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     //图片或者大图加载 https://github.com/davemorrissey/subsampling-scale-image-view
     api 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
+    //自定义日志
+    api project(':lib_log')
+    //glide
     implementation('com.github.bumptech.glide:glide:4.7.1') {
         exclude group: "com.android.support"
     }
-    //glide
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     //图片压缩
     implementation 'top.zibin:Luban:1.1.8'

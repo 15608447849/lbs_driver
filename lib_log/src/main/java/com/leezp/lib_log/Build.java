@@ -24,6 +24,7 @@ public class Build {
     int level = Log.VERBOSE;
     int methodLineCount = 0;
     long threadTime = 30 * 1000;
+    int storageDays = 7; //默认一个星期
 
     Build(){}
 

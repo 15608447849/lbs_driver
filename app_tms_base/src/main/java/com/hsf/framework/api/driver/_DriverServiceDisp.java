@@ -185,6 +185,14 @@ public abstract class _DriverServiceDisp extends Ice.ObjectImpl implements Drive
     }
 
     /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     **/
+    public final String getFileServer()
+    {
+        return getFileServer(null);
+    }
+
+    /**
      * 获取上传文件的文件夹路径
      **/
     public final String getUploadPath(String compid, String orderno)
@@ -412,6 +420,17 @@ public abstract class _DriverServiceDisp extends Ice.ObjectImpl implements Drive
         return Ice.DispatchStatus.DispatchOK;
     }
 
+    public static Ice.DispatchStatus ___getFileServer(DriverService __obj, IceInternal.Incoming __inS, Ice.Current __current)
+    {
+        __checkMode(Ice.OperationMode.Normal, __current.mode);
+        __inS.readEmptyParams();
+        String __ret = __obj.getFileServer(__current);
+        IceInternal.BasicStream __os = __inS.__startWriteParams(Ice.FormatType.DefaultFormat);
+        __os.writeString(__ret);
+        __inS.__endWriteParams(true);
+        return Ice.DispatchStatus.DispatchOK;
+    }
+
     private final static String[] __all =
     {
         "driverChangePw",
@@ -425,6 +444,7 @@ public abstract class _DriverServiceDisp extends Ice.ObjectImpl implements Drive
         "driverUploadCorrect",
         "driverUploadNode",
         "driverUploadOriginal",
+        "getFileServer",
         "getUploadPath",
         "ice_id",
         "ice_ids",
@@ -488,21 +508,25 @@ public abstract class _DriverServiceDisp extends Ice.ObjectImpl implements Drive
             }
             case 11:
             {
-                return ___getUploadPath(this, in, __current);
+                return ___getFileServer(this, in, __current);
             }
             case 12:
             {
-                return ___ice_id(this, in, __current);
+                return ___getUploadPath(this, in, __current);
             }
             case 13:
             {
-                return ___ice_ids(this, in, __current);
+                return ___ice_id(this, in, __current);
             }
             case 14:
             {
-                return ___ice_isA(this, in, __current);
+                return ___ice_ids(this, in, __current);
             }
             case 15:
+            {
+                return ___ice_isA(this, in, __current);
+            }
+            case 16:
             {
                 return ___ice_ping(this, in, __current);
             }

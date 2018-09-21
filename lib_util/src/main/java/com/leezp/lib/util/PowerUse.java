@@ -19,21 +19,10 @@ public class PowerUse {
     public PowerUse(Context context, String tag) {
         this.tag = tag;
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        addWriteList(context);
     }
-    private void addWriteList(Context context) {
-        //服务加入白名单 - 针对Android6.0+
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String packageName = context.getPackageName();
-            boolean isIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName);
-            if (!isIgnoring) {
-                Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setData(Uri.parse("package:" + packageName));
-                context.startActivity(intent);
-            }
-        }
-    }
+
+
+
     //获取唤醒锁-保持CUP运转
     public void startPowerWakeLockByCPU() {
         if (wakeLock==null){

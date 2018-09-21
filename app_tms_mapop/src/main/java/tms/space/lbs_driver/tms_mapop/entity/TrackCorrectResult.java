@@ -104,10 +104,12 @@ public class TrackCorrectResult implements TraceListener {
     }
 
     private void dataUpdate(boolean flag) {
+
         int count = bean.getcCode() + 1;
         if (count > bean.gettCode()) count = bean.gettCode();
         else if (bean.gettCode()-count>10)  count = bean.gettCode()-10;
         if (flag) bean.setcCode(count);//已纠偏次数
+//        LLog.print("轨迹纠正: "+ JsonUti.javaBeanToJson(bean));
         db.updateCorrect(bean);
     }
 
@@ -122,6 +124,7 @@ public class TrackCorrectResult implements TraceListener {
 
                 String json = bean.getTrack();//原始轨迹
                 if (StrUtil.validate(json)){
+
                     List<TraceLocation> path = JsonUti.jsonToJavaBean(json,new TypeToken<List<TraceLocation>>(){}.getType());
                     if (path!=null){
 //                        preformPath(path);

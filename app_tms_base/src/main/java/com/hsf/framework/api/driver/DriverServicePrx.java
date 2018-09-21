@@ -1723,4 +1723,108 @@ public interface DriverServicePrx extends Ice.ObjectPrx
      * @param __result The asynchronous result object.
      **/
     public String end_getUploadPath(Ice.AsyncResult __result);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     **/
+    public String getFileServer();
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __ctx The Context map to send with the invocation.
+     **/
+    public String getFileServer(java.util.Map<String, String> __ctx);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer();
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __ctx The Context map to send with the invocation.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __cb The asynchronous callback object.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer(Ice.Callback __cb);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __ctx The Context map to send with the invocation.
+     * @param __cb The asynchronous callback object.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, Ice.Callback __cb);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __cb The asynchronous callback object.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer(Callback_DriverService_getFileServer __cb);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __ctx The Context map to send with the invocation.
+     * @param __cb The asynchronous callback object.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, Callback_DriverService_getFileServer __cb);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __responseCb The lambda response callback.
+     * @param __exceptionCb The lambda exception callback.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer(IceInternal.Functional_GenericCallback1<String> __responseCb, 
+                                               IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __responseCb The lambda response callback.
+     * @param __exceptionCb The lambda exception callback.
+     * @param __sentCb The lambda sent callback.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer(IceInternal.Functional_GenericCallback1<String> __responseCb, 
+                                               IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb, 
+                                               IceInternal.Functional_BoolCallback __sentCb);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __ctx The Context map to send with the invocation.
+     * @param __responseCb The lambda response callback.
+     * @param __exceptionCb The lambda exception callback.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, 
+                                               IceInternal.Functional_GenericCallback1<String> __responseCb, 
+                                               IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __ctx The Context map to send with the invocation.
+     * @param __responseCb The lambda response callback.
+     * @param __exceptionCb The lambda exception callback.
+     * @param __sentCb The lambda sent callback.
+     * @return The asynchronous result object.
+     **/
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, 
+                                               IceInternal.Functional_GenericCallback1<String> __responseCb, 
+                                               IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb, 
+                                               IceInternal.Functional_BoolCallback __sentCb);
+
+    /**
+     * 获取文件上传,文件下载前缀信息 例如: JSON: {'fileUpload':'http://ip:port/path' , 'fileLoad:':'http://ip:port/path'}
+     * @param __result The asynchronous result object.
+     **/
+    public String end_getFileServer(Ice.AsyncResult __result);
 }

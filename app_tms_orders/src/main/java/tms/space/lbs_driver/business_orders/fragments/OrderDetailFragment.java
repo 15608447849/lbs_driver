@@ -11,6 +11,8 @@ import com.leezp.lib.recycles.more_view_adapter.ItemViewTemplateAttribute;
 import com.leezp.lib.recycles.more_view_adapter.ItemViewTemplateManage;
 import com.leezp.lib.util.DialogUtil;
 import com.leezp.lib.util.GlideUtil;
+import com.leezp.lib.viewholder.util.ReflectionTool;
+import com.leezp.lib_log.LLog;
 
 import tms.space.lbs_driver.business_orders.R;
 import tms.space.lbs_driver.business_orders.interfaces.OrderDetailButtonStateAbs;
@@ -243,6 +245,7 @@ public class OrderDetailFragment extends CanBackUpFragmentAbs<OrderDetailVh,Orde
     }
     //设置公司信息
     public void setCompInfo(DriverCompInfo compInfo) {
+        //LLog.print(ReflectionTool.reflectionObjectFields(compInfo));
         GlideUtil.loadImageByHttp(vh.iv,compInfo.address);
         vh.tv.setText(compInfo.fname);
     }

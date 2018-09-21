@@ -26,6 +26,7 @@ public class LLog{
     private static final Runnable RUNNABLE = new Runnable() {
         @Override
         public void run() {
+            fileHandler.clear(build);
             execute();
         }
     };
@@ -36,6 +37,7 @@ public class LLog{
         THREAD.setName("t-logger");
         THREAD.setDaemon(true);
         THREAD.start();
+
     }
 
 

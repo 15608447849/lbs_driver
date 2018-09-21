@@ -28,7 +28,7 @@ import tms.space.lbs_driver.tms_mapop.server.TrackTransferService;
  */
 public class LbsApplication extends LeeApplicationAbs {
     //打包使用 0测试环境 1准生产环境 2正式环境
-    private static int envFlag = 0;
+    private static int envFlag = 1;
 
     /**
      * 所有进程需要的初始化操作
@@ -76,7 +76,7 @@ public class LbsApplication extends LeeApplicationAbs {
             host = "39.108.85.159";
             port = 4061;
             fileServerUpload = "http://"+host+":8090/fileUploadApp";
-            fileServerDownload = "http://"+host+":80/wlq";
+            fileServerDownload = "http://"+host+":8080/wlq";
         }
         if (envFlag==2) {
             host = "119.23.203.132";

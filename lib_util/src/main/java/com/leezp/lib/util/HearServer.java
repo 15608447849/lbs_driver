@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.leezp.lib_log.LLog;
+
 /**
  * Created by Leeping on 2018/5/2.
  * email: 793065165@qq.com
@@ -29,6 +31,7 @@ public abstract class HearServer extends Service implements Runnable{
         notification.showNotification();
         initCreate();
         thread = new Thread(this);
+        thread.setDaemon(true);
         thread.start();
     }
 
@@ -76,9 +79,14 @@ public abstract class HearServer extends Service implements Runnable{
 
     @Override
     public void run() {
+
         while (isRun){
             power.startPowerWakeLockByCPU();
-            executeTask();
+            try {
+                executeTask();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             power.stopPowerWakeLock();
             startAlarmManagerHeartbeat();//开始闹钟
             lockSelf();
@@ -95,6 +103,7 @@ public abstract class HearServer extends Service implements Runnable{
             pendingIntentOp = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
         }
         AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+        assert am!=null;
         am.setExact(AlarmManager.RTC_WAKEUP, getNextTime(),  pendingIntentOp);
     }
     private long getNextTime() {

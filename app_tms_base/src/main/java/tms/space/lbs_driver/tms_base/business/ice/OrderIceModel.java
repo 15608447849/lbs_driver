@@ -1,5 +1,6 @@
 package tms.space.lbs_driver.tms_base.business.ice;
 
+import com.google.gson.reflect.TypeToken;
 import com.hsf.framework.api.driver.DriverCompInfo;
 import com.hsf.framework.api.driver.DriverServicePrx;
 import com.hsf.framework.api.driver.OrderComplex;
@@ -12,13 +13,15 @@ import com.leezp.lib.util.HttpUtil;
 import com.leezp.lib.util.JsonUti;
 import com.leezp.lib.util.StrUtil;
 import com.leezp.lib.util.TimeUtil;
-import com.leezp.lib.viewholder.util.ReflectionTool;
+import com.leezp.lib.zerocice.IceIo;
 import com.leezp.lib.zerocice.IceServerAbs;
 import com.leezp.lib_gdmap.GdMapUtils;
+import com.leezp.lib_log.LLog;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +37,27 @@ import tms.space.lbs_driver.tms_base.business.contracts.ScanQrContract;
  */
 public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements OrderListContract.Model, OrderDetailContract.Model,ScanQrContract.Model {
 
-    public OrderIceModel() {
-        super(DriverServicePrx.class);
+
+    public OrderIceModel(){
+        initFileServer();
     }
 
-    private boolean isErrPrint = true;
+    //获取文件服务器地址
+    private void initFileServer(){
+        try {
+           String fileServerFlag = getParam("fileServerFlag");
+           if (fileServerFlag==null){
+               String json = getProxy().getFileServer();
+               LLog.print("文件服务信息: "+json);
+               Map<String,String> map = JsonUti.jsonToJavaBean(json,new TypeToken<Map<String,String>>(){}.getType());
+               assert map!=null;
+               IceIo.get().addParams("fileServerUpload", map.get("fileUpload"));
+               IceIo.get().addParams("fileServerDownload", map.get("fileDownload"));
+           }
+        }catch (Exception e){
+            //e.printStackTrace();
+        }
+    }
 
     //查询订单详情
     @Override
@@ -47,11 +66,11 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
             printParam("查询订单详情",userid,enterpriseid,orderid);
             OrderComplex complex = getProxy().driverQueryOrderInfo(userid,enterpriseid,orderid);
             if (complex.isValid){
-                printParam(ReflectionTool.reflectionObjectFields(complex));
+                //printParam(ReflectionTool.reflectionObjectFields(complex));
                 return complex;
             }
         } catch (Exception e) {
-            if (isErrPrint) e.printStackTrace();
+            e.printStackTrace();
         }
         return null;
     }
@@ -63,7 +82,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
             printParam("查询订单状态",enterpriseid,orderid);
             return getProxy().driverQueryOrderState(enterpriseid,orderid);
         } catch (Exception e) {
-            if (isErrPrint) e.printStackTrace();
+            e.printStackTrace();
         }
         return 0;
     }
@@ -75,7 +94,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
             printParam("改变订单状态",userid,enterpriseid,orderid,state);
             return getProxy().driverOrderStateOp(userid,enterpriseid,orderid,state);
         } catch (Exception e) {
-           if (isErrPrint) e.printStackTrace();
+            e.printStackTrace();
         }
         return false;
     }
@@ -87,13 +106,13 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
             String address = GdMapUtils.get().getCurrentLocationDesc();
             String stateStr = "无法记录的状态操作(code:"+state+")";
             if (state == sCLAIM.value) {
-                address = StrUtil.stringFormat("司机(%s-%s)在%s成功取货", name,phone,address);
+                address = StrUtil.format("司机(%s-%s)在%s成功取货", name,phone,address);
                 stateStr = "取货完成";
             } else if (state == sSIGN.value) {
-                address = StrUtil.stringFormat("司机(%s-%s)在%s成功签收",name,phone , address);
+                address = StrUtil.format("司机(%s-%s)在%s成功签收",name,phone , address);
                 stateStr = "签收完成";
             } else if (state == sUnload.value) {
-                address = StrUtil.stringFormat("司机(%s-%s)在%s将货放入仓库,卸载完成",name,phone, address);
+                address = StrUtil.format("司机(%s-%s)在%s将货放入仓库,卸载完成",name,phone, address);
                 stateStr = "中转卸货完成";
             }
 
@@ -108,7 +127,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
             printParam("添加走货信息: "+ json);
             getProxy().driverUploadNode(userid,enterpriseid,orderid,json);
         } catch (Exception e) {
-            if (isErrPrint) e.printStackTrace();
+             e.printStackTrace();
         }
     }
 
@@ -119,7 +138,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
             printParam("修改订单价格", enterpriseid,orderid,fee);
             return getProxy().driverSureOrderFee(enterpriseid,orderid,fee);
         } catch (Exception e){
-            if (isErrPrint) e.printStackTrace();
+             e.printStackTrace();
         }
         return false;
     }
@@ -128,24 +147,20 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
     @Override
     public void uploadImage(int userid, int enterpriseid, long orderid,int state, List<File> files, HttpUtil.Callback callback) {
         String url = getParam("fileServerUpload");
-
         printParam("上传文件",files.size(),url);
-
         List<HttpUtil.FormItem> formItems = new ArrayList<>();
-
         for (int i = 0; i < files.size() ;i++){
             formItems.add(genImageUploadForm(userid,enterpriseid,orderid,state,files,i));
         }
-
         HttpUtil.Request request = new HttpUtil.Request(url, HttpUtil.Request.POST, callback);
         request.setForm().addFormItemList(formItems).upload().execute();
     }
 
     private HttpUtil.FormItem genImageUploadForm(int userid, int enterpriseid, long orderid, int state, List<File> files, int i) {
         HashMap<String,String> map = new HashMap<>();
-        map.put("orderid",orderid+"");
-        map.put("compid",enterpriseid+"");
-        map.put("picno", state+"_"+i);
+            map.put("orderid",orderid+"");
+            map.put("compid",enterpriseid+"");
+            map.put("picno", state+"_"+i);
         return new HttpUtil.FormItem("file",
                         JsonUti.javaBeanToJson(map),
                         files.get(i));
@@ -157,11 +172,13 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
         String filePath = "";
         try {
             filePath = getProxy().getUploadPath(enterpriseid+"",orderid+"");
-            printParam("获取图片后台存放的路径",enterpriseid,orderid,filePath);
+
         } catch (Exception e) {
-            if (isErrPrint) e.printStackTrace();
+             e.printStackTrace();
         }
-        return getParam("fileServerDownload")+"/"+filePath+"/";
+        filePath = getParam("fileServerDownload")+"/"+filePath+"/";
+        printParam("获取图片后台存放的路径",enterpriseid,orderid,filePath);
+        return filePath;
     }
 
     //请求用户所属企业
@@ -174,7 +191,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
                 return array;
             }
         } catch (Exception e) {
-            if (isErrPrint) e.printStackTrace();
+             e.printStackTrace();
         }
         return null;
     }
@@ -189,7 +206,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
                return arr;
             }
         } catch (Exception e) {
-            if (isErrPrint) e.printStackTrace();
+             e.printStackTrace();
         }
         return null;
     }
@@ -241,7 +258,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
                 }
 
         } catch (Exception e) {
-            if (isErrPrint) e.printStackTrace();
+             e.printStackTrace();
         }
         return false;
     }

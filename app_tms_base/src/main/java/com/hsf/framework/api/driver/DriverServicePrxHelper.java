@@ -2103,6 +2103,171 @@ public final class DriverServicePrxHelper extends Ice.ObjectPrxHelperBase implem
         __cb.response(__ret);
     }
 
+    private static final String __getFileServer_name = "getFileServer";
+
+    public String getFileServer()
+    {
+        return getFileServer(null, false);
+    }
+
+    public String getFileServer(java.util.Map<String, String> __ctx)
+    {
+        return getFileServer(__ctx, true);
+    }
+
+    private String getFileServer(java.util.Map<String, String> __ctx, boolean __explicitCtx)
+    {
+        __checkTwowayOnly(__getFileServer_name);
+        return end_getFileServer(begin_getFileServer(__ctx, __explicitCtx, true, null));
+    }
+
+    public Ice.AsyncResult begin_getFileServer()
+    {
+        return begin_getFileServer(null, false, false, null);
+    }
+
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx)
+    {
+        return begin_getFileServer(__ctx, true, false, null);
+    }
+
+    public Ice.AsyncResult begin_getFileServer(Ice.Callback __cb)
+    {
+        return begin_getFileServer(null, false, false, __cb);
+    }
+
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, Ice.Callback __cb)
+    {
+        return begin_getFileServer(__ctx, true, false, __cb);
+    }
+
+    public Ice.AsyncResult begin_getFileServer(Callback_DriverService_getFileServer __cb)
+    {
+        return begin_getFileServer(null, false, false, __cb);
+    }
+
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, Callback_DriverService_getFileServer __cb)
+    {
+        return begin_getFileServer(__ctx, true, false, __cb);
+    }
+
+    public Ice.AsyncResult begin_getFileServer(IceInternal.Functional_GenericCallback1<String> __responseCb, 
+                                               IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb)
+    {
+        return begin_getFileServer(null, false, false, __responseCb, __exceptionCb, null);
+    }
+
+    public Ice.AsyncResult begin_getFileServer(IceInternal.Functional_GenericCallback1<String> __responseCb, 
+                                               IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb, 
+                                               IceInternal.Functional_BoolCallback __sentCb)
+    {
+        return begin_getFileServer(null, false, false, __responseCb, __exceptionCb, __sentCb);
+    }
+
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, 
+                                               IceInternal.Functional_GenericCallback1<String> __responseCb, 
+                                               IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb)
+    {
+        return begin_getFileServer(__ctx, true, false, __responseCb, __exceptionCb, null);
+    }
+
+    public Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, 
+                                               IceInternal.Functional_GenericCallback1<String> __responseCb, 
+                                               IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb, 
+                                               IceInternal.Functional_BoolCallback __sentCb)
+    {
+        return begin_getFileServer(__ctx, true, false, __responseCb, __exceptionCb, __sentCb);
+    }
+
+    private Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, 
+                                                boolean __explicitCtx, 
+                                                boolean __synchronous, 
+                                                IceInternal.Functional_GenericCallback1<String> __responseCb, 
+                                                IceInternal.Functional_GenericCallback1<Ice.Exception> __exceptionCb, 
+                                                IceInternal.Functional_BoolCallback __sentCb)
+    {
+        return begin_getFileServer(__ctx, __explicitCtx, __synchronous, 
+                                   new IceInternal.Functional_TwowayCallbackArg1<String>(__responseCb, __exceptionCb, __sentCb)
+                                       {
+                                           public final void __completed(Ice.AsyncResult __result)
+                                           {
+                                               DriverServicePrxHelper.__getFileServer_completed(this, __result);
+                                           }
+                                       });
+    }
+
+    private Ice.AsyncResult begin_getFileServer(java.util.Map<String, String> __ctx, 
+                                                boolean __explicitCtx, 
+                                                boolean __synchronous, 
+                                                IceInternal.CallbackBase __cb)
+    {
+        __checkAsyncTwowayOnly(__getFileServer_name);
+        IceInternal.OutgoingAsync __result = getOutgoingAsync(__getFileServer_name, __cb);
+        try
+        {
+            __result.prepare(__getFileServer_name, Ice.OperationMode.Normal, __ctx, __explicitCtx, __synchronous);
+            __result.writeEmptyParams();
+            __result.invoke();
+        }
+        catch(Ice.Exception __ex)
+        {
+            __result.abort(__ex);
+        }
+        return __result;
+    }
+
+    public String end_getFileServer(Ice.AsyncResult __iresult)
+    {
+        IceInternal.OutgoingAsync __result = IceInternal.OutgoingAsync.check(__iresult, this, __getFileServer_name);
+        try
+        {
+            if(!__result.__wait())
+            {
+                try
+                {
+                    __result.throwUserException();
+                }
+                catch(Ice.UserException __ex)
+                {
+                    throw new Ice.UnknownUserException(__ex.ice_name(), __ex);
+                }
+            }
+            IceInternal.BasicStream __is = __result.startReadParams();
+            String __ret;
+            __ret = __is.readString();
+            __result.endReadParams();
+            return __ret;
+        }
+        finally
+        {
+            if(__result != null)
+            {
+                __result.cacheMessageBuffers();
+            }
+        }
+    }
+
+    static public void __getFileServer_completed(Ice.TwowayCallbackArg1<String> __cb, Ice.AsyncResult __result)
+    {
+        com.hsf.framework.api.driver.DriverServicePrx __proxy = (com.hsf.framework.api.driver.DriverServicePrx)__result.getProxy();
+        String __ret = null;
+        try
+        {
+            __ret = __proxy.end_getFileServer(__result);
+        }
+        catch(Ice.LocalException __ex)
+        {
+            __cb.exception(__ex);
+            return;
+        }
+        catch(Ice.SystemException __ex)
+        {
+            __cb.exception(__ex);
+            return;
+        }
+        __cb.response(__ret);
+    }
+
     private static final String __getUploadPath_name = "getUploadPath";
 
     public String getUploadPath(String compid, String orderno)

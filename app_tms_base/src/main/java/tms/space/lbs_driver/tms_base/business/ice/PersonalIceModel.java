@@ -13,15 +13,12 @@ import tms.space.lbs_driver.tms_base.business.contracts.LoginContract;
  */
 
 public class PersonalIceModel extends IceServerAbs<DriverServicePrx> implements LoginContract.Model  {
-    public PersonalIceModel() {
-        super(DriverServicePrx.class);
-    }
     //登陆
     @Override
     public void loginServer(String phone, String password, Callback callback) {
 //        callback.onSuccess(DATA.user());
         try {
-            printParam(phone,password);
+            printParam("登录",phone,password);
             DriverBase driverBase = getProxy().driverLogin(phone,password);
             if (driverBase.code==0){
                 callback.onSuccess(driverBase);

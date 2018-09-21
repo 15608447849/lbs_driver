@@ -44,13 +44,8 @@ public class LbsActivity extends SpaBaseActivity implements PermissionApply.Call
     @Override
     public void onPermissionsGranted() {
         //授权成功
-        if (permissionApply != null){
-            permissionApply.destroy();
-            permissionApply = null;
-        }
-       
         skip("content","login");//跳转到登陆页面
-
+        permissionApply.isIgnoreBatteryOption();
     }
 
 
@@ -60,7 +55,7 @@ public class LbsActivity extends SpaBaseActivity implements PermissionApply.Call
     private LbsActivityVh vh;
 
     //权限申请
-    private PermissionApply permissionApply;
+    private PermissionApply permissionApply =  new PermissionApply(this,permissionArray,this);;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,7 +76,9 @@ public class LbsActivity extends SpaBaseActivity implements PermissionApply.Call
     @Override
     protected void onInitResume() {
         super.onInitResume();
-        if (permissionApply == null && !isSysRecovery()){ permissionApply = new PermissionApply(this,this,permissionArray); }
+        if (!isSysRecovery()){
+            permissionApply.permissionCheck();
+        }
     }
 
     @Override

@@ -17,6 +17,8 @@ import android.provider.Settings;
 
 import com.leezp.lib_log.LLog;
 
+import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
 /**
@@ -29,7 +31,7 @@ public class PermissionApply {
          void onPermissionsGranted();
      }
 
-    private Activity activity;
+    private SoftReference<Activity> activityRef;
 
     private boolean isPermissionsDenied = true ;//假设权限被拒绝
 
@@ -43,36 +45,30 @@ public class PermissionApply {
 
     private final PermissionApply.Callback callback;
 
-    public PermissionApply(Activity activity, PermissionApply.Callback callback, String[] permissions) {
-        this.activity = activity;
+    public PermissionApply(Activity activity,String[] permissions, PermissionApply.Callback callback) {
+        this.activityRef = new SoftReference<>(activity);
         this.permissions = permissions;
         this.callback = callback;
-        check();
-    }
-
-    public void destroy(){
-        this.activity = null;
     }
 
 
-    //检测
-    private void check() {
+    //应用权限检测
 
+    public void permissionCheck() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if (getPermissions()){ //  isIgnoreBatteryOption() &&  && askFloatWindowPermission()
+            if (getPermissions()){
                 callback.onPermissionsGranted();
             }
         }else{
             callback.onPermissionsGranted();
         }
-
     }
     /**
      * 请求用户给予悬浮窗的权限
      */
     @TargetApi(23)
-    private boolean askFloatWindowPermission() {
-        if (!Settings.canDrawOverlays(activity)) {
+    public boolean askFloatWindowPermission() {
+        if (!Settings.canDrawOverlays(activityRef.get())) {
             final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener(){
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -92,32 +88,30 @@ public class PermissionApply {
 
     private void openFloatWindowPower() {
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + activity.getPackageName()));
-        activity.startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+                Uri.parse("package:" + activityRef.get().getPackageName()));
+        activityRef.get().startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
     }
 
     /**
-     * 针对M以上的Doze模式
-     * 忽略电池的优化
+     * 针对M以上的Doze模式忽略电池的优化
      <!--可以直接弹出一个系统对话框让用户直接添加app到白名单-->
      <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
      */
     @TargetApi(23)
-    private boolean isIgnoreBatteryOption() {
-
-        PowerManager pm = (PowerManager)activity. getSystemService(Context.POWER_SERVICE);
+    public boolean isIgnoreBatteryOption() {
+        PowerManager pm = (PowerManager)activityRef.get(). getSystemService(Context.POWER_SERVICE);
         if (pm == null) return false;
-        if (!pm.isIgnoringBatteryOptimizations(activity.getPackageName())) {
+        if (!pm.isIgnoringBatteryOptimizations(activityRef.get().getPackageName())) {
             Intent intent = new Intent();
             intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-            intent.setData( Uri.parse("package:" + activity.getPackageName()));
+            intent.setData( Uri.parse("package:" + activityRef.get().getPackageName()));
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            activity.startActivityForResult(intent,SDK_POWER_REQUEST);
-            LLog.print("权限", "isIgnoreBatteryOption");
+            activityRef.get().startActivityForResult(intent,SDK_POWER_REQUEST);
             return false;
         }
         return true;
     }
+
 
     //获取权限
     @TargetApi(23)
@@ -125,14 +119,14 @@ public class PermissionApply {
 
         isPermissionsDenied = false;
         for (int i = 0; i < permissions.length; i++){
-            if (activity.checkSelfPermission(permissions[i]) == PackageManager.PERMISSION_DENIED){
+            if (activityRef.get().checkSelfPermission(permissions[i]) == PackageManager.PERMISSION_DENIED){
                 isPermissionsDenied = true;
                 break;
             }
         }
 
         if(isPermissionsDenied){
-            activity.requestPermissions(permissions, SDK_PERMISSION_REQUEST);
+            activityRef.get().requestPermissions(permissions, SDK_PERMISSION_REQUEST);
             LLog.print("权限","需要请求权限");
             return false;
         }
@@ -172,13 +166,13 @@ public class PermissionApply {
     //提示框 >> 打开系统应用
     @SuppressLint("WrongConstant")
     private void openAppDetails(DialogInterface.OnClickListener listener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        AlertDialog.Builder builder = new AlertDialog.Builder(activityRef.get());
         builder.setTitle("应用授权") ;//设置标题
         builder.setMessage("您拒绝了相关权限,将无法正常使用,请手动授予") ;//设置内容
-        PackageManager pkm = activity.getPackageManager();
+        PackageManager pkm = activityRef.get().getPackageManager();
         Drawable mAppicon = null;
         try {
-            mAppicon = pkm.getActivityInfo(activity.getComponentName(), ActivityInfo.FLAG_STATE_NOT_NEEDED).loadIcon(pkm);
+            mAppicon = pkm.getActivityInfo(activityRef.get().getComponentName(), ActivityInfo.FLAG_STATE_NOT_NEEDED).loadIcon(pkm);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -193,13 +187,13 @@ public class PermissionApply {
     private void  startSysSettingActivity() {
         Intent intent = new Intent();
         intent.setAction( Settings.ACTION_APPLICATION_DETAILS_SETTINGS) ;
-        intent.setData(Uri.parse("package:" + activity.getPackageName()));
+        intent.setData(Uri.parse("package:" + activityRef.get().getPackageName()));
         intent.addCategory(Intent.CATEGORY_DEFAULT);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 //        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 //        activity.startActivity(intent);
-        activity.startActivityForResult(intent,SDK_POWER_REQUEST);
+        activityRef.get().startActivityForResult(intent,SDK_POWER_REQUEST);
     }
 
     /**
@@ -207,7 +201,7 @@ public class PermissionApply {
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == SDK_POWER_REQUEST || requestCode == OVERLAY_PERMISSION_REQ_CODE){
-            check();
+            permissionCheck();
         }
     }
 }
