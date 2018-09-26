@@ -6,6 +6,7 @@ import com.hsf.framework.api.driver.OrderInfo;
 /**
  * Created by Leeping on 2018/8/15.
  * email: 793065165@qq.com
+ * 本地司机订单信息
  */
 
 public class DriverOrderInfo implements java.io.Serializable{
@@ -13,8 +14,8 @@ public class DriverOrderInfo implements java.io.Serializable{
     private DriverCompInfo comp;
     private OrderInfo info;
 
-    public DriverOrderInfo(DriverUser user) {
-        this.user = user;
+    public DriverOrderInfo() {
+        this.user = new DriverUser().fetch();
     }
 
     public DriverOrderInfo(DriverUser user, DriverCompInfo comp, OrderInfo info) {

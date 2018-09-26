@@ -10,7 +10,7 @@ import com.leezp.lib.util.JsonUti;
  * email: 793065165@qq.com
  */
 
-public abstract class JsonLocalSqlStorage<T> extends IDataObjectAbs<T>{
+public abstract class JsonLocalSqlStorage<T> extends IDataObjectAbs{
 
     @Override
     protected ICacheMap<String, String> getStorage() {

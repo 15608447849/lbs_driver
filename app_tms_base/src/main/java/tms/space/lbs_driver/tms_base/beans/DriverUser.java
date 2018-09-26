@@ -8,7 +8,7 @@ import tms.space.lbs_driver.tms_base.storage.JsonLocalSqlStorage;
  *
  */
 
-public class DriverUser extends JsonLocalSqlStorage<DriverUser> {
+public class DriverUser extends JsonLocalSqlStorage {
 
     /**
      * 用户码

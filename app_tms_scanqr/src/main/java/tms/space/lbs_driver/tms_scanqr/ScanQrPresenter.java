@@ -21,7 +21,7 @@ import tms.space.lbs_driver.tms_base.business.ice.OrderIceModel;
 public class ScanQrPresenter extends BasePresenter<ScanQrContract.View> implements ScanQrContract.Presenter {
     private ScanQrContract.Model model = new OrderIceModel();
     private boolean isHandle = false;
-    private final DriverOrderInfo info = new DriverOrderInfo( new DriverUser().fetch());
+    private final DriverOrderInfo info = new DriverOrderInfo();
     private StackOptionImp stack = new StackOptionImp();
 
     public ScanQrPresenter() {

@@ -7,7 +7,7 @@ import com.leezp.lib.storege.inf.ICacheMap;
  * email: 793065165@qq.com
  */
 
-public abstract class IDataObjectAbs<T> implements java.io.Serializable{
+public abstract class IDataObjectAbs implements java.io.Serializable{
 
     protected abstract String getK();
     protected abstract String convert(Object object);
@@ -23,13 +23,12 @@ public abstract class IDataObjectAbs<T> implements java.io.Serializable{
         getStorage().putValue(getK(),getV());
     }
 
-    public T fetch() {
+    public <T extends IDataObjectAbs> T fetch() {
         try {
             String data = getStorage().getValue(getK());
             return (T) reverse(data);
         } catch (Exception e) {
             e.printStackTrace();
-            remove();
         }
         return null;
     }
