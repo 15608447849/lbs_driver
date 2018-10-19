@@ -84,4 +84,9 @@ public class Build {
         isWriteThreadInfo = writeThreadInfo;
         return this;
     }
+
+    public Build setStorageDays(int storageDays) {
+        this.storageDays = storageDays;
+        return this;
+    }
 }
