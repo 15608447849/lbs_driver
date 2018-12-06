@@ -3,7 +3,7 @@ package tms.space.lbs_driver.tms_base.storage;
 import com.leezp.lib.storege.db.SQLiteStore;
 import com.leezp.lib.storege.inf.ICacheMap;
 import com.leezp.lib.storege.obs.IDataObjectAbs;
-import com.leezp.lib.util.JsonUti;
+import com.leezp.lib.util.JsonUtil;
 
 /**
  * Created by Leeping on 2018/6/28.
@@ -19,12 +19,12 @@ public abstract class JsonLocalSqlStorage<T> extends IDataObjectAbs{
 
     @Override
     protected String convert(Object object) {
-        return JsonUti.javaBeanToJson(object);
+        return JsonUtil.javaBeanToJson(object);
     }
 
     @Override
     protected Object reverse(String data) {
-        return JsonUti.jsonToJavaBean(data,this.getClass());
+        return JsonUtil.jsonToJavaBean(data,this.getClass());
     }
 
 

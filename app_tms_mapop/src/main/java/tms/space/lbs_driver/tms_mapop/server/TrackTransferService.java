@@ -5,13 +5,11 @@ import android.app.Notification;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.amap.api.location.AMapLocation;
 import com.leezp.lib.util.AppUtil;
 import com.leezp.lib.util.FrontNotification;
 import com.leezp.lib.util.HearServer;
-import com.leezp.lib.util.JsonUti;
 import com.leezp.lib_log.LLog;
 
 import java.util.List;
@@ -78,7 +76,7 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
     private TrackTransferIce iceServer = new TrackTransferIce();
 
     @Override
-    protected void initCreate() {
+    protected void initialize() {
         db = new TrackDb(getApplicationContext());
         gpsNotify = createGpsNotify();
         corManage = new CorManage(getApplicationContext(),db);//轨迹纠偏
@@ -96,34 +94,59 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         super.onDestroy();
     }
 
+    //    private FrontNotification createNotification(){
+//        return new FrontNotification.Build(getApplicationContext(),getNotificationId())
+//                .setIntent(getOpenActivityClass())
+//                .setFlags(new int[]{Notification.FLAG_FOREGROUND_SERVICE,Notification.FLAG_NO_CLEAR})
+//                .setGroup(getNotificationGroupKey())
+//                .autoGenerateNotification(
+//                        getNotificationTitle(),
+//                        getNotificationContent(),
+//                        getNotificationInfo(),
+//                        getNotificationIcon(),
+//                        Notification.DEFAULT_ALL);
+//    }
+
+    @Override
+    protected FrontNotification createForeNotification(FrontNotification.Build build) {
+        return  build
+                .setId(1000)
+                .setGroup("轨迹传输服务")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setBigIcon(R.mipmap.ic_launcher)
+                .setActivityIntent(MapActivity.class)
+                .autoGenerateNotification(
+                        "空间折叠物流科技有限公司",
+                        getApplication().getString(R.string.app_name)+" 正在为您服务,点击查看当前轨迹情况",
+                        "谢谢使用");
+    }
+
     //创建GPS 通知栏
     private FrontNotification createGpsNotify() {
-        FrontNotification.Build build = new FrontNotification.Build(getApplicationContext(),400);
+        FrontNotification.Build build = new FrontNotification.Build(getApplicationContext());
         Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
         // 打开GPS设置界面
-        build.setIntent(intent);
+        build.setId(1001);
+        build.setActivityIntent(intent);
         build.setFlags(new int[]{Notification.FLAG_INSISTENT,Notification.FLAG_AUTO_CANCEL});
-        build.setGroup(getNotificationGroupKey());
+        build.setGroup("轨迹传输服务");
         return build.autoGenerateNotification(
-                getNotificationTitle(),
+                "空间折叠物流科技有限公司",
                 "您好,请在设置中打开定位功能,避免影响您的行程录入",
-                getNotificationInfo(),
-                getNotificationIcon(),
-                Notification.DEFAULT_LIGHTS);
+                "点击设置");
     }
 
 
     private void createInfoNotify(String error,int id) {
-        FrontNotification.Build build = new FrontNotification.Build(getApplicationContext(),id);
+        FrontNotification.Build build = new FrontNotification.Build(getApplicationContext());
         build.setFlags(new int[]{Notification.FLAG_INSISTENT,Notification.FLAG_AUTO_CANCEL});
-        build.setGroup(getNotificationGroupKey());
+        build.setId(1001);
+        build.setGroup("轨迹传输服务");
         build.autoGenerateNotification(
-                getNotificationTitle(),
+                "空间折叠物流科技有限公司",
                 error,
-                getNotificationInfo(),
-                getNotificationIcon(),
-                Notification.DEFAULT_LIGHTS)
+                "")
                 .showNotification();
     }
 
@@ -140,38 +163,7 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
         return super.onUnbind(intent);
     }
 
-    @Override
-    public String getNotificationTitle() {
-        return  "空间折叠物流科技有限公司";
-    }
 
-    @Override
-    public String getNotificationContent() {
-        return getApplication().getString(R.string.app_name)+" 正在为您服务,点击查看当前轨迹情况";
-    }
-    protected String getNotificationInfo() {
-        return "谢谢使用";
-    }
-
-    @Override
-    protected int getNotificationIcon() {
-        return R.mipmap.ic_launcher;
-    }
-
-    @Override
-    protected String getNotificationGroupKey() {
-        return getClass().getSimpleName();
-    }
-
-    @Override
-    protected Class<?> getOpenActivityClass() {
-        return MapActivity.class;
-    }
-
-    @Override
-    protected int getNotificationId() {
-        return 100;
-    }
 
     @Override
     protected void executeTask() {
@@ -274,7 +266,7 @@ public class TrackTransferService extends HearServer implements IFilterError<AMa
             //执行上传操作
             result = iceServer.transferCorrect(b.getOrderId(),b.getUserId(),b.getEnterpriseId(),b.getCorrect());
             if (result == 0){
-//                LLog.print("轨迹删除: "+ JsonUti.javaBeanToJson(b));
+//                LLog.print("轨迹删除: "+ JsonUtil.javaBeanToJson(b));
                 if (b.gettCode() == b.getcCode()){
                     int del = db.deleteTrack(b.getId());
                     if (del == 0) {

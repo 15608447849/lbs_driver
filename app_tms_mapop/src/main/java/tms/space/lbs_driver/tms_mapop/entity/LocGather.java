@@ -6,9 +6,8 @@ import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.trace.TraceLocation;
 import com.google.gson.reflect.TypeToken;
-import com.leezp.lib.util.JsonUti;
+import com.leezp.lib.util.JsonUtil;
 import com.leezp.lib.util.StrUtil;
-import com.leezp.lib.util.TimeUtil;
 import com.leezp.lib_log.LLog;
 
 import java.util.ArrayList;
@@ -51,7 +50,7 @@ public class LocGather implements AMapLocationListener {
         List<TraceLocation> path = null;
         String json = bean.getTrack();
         if (StrUtil.validate(json)){
-            path = JsonUti.jsonToJavaBean(json,new TypeToken<List<TraceLocation>>(){}.getType());
+            path = JsonUtil.jsonToJavaBean(json,new TypeToken<List<TraceLocation>>(){}.getType());
         }
         if (path==null) path = new LinkedList<>();
 
@@ -68,7 +67,7 @@ public class LocGather implements AMapLocationListener {
         filterPath(path);
         //设置等待轨迹纠偏次数+1
         bean.settCode(bean.gettCode() + 1);
-        bean.setTrack(JsonUti.javaBeanToJson(path));
+        bean.setTrack(JsonUtil.javaBeanToJson(path));
         int result = db.updateTrack(bean);
         if (result == 0){
 //            LLog.print(bean.getId()+" 记录原始轨迹点成功,当前数量:"+path.size()+"\n");
@@ -160,7 +159,7 @@ public class LocGather implements AMapLocationListener {
                         LLog.print((i+1) + " 距离非法");
                         break;
                     }else {
-                        LLog.print(JsonUti.javaBeanToJson(loc2));
+                        LLog.print(JsonUtil.javaBeanToJson(loc2));
                     }
                 }else if (curToBak > aver){
                     if (loc3.getSpeed() < 1.5 && loc3.getBearing() == 0){
@@ -168,7 +167,7 @@ public class LocGather implements AMapLocationListener {
                         LLog.print((i+2) + " 距离非法");
                         break;
                     }else {
-                        LLog.print(JsonUti.javaBeanToJson(loc3));
+                        LLog.print(JsonUtil.javaBeanToJson(loc3));
                     }
 
                 }

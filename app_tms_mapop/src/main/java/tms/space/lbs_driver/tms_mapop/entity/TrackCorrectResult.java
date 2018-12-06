@@ -1,17 +1,14 @@
 package tms.space.lbs_driver.tms_mapop.entity;
 
-import android.util.Log;
-
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.trace.LBSTraceClient;
 import com.amap.api.trace.TraceListener;
 import com.amap.api.trace.TraceLocation;
 import com.google.gson.reflect.TypeToken;
-import com.leezp.lib.util.JsonUti;
+import com.leezp.lib.util.JsonUtil;
 import com.leezp.lib.util.StrUtil;
 import com.leezp.lib_gdmap.GdMapUtils;
-import com.leezp.lib_log.LLog;
 
 import java.util.Iterator;
 import java.util.List;
@@ -82,8 +79,8 @@ public class TrackCorrectResult implements TraceListener {
 
     private String convertTrace(String track) {
         if (StrUtil.validate(track)){
-            List<TraceLocation> path = JsonUti.jsonToJavaBean(track,new TypeToken<List<TraceLocation>>(){}.getType());
-           return JsonUti.javaBeanToJson(GdMapUtils.get().convertTracePointToLatLng(path));
+            List<TraceLocation> path = JsonUtil.jsonToJavaBean(track,new TypeToken<List<TraceLocation>>(){}.getType());
+           return JsonUtil.javaBeanToJson(GdMapUtils.get().convertTracePointToLatLng(path));
         }
         return null;
     }
@@ -97,7 +94,7 @@ public class TrackCorrectResult implements TraceListener {
     public void onFinished(int id, List<LatLng> list, int distance, int waitingtime) {
         //LLog.print("纠偏成功 id=" +id+ " 距离 = "+distance+" m,停留时间 = "+ waitingtime+" s");
         //轨迹纠偏完成
-        String json = JsonUti.javaBeanToJson(list);
+        String json = JsonUtil.javaBeanToJson(list);
         bean.setCorrect(json);
         dataUpdate(true);
         threadRouse();
@@ -109,7 +106,7 @@ public class TrackCorrectResult implements TraceListener {
         if (count > bean.gettCode()) count = bean.gettCode();
         else if (bean.gettCode()-count>10)  count = bean.gettCode()-10;
         if (flag) bean.setcCode(count);//已纠偏次数
-//        LLog.print("轨迹纠正: "+ JsonUti.javaBeanToJson(bean));
+//        LLog.print("轨迹纠正: "+ JsonUtil.javaBeanToJson(bean));
         db.updateCorrect(bean);
     }
 
@@ -125,7 +122,7 @@ public class TrackCorrectResult implements TraceListener {
                 String json = bean.getTrack();//原始轨迹
                 if (StrUtil.validate(json)){
 
-                    List<TraceLocation> path = JsonUti.jsonToJavaBean(json,new TypeToken<List<TraceLocation>>(){}.getType());
+                    List<TraceLocation> path = JsonUtil.jsonToJavaBean(json,new TypeToken<List<TraceLocation>>(){}.getType());
                     if (path!=null){
 //                        preformPath(path);
                         if (isCorrect){

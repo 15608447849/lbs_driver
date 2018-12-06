@@ -11,8 +11,6 @@ import Ice.Util;
 
 public final class IceClient extends Thread implements Closeable{
 
-
-
     private IceClient(){
         init();
     }

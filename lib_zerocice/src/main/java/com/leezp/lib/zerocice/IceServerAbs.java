@@ -24,7 +24,8 @@ public abstract class IceServerAbs<P extends Ice.ObjectPrx> {
 
     protected P getProxy() throws Exception{
         IceIo.get().executeFilter();
-        return getIce().getServicePrx(cls); }
+        return getIce().getServicePrx(cls);
+    }
 
     protected void printParam(Object... params){
         IceIo.get().println(params);

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Statistic">
+    <option name="excludedDirectories">
+      <list>
+        <option value="$PROJECT_DIR$/app/src/main" />
+        <option value="$PROJECT_DIR$/app_tms_base/src/main" />
+        <option value="$PROJECT_DIR$/app_tms_mapop/src/main" />
+        <option value="$PROJECT_DIR$/app_tms_orders/src/main" />
+        <option value="$PROJECT_DIR$/app_tms_required/src/main" />
+        <option value="$PROJECT_DIR$/app_tms_scanqr/src/main" />
+        <option value="$PROJECT_DIR$/lib_cusview/src/main" />
+        <option value="$PROJECT_DIR$/lib_gdmap/src/main" />
+        <option value="$PROJECT_DIR$/lib_log/src/main" />
+        <option value="$PROJECT_DIR$/lib_recycleviews/src/main" />
+        <option value="$PROJECT_DIR$/lib_zerocice/src/main" />
+        <option value="$PROJECT_DIR$/lib_viewholder/src/main" />
+        <option value="$PROJECT_DIR$/lib_util/src/main" />
+        <option value="$PROJECT_DIR$/lib_singlepageapplication/src/main" />
+      </list>
+    </option>
+  </component>
+</project>

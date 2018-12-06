@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
  * email: 793065165@qq.com
  */
 
-public class JsonUti {
+public class JsonUtil {
     /**
      * json to javabean
      *new TypeToken<List<xxx>>(){}.getType()

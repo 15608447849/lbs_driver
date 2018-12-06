@@ -17,7 +17,7 @@ import com.amap.api.maps.model.Polyline;
 import com.amap.api.maps.model.PolylineOptions;
 import com.amap.api.trace.TraceLocation;
 import com.google.gson.reflect.TypeToken;
-import com.leezp.lib.util.JsonUti;
+import com.leezp.lib.util.JsonUtil;
 import com.leezp.lib.util.StrUtil;
 import com.leezp.lib_gdmap.GdMapUtils;
 
@@ -177,14 +177,14 @@ class MapControl extends Thread implements AMap.OnMyLocationChangeListener {
 
     private List<LatLng> getLinePath(String trackJson) {
         if (StrUtil.validate(trackJson)){
-            List<TraceLocation> path = JsonUti.jsonToJavaBean(trackJson,new TypeToken<List<TraceLocation>>(){}.getType());
+            List<TraceLocation> path = JsonUtil.jsonToJavaBean(trackJson,new TypeToken<List<TraceLocation>>(){}.getType());
             return GdMapUtils.get().convertTracePointToLatLng(path);
         }
         return new ArrayList<>();
     }
     private List<LatLng> getLinePath2(String correctJson) {
         if (StrUtil.validate(correctJson)){
-            return JsonUti.jsonToJavaBean(correctJson,new TypeToken<List<LatLng>>(){}.getType());
+            return JsonUtil.jsonToJavaBean(correctJson,new TypeToken<List<LatLng>>(){}.getType());
         }
         return new ArrayList<>();
     }

@@ -17,25 +17,31 @@ import com.leezp.lib_log.LLog;
  */
 
 public abstract class HearServer extends Service implements Runnable{
+    private final Thread thread = new Thread(this);
+
     private PendingIntent pendingIntentOp; //闹钟使用
+
     private PowerUse power; //电源管理
+
     private FrontNotification notification;//前台通知栏
-    private Thread thread;
+
     private volatile boolean isRun = true;
-    private long interval = 20 * 1000L;
+
+    private long interval = 30 * 1000L;
+
+
 
     @Override
     public void onCreate() {
+        initialize();
         power = new PowerUse(getApplicationContext(),getClass().getSimpleName());
-        notification = createNotification();
-        notification.showNotification();
-        initCreate();
-        thread = new Thread(this);
+        notification = createForeNotification(new FrontNotification.Build(getApplicationContext()));
         thread.setDaemon(true);
+        thread.setName(getClass().getSimpleName()+"-"+Thread.currentThread().getId());
         thread.start();
     }
 
-    protected void initCreate(){}
+    protected void initialize(){};
 
     @Nullable
     @Override
@@ -54,42 +60,29 @@ public abstract class HearServer extends Service implements Runnable{
         isRun = false;
         unlockSelf();
         notification.cancelNotification();
+        if (notification!=null) notification.stopForeground(this);
+        stopAlarm();
+        isRun = false;
+        unlockSelf();
     }
+    protected abstract FrontNotification createForeNotification(FrontNotification.Build build);
 
-    private FrontNotification createNotification(){
-        return new FrontNotification.Build(getApplicationContext(),getNotificationId())
-                .setIntent(getOpenActivityClass())
-                .setFlags(new int[]{Notification.FLAG_FOREGROUND_SERVICE,Notification.FLAG_NO_CLEAR})
-                .setGroup(getNotificationGroupKey())
-                .autoGenerateNotification(
-                        getNotificationTitle(),
-                        getNotificationContent(),
-                        getNotificationInfo(),
-                        getNotificationIcon(),
-                        Notification.DEFAULT_ALL);
-    }
 
-    protected abstract int getNotificationIcon();
-
-    protected abstract String getNotificationGroupKey();
-
-    protected abstract Class<?> getOpenActivityClass();
-
-    protected abstract int getNotificationId();
 
     @Override
     public void run() {
 
         while (isRun){
-            power.startPowerWakeLockByCPU();
+            power.startPowerWakeLockByCPU();//获取CPU
             try {
                 executeTask();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            power.stopPowerWakeLock();
+            power.stopPowerWakeLock();//解锁CPU
+            if (notification!=null) notification.startForeground(this);//刷新通知栏
             startAlarmManagerHeartbeat();//开始闹钟
-            lockSelf();
+            lockSelf();//线程锁定
         }
 
     }
@@ -106,6 +99,15 @@ public abstract class HearServer extends Service implements Runnable{
         assert am!=null;
         am.setExact(AlarmManager.RTC_WAKEUP, getNextTime(),  pendingIntentOp);
     }
+
+    public void stopAlarm(){
+        if (pendingIntentOp!=null){
+            AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(ALARM_SERVICE);
+            assert am!=null;
+            am.cancel(pendingIntentOp);
+        }
+    }
+
     private long getNextTime() {
         long now = System.currentTimeMillis();
 //        private boolean isFirst = true;
@@ -139,16 +141,4 @@ public abstract class HearServer extends Service implements Runnable{
         }
     }
 
-
-    protected String getNotificationTitle() {
-        return "心跳服务";
-    }
-
-    protected String getNotificationContent() {
-        return "连接存活";
-    }
-
-    protected String getNotificationInfo() {
-        return "请勿关闭";
-    }
 }

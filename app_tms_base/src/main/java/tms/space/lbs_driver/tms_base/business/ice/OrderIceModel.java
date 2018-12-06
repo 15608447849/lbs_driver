@@ -10,7 +10,7 @@ import com.hsf.framework.api.driver.sSIGN;
 import com.hsf.framework.api.driver.sUnload;
 import com.hsf.framework.api.driver.scanTag;
 import com.leezp.lib.util.HttpUtil;
-import com.leezp.lib.util.JsonUti;
+import com.leezp.lib.util.JsonUtil;
 import com.leezp.lib.util.StrUtil;
 import com.leezp.lib.util.TimeUtil;
 import com.leezp.lib.zerocice.IceIo;
@@ -21,7 +21,6 @@ import com.leezp.lib_log.LLog;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
            if (fileServerFlag==null){
                String json = getProxy().getFileServer();
                LLog.print("文件服务信息: "+json);
-               Map<String,String> map = JsonUti.jsonToJavaBean(json,new TypeToken<Map<String,String>>(){}.getType());
+               Map<String,String> map = JsonUtil.jsonToJavaBean(json,new TypeToken<Map<String,String>>(){}.getType());
                assert map!=null;
                IceIo.get().addParams("fileServerUpload", map.get("fileUpload"));
                IceIo.get().addParams("fileServerDownload", map.get("fileDownload"));
@@ -123,7 +122,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
             map.put("time", time);
             map.put("des", address);
             map.put("status", stateStr);
-            String json = JsonUti.javaBeanToJson(map);
+            String json = JsonUtil.javaBeanToJson(map);
             printParam("添加走货信息: "+ json);
             getProxy().driverUploadNode(userid,enterpriseid,orderid,json);
         } catch (Exception e) {
@@ -162,7 +161,7 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
             map.put("compid",enterpriseid+"");
             map.put("picno", state+"_"+i);
         return new HttpUtil.FormItem("file",
-                        JsonUti.javaBeanToJson(map),
+                        JsonUtil.javaBeanToJson(map),
                         files.get(i));
     }
 

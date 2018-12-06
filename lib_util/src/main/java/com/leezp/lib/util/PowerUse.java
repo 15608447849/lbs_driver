@@ -1,11 +1,14 @@
 package com.leezp.lib.util;
 
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
+
+import static android.content.Context.KEYGUARD_SERVICE;
 
 /**
  * Created by Leeping on 2018/5/2.
@@ -16,9 +19,11 @@ public class PowerUse {
     private String tag;
     private PowerManager.WakeLock wakeLock;
     private PowerManager powerManager;
+    private KeyguardManager keyguardManager;
     public PowerUse(Context context, String tag) {
         this.tag = tag;
         powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        keyguardManager = (KeyguardManager) context.getSystemService(KEYGUARD_SERVICE);
     }
 
 
@@ -47,4 +52,14 @@ public class PowerUse {
         stopPowerWakeLock();
     }
 
+    /**
+     *  <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+     */
+    public void screenUnlock(){
+        // 屏幕解锁
+        KeyguardManager.KeyguardLock keyguardLock = keyguardManager.newKeyguardLock("unLock");
+        // 屏幕锁定
+        //keyguardLock.reenableKeyguard();
+        keyguardLock.disableKeyguard(); // 解锁
+    }
 }
