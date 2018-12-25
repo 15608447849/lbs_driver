@@ -28,7 +28,7 @@ import tms.space.lbs_driver.tms_mapop.server.TrackTransferService;
  */
 public class LbsApplication extends LeeApplicationAbs {
     //打包使用 0测试环境 1准生产环境 2正式环境
-    private static int envFlag = 2;
+    private static int envFlag = 0;
 
     /**
      * 所有进程需要的初始化操作
@@ -63,31 +63,21 @@ public class LbsApplication extends LeeApplicationAbs {
     private void initServiceParams() {
         String host = null;
         int port = 0;
-        String fileServerUpload = null;
-        String fileServerDownload = null;
 
         if (envFlag==0) {
-            host = "192.168.1.241";
+            host = "192.168.1.240";
             port = 7061;
-            fileServerUpload = "http://"+host+":8090/fileUploadApp";
-            fileServerDownload = "http://"+host+":8080/wlq";
         }
         if (envFlag==1) {
             host = "39.108.85.159";
             port = 4061;
-            fileServerUpload = "http://"+host+":8090/fileUploadApp";
-            fileServerDownload = "http://"+host+":8080/wlq";
         }
         if (envFlag==2) {
             host = "119.23.203.132";
             port = 4061;
-            fileServerUpload = "http://"+host+":8090/fileUploadApp";
-            fileServerDownload = "http://"+host+":80/wlq";
         }
 
         IceIo.get().init("WLQ", host, port);
-        IceIo.get().addParams("fileServerUpload", fileServerUpload);
-        IceIo.get().addParams("fileServerDownload", fileServerDownload);
         //添加网络状态过滤器
         IceIo.get().addFilter(new IceIo.IFilter() {
             @Override
@@ -146,6 +136,7 @@ public class LbsApplication extends LeeApplicationAbs {
     /**
      * activity 启动设置
      */
+
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         super.onActivityCreated(activity, savedInstanceState);

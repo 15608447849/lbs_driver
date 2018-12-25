@@ -22,9 +22,13 @@ public abstract class IceServerAbs<P extends Ice.ObjectPrx> {
         return IceIo.get().getIceClient();
     }
 
-    protected P getProxy() throws Exception{
+    protected <Prx extends Ice.ObjectPrx> Prx getProxy(Class<Prx> proxyCls) throws Exception{
         IceIo.get().executeFilter();
-        return getIce().getServicePrx(cls);
+        return getIce().getServicePrx(proxyCls);
+    }
+
+    protected P getProxy() throws Exception{
+        return getProxy(cls);
     }
 
     protected void printParam(Object... params){
@@ -34,6 +38,7 @@ public abstract class IceServerAbs<P extends Ice.ObjectPrx> {
     protected String getParam(String k){
         return IceIo.get().getParams(k);
     }
+
     protected void addParams(String k,String v){ IceIo.get().addParams(k,v); }
 
     /**ice string数组的参数传递 */

@@ -37,10 +37,21 @@
         android:id="@+id/frg_take_picture_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="确认上传"
+        android:text="上传"
         android:layout_gravity="bottom|center"
-        android:layout_below="@id/frg_take_picture_fl_iv_3"
+        android:layout_below="@id/frg_take_picture_fl_iv_2"
         android:layout_centerHorizontal="true"
         />
+
+    <Button
+        android:id="@+id/frg_take_picture_pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跳过"
+        android:layout_gravity="bottom|center"
+        android:layout_below="@id/frg_take_picture_update"
+        android:layout_centerHorizontal="true"
+        />
+
 
 </android.support.percent.PercentRelativeLayout>

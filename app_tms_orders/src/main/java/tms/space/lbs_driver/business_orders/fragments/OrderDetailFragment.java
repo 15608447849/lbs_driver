@@ -11,8 +11,6 @@ import com.leezp.lib.recycles.more_view_adapter.ItemViewTemplateAttribute;
 import com.leezp.lib.recycles.more_view_adapter.ItemViewTemplateManage;
 import com.leezp.lib.util.DialogUtil;
 import com.leezp.lib.util.GlideUtil;
-import com.leezp.lib.viewholder.util.ReflectionTool;
-import com.leezp.lib_log.LLog;
 
 import tms.space.lbs_driver.business_orders.R;
 import tms.space.lbs_driver.business_orders.interfaces.OrderDetailButtonStateAbs;
@@ -82,8 +80,10 @@ public class OrderDetailFragment extends CanBackUpFragmentAbs<OrderDetailVh,Orde
                     protected void onAction() {
                         //传递订单数据到下一个页面
                         setDataOut(presenter.getOrderInfo());
-                        //打开取货码界面
-                        addStack("order_claim");
+                        //打开取货码界面(流程修改,抛弃)
+//                        addStack("order_claim");
+                        //流程修改->打开取货照片
+                        addStack("take_picture");
                     }
                 },
                 //卸载

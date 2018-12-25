@@ -297,4 +297,22 @@ public class AppUtil {
         }
         return version;
     }
+
+    /** 检测设备是否存在Camera硬件
+     * FEATURE_CAMERA：设备是否有摄像头。
+     * FEATURE_CAMERA_ANY：设备至少有一个摄像头。
+     * FEATURE_CAMERA_AUTOFOCUS：设备支持的摄像头是否支持自动对焦
+     * FEATURE_CAMERA_FLASH：设备是否配备闪光灯。
+     * FEATURE_CAMERA_FRONT：设备是否有一个前置摄像头。
+     * */
+    public static boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            //存在
+            return true;
+        } else {
+            // 不存在
+            return false;
+        }
+    }
+
 }

@@ -2,6 +2,7 @@ package com.leezp.lib.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
@@ -13,6 +14,8 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+
+import java.io.File;
 
 public class GlideUtil {
     //加载中占位符资源
@@ -72,6 +75,39 @@ public class GlideUtil {
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageView);
     }
+
+    public static void loadImageByBitmap(ImageView imageView, Bitmap bitmap){
+        if (appContext==null) return;
+        RequestOptions options = new RequestOptions();
+        if (placeholder!= -1) options.placeholder(placeholder);
+        if (error!=-1) options.error(error);
+//        options.skipMemoryCache(true);
+//        options.diskCacheStrategy(DiskCacheStrategy.NONE);//本地文件不缓存
+
+        Glide.with(appContext)
+                .load(bitmap)
+                .apply(options)
+                .listener(errorListener)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(imageView);
+    }
+
+    public static void loadImageByFile(ImageView imageView, File file){
+        if (appContext==null) return;
+        RequestOptions options = new RequestOptions();
+        if (placeholder!= -1) options.placeholder(placeholder);
+        if (error!=-1) options.error(error);
+//        options.skipMemoryCache(true);
+//        options.diskCacheStrategy(DiskCacheStrategy.NONE);//本地文件不缓存
+
+        Glide.with(appContext)
+                .load(file)
+                .apply(options)
+                .listener(errorListener)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(imageView);
+    }
+
     public static void clearImageViewBitmap(ImageView imageView){
         if (appContext==null) return;
         Glide.with(appContext).clear(imageView);

@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
+
+import com.leezp.lib.util.camera.CameraActivity;
 
 import java.io.Closeable;
 import java.io.File;
@@ -33,8 +33,6 @@ public class CameraUse implements Closeable{
     private final String authority;
 
     private boolean isChoosePhotosError = false;
-
-    private File takePictureFile;
 
     public CameraUse(Fragment fragment) {
         this(fragment.getActivity());
@@ -66,10 +64,8 @@ public class CameraUse implements Closeable{
 //        LLog.print(requestCode,resultCode,"data="+data);
 
         try {
-            if (requestCode == CHOOSE_PICTURE){
-                choosePictureResult(resultCode,data);
-            }else if (requestCode == TAKE_PICTURE){
-                takePictureResult(resultCode);
+            if (requestCode == CHOOSE_PICTURE || requestCode == TAKE_PICTURE){
+               pictureResult(resultCode,data);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,24 +90,12 @@ public class CameraUse implements Closeable{
 
     //拍照
     public void takePicture(){
-        String filePath = AppUtil.getExternalStorageTempFilePath(activity,Environment.DIRECTORY_DCIM,null);
-        takePictureFile = new File(filePath);
-        //从文件中创建uri
-        Uri uri;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-            uri = FileProvider.getUriForFile(activity, authority, takePictureFile);
-        }else{
-            uri =  Uri.fromFile(takePictureFile);
-        }
-        Intent intent = new Intent();
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-//        intent.addCategory(intent.CATEGORY_DEFAULT);
+        Intent intent = new Intent(activity,CameraActivity.class);
         startActivityForResult(intent, TAKE_PICTURE);
     }
 
     //图片选择回调
-    private void choosePictureResult(int resultCode, Intent data) {
+    private void pictureResult(int resultCode, Intent data) {
         if (data == null) isChoosePhotosError = true;
         File image = null;
         if(resultCode == Activity.RESULT_OK){
@@ -119,26 +103,29 @@ public class CameraUse implements Closeable{
             String filePath = AppUtil.getExternalStorageTempFilePath(activity,Environment.DIRECTORY_DCIM,null);
             image = IoUtil.imageUriToFile(activity,uri,filePath);
         }
-
         if (callback!=null) callback.pictureResult(image);
     }
-    //拍照选择回调
-    private void takePictureResult(int resultCode) {
-        if (resultCode==Activity.RESULT_OK){
-            File file = takePictureFile;
-            takePictureFile = null;
-            if (callback!=null) callback.pictureResult(file);
 
-        }else{
-            if (callback!=null) callback.pictureResult(null);
-        }
+    private Callback callback;
 
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 
+    public interface Callback{
+        void pictureResult(File file);
+    }
+}
 
 
 
-    /**android 7.0 图片选择*/
+
+
+
+
+
+
+/*android 7.0 图片选择*/
     /*private void choosePictureSDK_N(Intent intent) {
         if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
             // choosePictureSDK_N(intent);
@@ -154,24 +141,31 @@ public class CameraUse implements Closeable{
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
     }*/
+       /*String filePath = AppUtil.getExternalStorageTempFilePath(activity,Environment.DIRECTORY_DCIM,null);
+        takePictureFile = new File(filePath);
+        //从文件中创建uri
+        Uri uri;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            uri = FileProvider.getUriForFile(activity, authority, takePictureFile);
+        }else{
+            uri =  Uri.fromFile(takePictureFile);
+        }
+        Intent intent = new Intent();
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//        intent.addCategory(intent.CATEGORY_DEFAULT);
+        startActivityForResult(intent, TAKE_PICTURE);
 
+        //        if (resultCode == Activity.RESULT_OK){
+//            File file = takePictureFile;
+//            takePictureFile = null;
+//            if (callback!=null) callback.pictureResult(file);
+//
+//        }else{
+//            if (callback!=null) callback.pictureResult(null);
+//        }
 
-
-
-
-
-
-
-    private Callback callback;
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
-    }
-
-    public interface Callback{
-        void pictureResult(File file);
-    }
-}
+        */
   /*
        if(requestCode == TAKE_PICTURE_TAKE)
         {

@@ -38,6 +38,10 @@ public class TakePictureVh extends ViewHolderAbs{
     @RidName("frg_take_picture_update")
     public Button update;
 
+    @OnClicked
+    @RidName("frg_take_picture_pass")
+    public Button pass;
+
 
     public TakePictureVh(Context context) {
         super(context, R.layout.frg_take_picture);

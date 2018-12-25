@@ -36,7 +36,10 @@ public class TakePicturePresenter extends OrderOptionPresenterImp<OrderDetailCon
             isExecute = false;
             if (response.isSuccess()){
                 LLog.print("图片上传信息:" + response.getMessage());
-                if (view!=null) view.imageUpdateSuccess();
+                if (view!=null) {
+                    view.toast("图片上传成功,等待处理订单信息");
+                    view.imageUpdateSuccess();
+                }
             }else{
                 if (view!=null) view.toast("上传失败,请重试");
             }
@@ -89,7 +92,6 @@ public class TakePicturePresenter extends OrderOptionPresenterImp<OrderDetailCon
                 }else{
                     if (view!=null)  view.orderPickupSuccess();
                 }
-
             }else{
                 if (view!=null) view.toast("订单操作异常");
             }

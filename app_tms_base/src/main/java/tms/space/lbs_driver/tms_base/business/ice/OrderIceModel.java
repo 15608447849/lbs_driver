@@ -1,6 +1,5 @@
 package tms.space.lbs_driver.tms_base.business.ice;
 
-import com.google.gson.reflect.TypeToken;
 import com.hsf.framework.api.driver.DriverCompInfo;
 import com.hsf.framework.api.driver.DriverServicePrx;
 import com.hsf.framework.api.driver.OrderComplex;
@@ -13,10 +12,8 @@ import com.leezp.lib.util.HttpUtil;
 import com.leezp.lib.util.JsonUtil;
 import com.leezp.lib.util.StrUtil;
 import com.leezp.lib.util.TimeUtil;
-import com.leezp.lib.zerocice.IceIo;
 import com.leezp.lib.zerocice.IceServerAbs;
 import com.leezp.lib_gdmap.GdMapUtils;
-import com.leezp.lib_log.LLog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import bottle.distributed.register.reg.FSAddressInfo;
+import bottle.distributed.register.reg.IFileServerCenterPrx;
 import tms.space.lbs_driver.tms_base.beans.DriverOrderInfo;
 import tms.space.lbs_driver.tms_base.business.contracts.OrderDetailContract;
 import tms.space.lbs_driver.tms_base.business.contracts.OrderListContract;
@@ -36,27 +35,6 @@ import tms.space.lbs_driver.tms_base.business.contracts.ScanQrContract;
  */
 public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements OrderListContract.Model, OrderDetailContract.Model,ScanQrContract.Model {
 
-
-    public OrderIceModel(){
-        initFileServer();
-    }
-
-    //获取文件服务器地址
-    private void initFileServer(){
-        try {
-           String fileServerFlag = getParam("fileServerFlag");
-           if (fileServerFlag==null){
-               String json = getProxy().getFileServer();
-               LLog.print("文件服务信息: "+json);
-               Map<String,String> map = JsonUtil.jsonToJavaBean(json,new TypeToken<Map<String,String>>(){}.getType());
-               assert map!=null;
-               IceIo.get().addParams("fileServerUpload", map.get("fileUpload"));
-               IceIo.get().addParams("fileServerDownload", map.get("fileDownload"));
-           }
-        }catch (Exception e){
-            //e.printStackTrace();
-        }
-    }
 
     //查询订单详情
     @Override
@@ -145,39 +123,58 @@ public class OrderIceModel extends IceServerAbs<DriverServicePrx> implements Ord
     // 取货/签收 图片上传
     @Override
     public void uploadImage(int userid, int enterpriseid, long orderid,int state, List<File> files, HttpUtil.Callback callback) {
-        String url = getParam("fileServerUpload");
-        printParam("上传文件",files.size(),url);
-        List<HttpUtil.FormItem> formItems = new ArrayList<>();
-        for (int i = 0; i < files.size() ;i++){
-            formItems.add(genImageUploadForm(userid,enterpriseid,orderid,state,files,i));
+        try {
+          FSAddressInfo info = getProxy(IFileServerCenterPrx.class).queryFileServerAddress();
+          if (!info.isValid){
+             throw new Exception("文件服务器不可达");
+          }
+            String url = info.httpUrlPrev+ "/upload";
+            String path = getProxy().getUploadPath(String.valueOf(enterpriseid),String.valueOf(orderid));
+            
+            List<String> pathList = new ArrayList<>();
+            List<String> nameList = new ArrayList<>();
+            List<HttpUtil.FormItem> formItems = new ArrayList<>();
+
+            for (int i = 0; i < files.size() ;i++){
+                pathList.add(path);
+                nameList.add(state+"_"+i);
+                formItems.add(new HttpUtil.FormItem("file", "android_tms_drive", files.get(i)));
+                printParam("上传文件",files.size(),url,path,state+"_"+i);
+            }
+            HashMap<String,String> headParams = new HashMap<>();
+
+            headParams.put("specify-path",StrUtil.join(pathList,";"));
+
+            headParams.put("specify-filename",StrUtil.join(nameList,";"));
+
+            HttpUtil.Request request = new HttpUtil.Request(url, HttpUtil.Request.POST, callback);
+
+            request.setParams(headParams).setForm().addFormItemList(formItems).upload().execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            callback.onError(e);
         }
-        HttpUtil.Request request = new HttpUtil.Request(url, HttpUtil.Request.POST, callback);
-        request.setForm().addFormItemList(formItems).upload().execute();
     }
 
-    private HttpUtil.FormItem genImageUploadForm(int userid, int enterpriseid, long orderid, int state, List<File> files, int i) {
-        HashMap<String,String> map = new HashMap<>();
-            map.put("orderid",orderid+"");
-            map.put("compid",enterpriseid+"");
-            map.put("picno", state+"_"+i);
-        return new HttpUtil.FormItem("file",
-                        JsonUtil.javaBeanToJson(map),
-                        files.get(i));
-    }
 
     //取货/签收 文件图片地址
     @Override
     public String imagePath(int enterpriseid, long orderid) {
-        String filePath = "";
         try {
-            filePath = getProxy().getUploadPath(enterpriseid+"",orderid+"");
-
+            FSAddressInfo info = getProxy(IFileServerCenterPrx.class).queryFileServerAddress();
+            if (!info.isValid){
+                throw new Exception("文件服务器不可达");
+            }
+            String url = info.httpUrlPrev;
+            String filePath = getProxy().getUploadPath(String.valueOf(enterpriseid),String.valueOf(orderid));
+            filePath = url+"/"+filePath+"/";
+            printParam("获取图片后台存放的路径",enterpriseid,orderid,filePath);
+            return filePath;
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
-        filePath = getParam("fileServerDownload")+"/"+filePath+"/";
-        printParam("获取图片后台存放的路径",enterpriseid,orderid,filePath);
-        return filePath;
+        return null;
     }
 
     //请求用户所属企业

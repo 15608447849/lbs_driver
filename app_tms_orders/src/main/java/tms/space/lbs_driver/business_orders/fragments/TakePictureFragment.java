@@ -27,7 +27,6 @@ import tms.space.lbs_driver.tms_base.fragments.CanBackUpFragmentAbs;
 
 public class TakePictureFragment extends CanBackUpFragmentAbs<TakePictureVh,OrderDetailContract.TackPicturePresenter> implements TakePicturePop.Callback, View.OnClickListener, View.OnLongClickListener,OrderDetailContract.TackPictureView, CameraUse.Callback {
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +77,7 @@ public class TakePictureFragment extends CanBackUpFragmentAbs<TakePictureVh,Orde
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         cameraUse.onActivityResult(requestCode,resultCode,data);
     }
+
     //拍照或选择图片回调
     @Override
     public void pictureResult(File file) {
@@ -85,7 +85,7 @@ public class TakePictureFragment extends CanBackUpFragmentAbs<TakePictureVh,Orde
             cImageView.setTag(file);
             ImageUtil.setImageViewBitmap(cImageView,file);
         }else{
-            toast("图片选择失败");
+           toast("图片选择失败,请重试");
         }
     }
 
@@ -96,7 +96,11 @@ public class TakePictureFragment extends CanBackUpFragmentAbs<TakePictureVh,Orde
             cImageView = (ImageView)v;
             pop.show();
         }else{
-            fileUpload(vh.tb1,vh.tb2,vh.tb3);
+            if (v.getId() == vh.update.getId()){
+                fileUpload(vh.tb1,vh.tb2,vh.tb3);
+            }else if(v.getId() == vh.pass.getId()){
+                passUpload();
+            }
         }
     }
 
@@ -106,14 +110,22 @@ public class TakePictureFragment extends CanBackUpFragmentAbs<TakePictureVh,Orde
         File image;
         for (ImageView iv : ivs) {
             image = (File)iv.getTag();
-            if (image == null){
-                toast("图片缺少,请拍照或选择照片");
-                return;
+            if (image != null){ //限制三张图片
+                files.add(image);
             }
-            files.add(image);
+        }
+        if (files.size() == 0){
+            toast("至少一张图片,请拍照或选择照片");
+            return;
         }
         fileUpload(files);
     }
+
+    /**跳过文件上传*/
+    private void passUpload() {
+        handlerOrderState();
+    }
+
 
     //文件上传-异步执行
     private void fileUpload(final List<File> files) {
@@ -141,8 +153,16 @@ public class TakePictureFragment extends CanBackUpFragmentAbs<TakePictureVh,Orde
     //文件上传成功
     @Override
     public void imageUpdateSuccess() {
-        toast("图片上传成功,等待处理订单信息");
-        presenter.orderHandle(getSpaHandle());
+        handlerOrderState();
+    }
+
+    private void handlerOrderState() {
+        toIo(new Runnable() {
+            @Override
+            public void run() {
+                presenter.orderHandle(getSpaHandle());
+            }
+        });
     }
 
     //取货成功

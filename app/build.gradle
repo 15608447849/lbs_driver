@@ -24,7 +24,7 @@ android {
         }
 
     }
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
 }
 android {
     defaultConfig {
@@ -44,6 +44,9 @@ dependencies {
     implementation project(':app_tms_scanqr')
     //数据采集
     implementation project(':app_tms_mapop')
+
+    //照片选择器测试
+
 
 
 }
